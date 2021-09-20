@@ -3,8 +3,8 @@ import Logo from '../../assets/images/bridge-logo.png'
 
 const NavigationBar: React.FC =()=> {
     return (
-        <div className="h-14">
-            <div className="h-full flex items-center px-16 justify-between shadow-sm">
+        <div className="h-14 top-0 sticky bg-white bg-opacity-80 backdrop-filter backdrop-blur-xl">
+            <div className="h-full flex items-center px-16 justify-between shadow-sm ">
                 <div className="flex items-start justify-center">
                     <div>
                         <img src={Logo} alt="logo"/>
