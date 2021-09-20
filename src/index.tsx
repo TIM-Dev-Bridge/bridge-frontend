@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import NavigationBar from './components/NavigationBar/NavigationBar'
+import LandingPage from './views/LandingPage/LandingPage'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <NavigationBar />
+    {/* <App /> */}
+    <LandingPage />
   </React.StrictMode>,
   document.getElementById('root')
 );
