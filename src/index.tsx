@@ -4,12 +4,14 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import NavigationBar from './components/NavigationBar/NavigationBar'
 import LandingPage from './views/LandingPage/LandingPage'
+import LoginPage from './views/Login/Login';
 
 ReactDOM.render(
   <React.StrictMode>
     <NavigationBar />
     {/* <App /> */}
-    <LandingPage />
+    {/* <LandingPage /> */}
+    <LoginPage />
   </React.StrictMode>,
   document.getElementById('root')
 );
