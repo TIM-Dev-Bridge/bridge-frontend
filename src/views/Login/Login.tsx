@@ -8,20 +8,39 @@ const LoginPage: React.FC = ()=> {
         Register,
     }
 
-    const [displayComponent, setDisplayComponent] = React.useState<DisplayComponent>(DisplayComponent.Login)
+    const [displayComponent, setDisplayComponent] = React.useState<DisplayComponent>(DisplayComponent.Register)
+    const formDisplay = {
+        show: { opacity: 1, scale: [0.8, 1.1, 1]},
+        hide: { opacity: 0, scale: [1, 1.01]}
+    }
 
-    React.useEffect(()=> {
-        console.log(displayComponent === DisplayComponent.Login)
-    })
+    interface Props {
+        display: boolean
+        children: JSX.Element
+    }
+
+    const Container: React.FC<Props> =(props: Props)=> {
+        return (
+            <div className="w-1/2 h-full flex justify-center items-center" style={{backgroundColor: props.display ? "white" : "blue"}}>
+                {props.children}
+            </div>
+        )
+    }
     
     return (
         <div className="flex flex-row w-screen h-screen">
-            <div className="w-1/2 h-full flex justify-center items-center"> 
-                <RegisterForm />
-            </div>
-            <div className="w-1/2 h-full flex justify-center items-center">
-                <LoginForm />
-            </div>
+            <Container display={displayComponent === DisplayComponent.Register}>
+                <RegisterForm 
+                    animate={displayComponent === DisplayComponent.Register ? "show" : "hide"}
+                    variants={formDisplay}
+                    onLoginClick={()=>setDisplayComponent(DisplayComponent.Login)}/>
+            </Container>
+            <Container display={displayComponent === DisplayComponent.Login}>
+                <LoginForm 
+                    animate={displayComponent === DisplayComponent.Login ? "show" : "hide"}
+                    variants={formDisplay}
+                    onRegisterClick={()=>setDisplayComponent(DisplayComponent.Register)}/>
+            </Container>
         </div>
     );
 }
