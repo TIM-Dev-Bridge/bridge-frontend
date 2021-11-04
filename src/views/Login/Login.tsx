@@ -21,14 +21,14 @@ const LoginPage: React.FC = ()=> {
 
     const Container: React.FC<Props> =(props: Props)=> {
         return (
-            <div className="w-1/2 h-full flex justify-center items-center" style={{backgroundColor: props.display ? "white" : "blue"}}>
+            <div className="lg:w-1/2 h-full flex justify-center items-center" style={{backgroundColor: props.display ? "white" : "blue"}}>
                 {props.children}
             </div>
         )
     }
     
     return (
-        <div className="flex flex-row w-screen h-screen">
+        <div className="lg:flex flex-row w-screen h-screen">
             <Container display={displayComponent === DisplayComponent.Register}>
                 <RegisterForm 
                     animate={displayComponent === DisplayComponent.Register ? "show" : "hide"}
