@@ -4,8 +4,10 @@ import React from 'react'
 import { AuthenContext } from '../../../Authen';
 import { PrimaryButton } from '../../../components/Button/Button';
 import { useForm } from '../../../components/Form/FormHooks';
+import { navigate, NavigationContext } from '../../../components/Router/Router';
 import { LinkText, NormalText, TitleText } from '../../../components/Text/Text';
 import TextField from '../../../components/TextField/TextField';
+import LandingPage from '../../LandingPage/LandingPage';
 import { validator } from './Validate';
 
 interface LoginFormProps extends MotionProps {
@@ -16,6 +18,7 @@ interface LoginFormProps extends MotionProps {
 
 const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
     const context = React.useContext(AuthenContext)
+    const navigateContext = React.useContext(NavigationContext)
     const onLogin =(value: {})=> {
         axios.post('https://bridge-api-tim.herokuapp.com/login', value)
             .then( res => {
@@ -30,6 +33,7 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
         console.log("TOKEN OLD",context.token)
         context.updateToken(token)
         console.log("TOKEN NEW",context.token)
+        navigate(navigateContext,'/bridgebase', <LandingPage />)
     }
 
     const form = {

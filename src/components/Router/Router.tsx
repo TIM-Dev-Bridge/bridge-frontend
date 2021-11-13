@@ -1,0 +1,54 @@
+import React from 'react'
+import LoginPage from '../../views/Login/Login'
+import { RouterConfig } from './RouterConfig'
+
+export const NavigationContext = React.createContext({
+    navigationStack: [<div></div>],
+    updateStack: (view: JSX.Element[])=>{}
+})
+
+export const useNavigator =()=> React.useContext(NavigationContext)
+
+interface NavigationViewAttr {
+    children?: JSX.Element
+}
+
+export const NavigationView =(props: NavigationViewAttr)=> {
+    const [navigationStack, updateStack] = React.useState([<LoginPage />])
+    const stackRef = React.useRef(navigationStack)
+
+    const backEvent = React.useCallback(()=> {
+        window.addEventListener('popstate', ()=> {
+            const newStack = [...stackRef.current]
+            if (stackRef.current.length > 0) {
+                newStack.pop()
+                updateStack(newStack)
+            }
+        })
+    }, [navigationStack])
+
+    React.useEffect(()=> {
+        stackRef.current = navigationStack
+    },[navigationStack])
+
+    React.useEffect(()=> {
+        console.log(stackRef.current.length)
+        backEvent()
+    },[])
+
+    
+    return (
+        <NavigationContext.Provider value={{navigationStack, updateStack}}>
+            {props.children}
+        </NavigationContext.Provider>
+    )
+}
+
+export const navigate =(context: {navigationStack: JSX.Element[], updateStack: (view: JSX.Element[]) => void;
+}, path: string, element: JSX.Element)=> {
+    const currentPath = window.location.pathname
+    const newPath = window.location.pathname.replace(currentPath, path)
+    window.history.pushState(null,"",newPath)
+    const newStack = [...context.navigationStack, element]
+    context.updateStack(newStack)
+}
