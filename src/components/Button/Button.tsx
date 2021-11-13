@@ -5,7 +5,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const PrimaryButton =(props: ButtonProps)=> {
-    return <button className="border-2 rounded-3xl pl-8 pr-8 mt-3 mb-3 text-white bg-blue-500 text-sm h-10 pt-2 pb-2">{props.children}</button>
+    return <button onClick={props.onClick} onSubmit={props.onSubmit} className="border-2 rounded-3xl pl-8 pr-8 mt-3 mb-3 text-white bg-blue-500 text-sm h-10 pt-2 pb-2">{props.children}</button>
 }
 
 export const SecondaryButton =(props: ButtonProps)=> {

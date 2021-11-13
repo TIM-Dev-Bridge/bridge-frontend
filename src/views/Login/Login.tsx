@@ -32,6 +32,7 @@ const LoginPage: React.FC = ()=> {
             <Container display={displayComponent === DisplayComponent.Register}>
                 <RegisterForm 
                     animate={displayComponent === DisplayComponent.Register ? "show" : "hide"}
+                    isDisplay={displayComponent === DisplayComponent.Register}
                     variants={formDisplay}
                     onLoginClick={()=>setDisplayComponent(DisplayComponent.Login)}/>
             </Container>
@@ -39,6 +40,7 @@ const LoginPage: React.FC = ()=> {
                 <LoginForm 
                     animate={displayComponent === DisplayComponent.Login ? "show" : "hide"}
                     variants={formDisplay}
+                    isDisplay={displayComponent === DisplayComponent.Login}
                     onRegisterClick={()=>setDisplayComponent(DisplayComponent.Register)}/>
             </Container>
         </div>
