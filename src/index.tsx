@@ -7,15 +7,15 @@ import LandingPage from './views/LandingPage/LandingPage'
 import LoginPage from './views/Login/Login';
 import { AuthenProvider } from './Authen';
 import { NavigationView } from './components/Router/Router';
+import App from './App';
+
+
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthenProvider>
     <NavigationView>
-      <>
-      <NavigationBar />
-      <LoginPage />
-      </>
+      <App />
       </NavigationView>
     </AuthenProvider>
   </React.StrictMode>,
@@ -26,3 +26,7 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+function NavigationContext(NavigationContext: any): { navigationStack: any; updateStack: any; } {
+  throw new Error('Function not implemented.');
+}
+
