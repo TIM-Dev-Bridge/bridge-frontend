@@ -6,12 +6,17 @@ import NavigationBar from './components/NavigationBar/NavigationBar'
 import LandingPage from './views/LandingPage/LandingPage'
 import LoginPage from './views/Login/Login';
 import { AuthenProvider } from './Authen';
+import { NavigationView } from './components/Router/Router';
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthenProvider>
+    <NavigationView>
+      <>
       <NavigationBar />
       <LoginPage />
+      </>
+      </NavigationView>
     </AuthenProvider>
   </React.StrictMode>,
   document.getElementById('root')
