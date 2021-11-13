@@ -6,6 +6,9 @@ module.exports = {
       colors: {
         appBlue: "#18A0FB"
       },
+      fontSize: {
+        xss: "0.65rem"
+      }
     },
   },
   variants: {
