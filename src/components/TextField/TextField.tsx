@@ -13,8 +13,8 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 const defaultProps = {
     value: "",
     placeholder: "",
-    warningMessage: "warning message",
-    isValid: false
+    warningMessage: "",
+    isValid: true
 }
 
 const TextField: React.FunctionComponent<TextFieldProps> =(props: TextFieldProps)=> {
@@ -26,7 +26,7 @@ const TextField: React.FunctionComponent<TextFieldProps> =(props: TextFieldProps
 
     return (
         <div className="w-full mt-2">
-            <div className="ml-3">
+            <div className="ml-3 flex justify-start">
                 <WarningText small visible={!props.isValid!}>{props.warningMessage!}</WarningText>
             </div>
             <input name={props.name} onChange={props.onChange} ref={props.ref} type="text" className={`border-2 ${!props.isValid ? "border-red-600" : "border-gray-100"}  h-8 rounded-3xl pl-4 pr-4 w-full bg-gray-100 mt-1 mb-3`} value={props.text} placeholder={props.placeholder}/>

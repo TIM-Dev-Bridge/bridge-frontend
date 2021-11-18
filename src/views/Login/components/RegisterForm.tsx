@@ -19,13 +19,13 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
     })
 
     const onRegister =(value: {})=> {
-        axios.post('https://bridge-api-tim.herokuapp.com/register', value)
-            .then( res => {
-                console.log(res)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        // axios.post('https://bridge-api-tim.herokuapp.com/register', value)
+        //     .then( res => {
+        //         console.log(res)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
     }
 
     const onRegisterComplete =()=> {
@@ -89,7 +89,7 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
                 <TextField name={`${props.isDisplay ? "username" : "" }`} placeholder="Username" isValid={isValid["username"].isValid} warningMessage={isValid["username"].message} />
                 <input name="birth_date" type="date" min="1970-01-01" />
                 <TextField name={`${props.isDisplay ? "password" : "" }`} placeholder="Password" isValid={isValid["password"].isValid} warningMessage={isValid["password"].message} />
-                <PrimaryButton onClick={()=> {
+                <PrimaryButton twstyle="h-8" onClick={()=> {
                     handleSubmit((isValid,value)=> {
                         if (isValid) {
                             console.log(value)

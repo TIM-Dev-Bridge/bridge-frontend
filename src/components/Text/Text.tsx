@@ -5,6 +5,8 @@ interface TextProps extends HTMLAttributes<HTMLElement> {
     small?: boolean
     medium?: boolean
     big?: boolean
+    textColor?: string
+    bold?: boolean
 } 
 
 interface WarningTextProps extends TextProps {
@@ -15,7 +17,8 @@ const defaultProps: TextProps = {
     children: "",
     small: false,
     medium: false,
-    big: false
+    big: false,
+    bold: false
 }
 
 const LinkText: React.FunctionComponent<TextProps> =(props: TextProps)=> {
@@ -58,7 +61,7 @@ const NormalText: React.FunctionComponent<TextProps> =(props: TextProps)=> {
     if (props.big) {
         fontSize = "text-base"
     }
-    return <p className={`text-black ${fontSize} font-extralight`}>{props.children}</p>
+    return <p className={`${props.bold? "font-bold" : ""} ${props.textColor ? props.textColor : "text-black"} ${fontSize} font-extralight`}>{props.children}</p>
 }
 
 const WarningText: React.FunctionComponent<WarningTextProps> =(props: WarningTextProps)=> {

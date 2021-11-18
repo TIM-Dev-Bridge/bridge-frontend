@@ -20,20 +20,23 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
     const context = React.useContext(AuthenContext)
     const navigateContext = React.useContext(NavigationContext)
     const onLogin =(value: {})=> {
-        axios.post('https://bridge-api-tim.herokuapp.com/login', value)
+        axios.post('http://localhost:4000/login', value)
             .then( res => {
                 console.log(res)
                 if (res.status == 200) {
-                    onLoginComplete(res.data.token)
+                    onLoginComplete(res.data.token, res.data.username)
                 } 
             })
     }
 
-    const onLoginComplete =(token: string)=> {
-        console.log("TOKEN OLD",context.token)
-        context.updateToken(token)
-        console.log("TOKEN NEW",context.token)
-        navigate(navigateContext,'/bridgebase', <LandingPage />)
+    const onLoginComplete =(token: string, username: string)=> {
+        console.log("TOKEN OLD",context.authen.token)
+        const authen = {
+            token: token,
+            username: username
+        }
+        context.updateToken(authen)
+        navigate(navigateContext,'/bridgebase', {})
     }
 
     const form = {
@@ -66,12 +69,13 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
                     <input type="checkbox" className="mr-2"/>
                     <NormalText small>Remember me</NormalText>
                 </div>
-                <PrimaryButton onClick={()=> {
+                <PrimaryButton twstyle="h-8" onClick={()=> {
                     handleSubmit((isValid,value)=> {
                         if (isValid) {
                             console.log(value)
                             onLogin(value)
                         }
+                        // navigate(navigateContext,'/bridgebase', {})
                     })
 
                     }}>Continue</PrimaryButton>
