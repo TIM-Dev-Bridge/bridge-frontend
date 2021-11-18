@@ -6,6 +6,7 @@ import { LinkText, TitleText } from '../../../components/Text/Text';
 import { useForm } from '../../../components/Form/FormHooks';
 import { validator } from './Validate';
 import axios from 'axios';
+import DateSelector from '../../../components/Selector/DateSelector';
 
 interface RegsiterFormProps extends MotionProps {
     onLoginClick?: ()=>void
@@ -87,7 +88,8 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
                 <TextField name="display_name" placeholder="Display Name" isValid={isValid["display_name"].isValid} warningMessage={isValid["display_name"].message} />
                 <TextField name={`${props.isDisplay ? "email" : "" }`} placeholder="Email" isValid={isValid["email"].isValid} warningMessage={isValid["email"].message} />
                 <TextField name={`${props.isDisplay ? "username" : "" }`} placeholder="Username" isValid={isValid["username"].isValid} warningMessage={isValid["username"].message} />
-                <input name="birth_date" type="date" min="1970-01-01" />
+                {/* <input name="birth_date" type="date" min="1970-01-01" /> */}
+                <DateSelector type={'date'} name="birth_date" />
                 <TextField name={`${props.isDisplay ? "password" : "" }`} placeholder="Password" isValid={isValid["password"].isValid} warningMessage={isValid["password"].message} />
                 <PrimaryButton twstyle="h-8" onClick={()=> {
                     handleSubmit((isValid,value)=> {

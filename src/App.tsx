@@ -12,7 +12,9 @@ function App() {
   })
   return (
     <div className="App" style={{height: "100vh"}}>
-      <NavigationBar />
+      {
+        window.location.pathname === '/' || window.location.pathname === '/lobby' ?  <></> : <NavigationBar />
+      }
       {/* <CreateTourPopup /> */}
       {navigationStack[navigationStack.length - 1]}
     </div>

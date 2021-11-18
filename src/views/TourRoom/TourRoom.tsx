@@ -34,7 +34,7 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
         >
             <InnerContainer width={props.width ?? 0}>
                 <div className="flex justify-between items-center">
-                    <div className="self-start pt-4 pb-4"><TitleText medium>{props.tourName}</TitleText></div>
+                    <div className="self-start pt-4 pb-4  pl-8"><TitleText medium>{props.tourName}</TitleText></div>
                     <ButtonContainer>
                         <PrimarySqButton onClick={() => {
                             leaveTourRoom(authenContext.authen.username)
@@ -120,13 +120,17 @@ const TourRoomContainer = styled(motion.div) <{width: number, hide: boolean}>`
 
     ${props=> !props.hide && css`
         transform: translateX(0px);
+        --webkit-transform: translateX(0px);
         opacity: 0.5;
-        transition: transform 0.2s, opacity 0.2s;
+        transition: transform 0.3s, opacity 0.3s ease;
+        --webkit-transition: transform 0.3s, opacity 0.3s ease;
     `}
     ${props=> props.hide && css`
         transform: translateX(-${props.width}px);
+        --webkit-transform: translateX(-${props.width}px);
         opacity: 1;
-        transition: transform 0.2s, opacity 0.2s;
+        transition: transform 0.3s, opacity 0.3s ease;
+        --webkit-transition: transform 0.3s, opacity 0.3s ease;
     `}
     /* z-index: -1; */
 `
@@ -183,6 +187,7 @@ const JoinRoomContainer = styled.div`
     height: 48px;
     background-color: rgba(255,255,255,0.6);
     backdrop-filter: blur(24px);
+    --webkit-backdrop-filter: blur(24px);
 `
 
 const ButtonContainer = styled.div`

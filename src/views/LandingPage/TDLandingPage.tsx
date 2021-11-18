@@ -16,9 +16,9 @@ const TDLandingPage: React.FC =()=> {
             <div className="" style={{margin:"0 auto", width: "80%"}}>
                 <div className="flex flex-col items-center justify-center gap-10 mx-20 mt-14 sm:flex-col md:flex-row">
                     <NavigationLink path={'/lobby'} state={{}} > 
-                        <ModePreviewContainer title="Online Plays"/>
+                        <ModePreviewContainer to="/lobby" state={{}} title="Online Plays"/>
                     </NavigationLink>
-                    <LocalModePreviewContainer title="Local Plays"/>
+                    <LocalModePreviewContainer to="/lobby" state={{}} title="Local Plays"/>
                 </div>
             </div>
         </div>

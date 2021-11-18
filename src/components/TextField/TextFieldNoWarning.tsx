@@ -17,7 +17,7 @@ const TextFieldNoWarning: React.FunctionComponent<TextFieldProps> =(props: TextF
 
     return (
         <div className="w-full">
-            <input onClick={props.onClick} onFocus={props.onFocus} name={props.name} onChange={props.onChange} type="text" className={`border-2 border-gray-100 h-8 rounded-3xl pl-4 pr-4 w-full bg-gray-100`} value={props.text} placeholder={props.placeholder}/>
+            <input autoComplete={props.autoComplete} onKeyUp={props.onKeyUp} onKeyDown={props.onKeyDown} onClick={props.onClick} onFocus={props.onFocus} name={props.name} onChange={props.onChange} type="text" className={`border-2 border-gray-100 h-8 rounded-3xl pl-4 pr-4 w-full bg-gray-100`} value={props.text} placeholder={props.placeholder}/>
         </div>
     );
 }

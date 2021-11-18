@@ -4,6 +4,8 @@ import Banner from './components/Banner/Banner'
 import { AuthenContext } from '../../Authen'
 import { NavigationLink } from '../../components/Router/NavigationLink'
 import CreateTourPopup from '../Popup/CreateTourPopup'
+import styled from 'styled-components'
+import { device } from '../../Device'
 
 const LandingPage: React.FC =()=> {
     const context = React.useContext(AuthenContext)
@@ -13,21 +15,47 @@ const LandingPage: React.FC =()=> {
     const [displayDialog, setDialogDisplay] = React.useState(false);
 
     return (
-        <div className="flex-col pb-14 items-center justify-center contents-center">
-            <Banner />
-            <div className="" style={{margin:"0 auto", width: "80%"}}>
-                <div className="flex flex-col items-center justify-center gap-10 mx-20 mt-14 sm:flex-col md:flex-row">
-                    <NavigationLink path={'/lobby'} state={{}} > 
-                        <ModePreviewContainer title="Online Plays"/>
-                    </NavigationLink>
-                    <LocalModePreviewContainer onClick={()=> {
+        <Container>
+            <MenuContainer>
+                <MenuList>
+                    <ModePreviewContainer title="Online Plays" to="/lobby" state={{}}/>
+                    <LocalModePreviewContainer to="/lobby" state={{}} onClick={()=> {
                         setDialogDisplay(!displayDialog)
                     }} title="Local Plays"/>
-                </div>
-            </div>
+                    <LocalModePreviewContainer to="/lobby" state={{}} onClick={()=> {
+                        setDialogDisplay(!displayDialog)
+                    }} title="Local Plays"/>
+                </MenuList>
+            </MenuContainer>
+            <Banner />
             <CreateTourPopup isVisible={displayDialog} onDismiss={()=> setDialogDisplay(!displayDialog)}/>
-        </div>
+        </Container>
     )
 }
+
+const Container = styled.div`
+    min-height: calc(100vh - 56px);
+    overflow: scroll;
+`
+
+const MenuContainer = styled.div`
+    height: 100%;
+    min-height: calc(100vh - 56px);
+    margin: 0 auto;
+`
+
+const MenuList = styled.div`
+    display: grid;
+    min-height: calc(100vh - 56px);
+    grid-template: repeat( auto-fit, minmax(300px, 1fr) ) / repeat( auto-fit, minmax(300px, 1fr));
+    height: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+    gap: 40px;
+`
+
 
 export default LandingPage

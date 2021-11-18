@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { useContext } from 'react';
 import { navigate, NavigationContext } from './Router';
 
-interface NavigationAttr {
+interface NavigationAttr extends HTMLAttributes<HTMLElement> {
     path: string,
-    children?: JSX.Element,
+    // children?: JSX.Element,
     state: {}
 }
 

@@ -6,6 +6,7 @@ import { PrimaryButton } from '../../components/Button/Button'
 import { TitleText, NormalText } from '../../components/Text/Text'
 import TextFieldNoWarning from '../../components/TextField/TextFieldNoWarning'
 import { useLobby, useRoom } from '../../Service/SocketService'
+import { IoMdSend } from 'react-icons/io'
 
 interface ChatProps {
     display: boolean
@@ -18,6 +19,23 @@ const TourChat =(props: ChatProps)=> {
     const { updateTourChat, sendMessageToTourChat } = useRoom(props.tourName)
     const messageRef = React.useRef<{sender: string, message: string}[]>([])
     const [minimize, setSize] = React.useState(false)
+    const [sendable, setSendable] = React.useState(false)
+
+    const handleKeyDown = (event: { key: string }) => {
+        if (event.key === 'Enter') {
+            console.log("SUBMIT CAHT")
+            sendMessage()
+            setSendable(false)
+        }
+    }
+
+    const handleOnChange =(event: React.FormEvent<HTMLInputElement>)=> {
+        if (event.currentTarget.value.length > 0) {
+            setSendable(true)
+            return
+        }
+        setSendable(false)
+    }
 
     const updateSessionChat = React.useCallback(()=> {
         console.log("udpate callback")
@@ -25,6 +43,8 @@ const TourChat =(props: ChatProps)=> {
         updateTourChat((message)=> {
             const newMessage = [...messageRef.current, message]
             updatemessage(newMessage)
+            var objDiv = document.getElementById(`tour-chat-bottom`)!;
+            objDiv.scrollIntoView({ behavior: 'smooth', block: 'end'})
         })
     },[messages])
 
@@ -75,17 +95,22 @@ const TourChat =(props: ChatProps)=> {
                         {
                             messages.map((message: MessageLineProps, i)=> <MessageLine {...message} key={i}/>)
                         }
-                        <div className="h-12"></div>
+                        <div id="tour-chat-bottom" className="h-12"></div>
                     </ChatListInContainer>
                 </ChatListOutContainer>
             </TitleAndChatContainer>
             <SendTextContainer onClick={()=>setSize(false)}> 
-                <TextFieldNoWarning  name="tour-chat-input" />
-                <PrimaryButton twstyle="h-8" onClick={()=> {
+            <TextFieldNoWarning autoComplete="off" onChange={handleOnChange} name="tour-chat-input" onKeyUp={handleKeyDown}/>
+                
+                <SendButton 
+                    sendable={sendable}
+                    onClick={()=> {
                     console.log('send message')
                     sendMessage()
                     console.log(messages)
-                }}>Send</PrimaryButton>
+                }}>
+                    <SendIcon />
+                </SendButton>
             </SendTextContainer>
         </ChatContainer>
     )
@@ -120,12 +145,18 @@ const ChatContainer = styled.div<{hide: boolean}>`
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     ${props=> props.hide && css`
-        transform: translateY(50vh);
+        transform: translateY(55vh);
+        --webkit-transform: translateY(55vh);
         transition: transform 0.3s;
+        --webkit-transition: transform 0.3s;
+        z-index: -1;
     `}
     ${props=> !props.hide && css`
         transform: translateY(0px);
+        --webkit-transform: translateY(0px);
         transition: transform 0.3s;
+        --webkit-transition: transform 0.3s;
+        z-index: 1;
     `}
 `
 
@@ -143,10 +174,12 @@ const ChatListOutContainer = styled(motion.div)<{hide: boolean}>`
     ${props=> props.hide && css`
         height: 48px;
         transition: height 0.3s;
+        --webkit-transition: height 0.3s;
     `}
     ${props=> !props.hide && css`
-        height: 25vh;
+        height: 40vh;
         transition: height 0.3s;
+        --webkit-transition: height 0.3s;
     `}
 `
 
@@ -164,6 +197,7 @@ const SendTextContainer = styled.div`
     gap: 4px;
     background-color: rgba(255,255,255,0.6);
     backdrop-filter: blur(24px);
+    --webkit-backdrop-filter: blur(24px);
     position: absolute;
     bottom: 0;
     height: 3rem;
@@ -172,9 +206,37 @@ const SendTextContainer = styled.div`
     padding-left: 15px;
     padding-right: 15px;
 `
-const variants = {
-    minimize: { height: "48px"},
-    maximize: {height: "30vh"}
-}
+
+const SendIcon = styled(IoMdSend)`
+    color: white;
+    opacity: 0;
+    transition: width 1s;
+    --webkit-transition: width 1s;
+`
+
+const SendButton = styled.button<{sendable: boolean}>`
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 0px;
+    height: 0px;
+    transition: width 0.3s ease, height 0.3s ease;
+    --webkit-transition: width 0.15s ease, height 0.3s ease;
+    background-color: rgba(59, 130, 246, 1);
+    border-radius: 16px;
+    ${props=>props.sendable && css`
+        width: 60px;
+        height: 32px;
+        --webkit-transition: width 0.3s ease, height 0.3s ease;
+        transition: width 0.3s ease, height 0.3s ease;
+        ${SendIcon} {
+            opacity: 1;
+            transition: width 1s;
+            --webkit-transition: width 1s;
+        }
+    `}
+`
 
 export default TourChat;
