@@ -1,0 +1,646 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Page Test To Match Snapshot 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div
+        class="lg:flex flex-row w-screen h-screen overflow-hidden"
+      >
+        <div
+          class="lg:w-1/2 h-full flex justify-center items-center"
+          id="register-screen"
+          style="background-repeat: no-repeat; background-size: cover; background-position: center;"
+        >
+          <div
+            class="sc-eLwHnm dPsEwr"
+          >
+            <div
+              class="flex flex-col mr-10 ml-10 -3xl"
+            >
+              <div
+                class="m-5 text-center"
+              >
+                <h1
+                  class="text-black text-3xl font-bold"
+                >
+                  Register
+                </h1>
+              </div>
+              <div
+                class="xl:flex flex-row"
+              >
+                <div
+                  class="sc-dkPtRN fxVmYX"
+                >
+                  <div
+                    class="sc-hKwDye fAXVWq"
+                  >
+                    <p
+                      class="sc-gsDKAQ bIsvj"
+                      font-size="10"
+                      font-weight="100"
+                    />
+                  </div>
+                  <input
+                    class="sc-eCImPb gGTZTn"
+                    data-testid="register-firstname"
+                    name="first_name"
+                    placeholder="First Name"
+                  />
+                </div>
+                <div
+                  class="w-4"
+                />
+                <div
+                  class="sc-dkPtRN fxVmYX"
+                >
+                  <div
+                    class="sc-hKwDye fAXVWq"
+                  >
+                    <p
+                      class="sc-gsDKAQ bIsvj"
+                      font-size="10"
+                      font-weight="100"
+                    />
+                  </div>
+                  <input
+                    class="sc-eCImPb gGTZTn"
+                    data-testid="register-lastname"
+                    name="last_name"
+                    placeholder="Last Name"
+                  />
+                </div>
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-displayname"
+                  name="display_name"
+                  placeholder="Display Name"
+                />
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-email"
+                  name="email"
+                  placeholder="Email"
+                />
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-username"
+                  name="username"
+                  placeholder="Username"
+                />
+              </div>
+              <div
+                class="sc-ieecCq fBVJHY"
+              >
+                <input
+                  class="sc-hGPBjI jZmYse"
+                  data-testid="register-date"
+                  name="birth_date"
+                  placeholder=""
+                  type="date"
+                  value=""
+                />
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-password"
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                />
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-confirmpassword"
+                  name="confirm_password"
+                  placeholder="Confirm Password"
+                  type="password"
+                />
+              </div>
+              <div
+                class="sc-bdvvtL cwdxJg"
+              >
+                Continue
+              </div>
+              <div
+                class="flex flex-row items-center justify-end"
+              >
+                <p
+                  class="text-blue-500 text-xs cursor-pointer"
+                >
+                  Already Have an account
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="lg:w-1/2 h-full flex justify-center items-center"
+          id="login-screen"
+          style="background-image: url(register-bg.svg); background-repeat: no-repeat; background-size: cover; background-position: center;"
+        >
+          <div
+            class="sc-hmjpVf hJUbSx"
+          >
+            <div
+              class="flex flex-col mr-10 ml-10 -3xl"
+            >
+              <div
+                class="m-5 text-center"
+              >
+                <h1
+                  class="text-black text-3xl font-bold"
+                >
+                  Log in
+                </h1>
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="login-email"
+                  id="login-email"
+                  name=""
+                  placeholder="email"
+                />
+              </div>
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="login-password"
+                  id="login-password"
+                  name=""
+                  placeholder="Password"
+                  type="password"
+                />
+              </div>
+              <div
+                class="flex flex-row justify-end items-center"
+              >
+                <input
+                  class="mr-2"
+                  type="checkbox"
+                />
+                <p
+                  class=" text-black text-xs font-extralight"
+                >
+                  Remember me
+                </p>
+              </div>
+              <div
+                class="sc-bdvvtL cwdxJg"
+              >
+                Continue
+              </div>
+              <div
+                class="flex flex-row items-center justify-between"
+              >
+                <p
+                  class="text-blue-500 text-xs cursor-pointer"
+                >
+                  Don't have and accout?
+                </p>
+                <p
+                  class="text-blue-500 text-xs cursor-pointer"
+                >
+                  Forgot password
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="lg:flex flex-row w-screen h-screen overflow-hidden"
+    >
+      <div
+        class="lg:w-1/2 h-full flex justify-center items-center"
+        id="register-screen"
+        style="background-repeat: no-repeat; background-size: cover; background-position: center;"
+      >
+        <div
+          class="sc-eLwHnm dPsEwr"
+        >
+          <div
+            class="flex flex-col mr-10 ml-10 -3xl"
+          >
+            <div
+              class="m-5 text-center"
+            >
+              <h1
+                class="text-black text-3xl font-bold"
+              >
+                Register
+              </h1>
+            </div>
+            <div
+              class="xl:flex flex-row"
+            >
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-firstname"
+                  name="first_name"
+                  placeholder="First Name"
+                />
+              </div>
+              <div
+                class="w-4"
+              />
+              <div
+                class="sc-dkPtRN fxVmYX"
+              >
+                <div
+                  class="sc-hKwDye fAXVWq"
+                >
+                  <p
+                    class="sc-gsDKAQ bIsvj"
+                    font-size="10"
+                    font-weight="100"
+                  />
+                </div>
+                <input
+                  class="sc-eCImPb gGTZTn"
+                  data-testid="register-lastname"
+                  name="last_name"
+                  placeholder="Last Name"
+                />
+              </div>
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="register-displayname"
+                name="display_name"
+                placeholder="Display Name"
+              />
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="register-email"
+                name="email"
+                placeholder="Email"
+              />
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="register-username"
+                name="username"
+                placeholder="Username"
+              />
+            </div>
+            <div
+              class="sc-ieecCq fBVJHY"
+            >
+              <input
+                class="sc-hGPBjI jZmYse"
+                data-testid="register-date"
+                name="birth_date"
+                placeholder=""
+                type="date"
+                value=""
+              />
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="register-password"
+                name="password"
+                placeholder="Password"
+                type="password"
+              />
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="register-confirmpassword"
+                name="confirm_password"
+                placeholder="Confirm Password"
+                type="password"
+              />
+            </div>
+            <div
+              class="sc-bdvvtL cwdxJg"
+            >
+              Continue
+            </div>
+            <div
+              class="flex flex-row items-center justify-end"
+            >
+              <p
+                class="text-blue-500 text-xs cursor-pointer"
+              >
+                Already Have an account
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="lg:w-1/2 h-full flex justify-center items-center"
+        id="login-screen"
+        style="background-image: url(register-bg.svg); background-repeat: no-repeat; background-size: cover; background-position: center;"
+      >
+        <div
+          class="sc-hmjpVf hJUbSx"
+        >
+          <div
+            class="flex flex-col mr-10 ml-10 -3xl"
+          >
+            <div
+              class="m-5 text-center"
+            >
+              <h1
+                class="text-black text-3xl font-bold"
+              >
+                Log in
+              </h1>
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="login-email"
+                id="login-email"
+                name=""
+                placeholder="email"
+              />
+            </div>
+            <div
+              class="sc-dkPtRN fxVmYX"
+            >
+              <div
+                class="sc-hKwDye fAXVWq"
+              >
+                <p
+                  class="sc-gsDKAQ bIsvj"
+                  font-size="10"
+                  font-weight="100"
+                />
+              </div>
+              <input
+                class="sc-eCImPb gGTZTn"
+                data-testid="login-password"
+                id="login-password"
+                name=""
+                placeholder="Password"
+                type="password"
+              />
+            </div>
+            <div
+              class="flex flex-row justify-end items-center"
+            >
+              <input
+                class="mr-2"
+                type="checkbox"
+              />
+              <p
+                class=" text-black text-xs font-extralight"
+              >
+                Remember me
+              </p>
+            </div>
+            <div
+              class="sc-bdvvtL cwdxJg"
+            >
+              Continue
+            </div>
+            <div
+              class="flex flex-row items-center justify-between"
+            >
+              <p
+                class="text-blue-500 text-xs cursor-pointer"
+              >
+                Don't have and accout?
+              </p>
+              <p
+                class="text-blue-500 text-xs cursor-pointer"
+              >
+                Forgot password
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

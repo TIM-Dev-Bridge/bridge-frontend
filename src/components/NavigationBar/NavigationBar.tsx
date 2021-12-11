@@ -5,12 +5,13 @@ import { useAuthen } from '../../Authen'
 import { device } from '../../Device'
 import { NavigationLink } from '../Router/NavigationLink'
 import { navigate, useNavigator } from '../Router/Router'
+import {AiOutlineUser} from 'react-icons/ai'
 
 const NavigationBar: React.FC =()=> {
     const authen = useAuthen()
     const navContext = useNavigator()
     return (
-        <div className="h-14 top-0 sticky bg-white bg-opacity-80 backdrop-filter backdrop-blur-xl z-50">
+        <NavbarContainer data-testid="navbar">
             <NavbarArea>
                 <MenuContainer>
                     <LogoContaniner>
@@ -27,17 +28,21 @@ const NavigationBar: React.FC =()=> {
                         </NavigationLink>
                     </MenuLinkItem>
                 </MenuContainer>
-                <div className="flex items-end justify-center">
+                <div className="flex  justify-center items-center content-center">
                     
                     {/* <div className="px-7 self-center text-appBlue">
                         Log in
                     </div> */}
+                    {/* <div style={{width: "30px", height: "30px", marginRight: "5px"}}> */}
+                        <AiOutlineUser data-testid="user-icon" style={{height: "25px", width: "25px", marginRight: "10px"}}
+                            onClick={()=> {
+                                navigate(navContext, '/edit-information', {})
+                            }}
+                            />
+                    {/* </div> */}
                     <button className="bg-appBlue text-white px-10 h-10 rounded-md text-xs lg:text-base sm:text-sm"
                         onClick={()=> {
-                            if (authen.authen.token === '') {
-                                
-                            }
-                            else {
+                            if (authen.authen.token !== ''){
                                 window.localStorage.removeItem('bridge-authen')
                                 navigate(navContext, '/', {})
                             }
@@ -45,9 +50,10 @@ const NavigationBar: React.FC =()=> {
                         >
                         { authen.authen.token === '' ? "Log in" : "Log out"}
                     </button>
+                    
                 </div>
             </NavbarArea>
-        </div>
+        </NavbarContainer>
     )
 }
 
@@ -64,6 +70,14 @@ const LogoContaniner = styled.div`
         visibility: visible;
         width: 140px;
     }
+`
+
+const NavbarContainer = styled.div`
+    height: 56px;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    z-index: 1111;
 `
 
 const MenuContainer = styled.div`

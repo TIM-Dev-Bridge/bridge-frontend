@@ -11,7 +11,7 @@ interface ModePreviewContainerProps {
     description?: string
     buttonTitle?: string
     onClick?: ()=>void
-    to: string
+    to?: string
     state: {}
 }
 
@@ -25,14 +25,21 @@ export const ModePreviewContainer: React.FC<ModePreviewContainerProps> =(props: 
             <div className="relative px-10 py-4 h-full">
                 <div className="p-4 overflow-hidden">
                     <h2 className="font-extrabold text-lg">{props.title}</h2>
-                    <p className="font-light text-sm">Play with other skilled players without any cost learning new techniques and more!</p>
+                    <p className="font-light text-sm">{props.description ? props.description : `Play with other skilled players without any cost learning new techniques and more!` }</p>
                 </div>
                 <BottomContainer>
-                    <NavigationLink path={props.to} state={props.state} > 
-                        <PrimaryButton>
+                    {
+                        props.to ? 
+                        <NavigationLink path={props.to ?? undefined} state={props.state} > 
+                            <PrimaryButton onClick={props.onClick}>
+                                {props.buttonTitle == undefined ? "Play" : props.buttonTitle}
+                            </PrimaryButton>
+                        </NavigationLink> :
+                        <PrimaryButton onClick={props.onClick}>
                             {props.buttonTitle == undefined ? "Play" : props.buttonTitle}
                         </PrimaryButton>
-                    </NavigationLink>
+                    }
+                    
                 </BottomContainer>
             </div>
             

@@ -27,12 +27,12 @@ export const NavigationView =(props: NavigationViewAttr)=> {
             }
         } else {
             const path = window.location.pathname
-            console.log(path)
+            // console.log(path)
             const stack = [...navigationStack, RouterConfig[window.location.pathname]()]
             updateStack(stack)
         }
 
-        console.log(window.history.state)
+        // console.log(window.history.state)
 
     },[window.location.pathname])
 
@@ -51,7 +51,7 @@ export const NavigationView =(props: NavigationViewAttr)=> {
     },[navigationStack])
 
     React.useEffect(()=> {
-        console.log(stackRef.current.length)
+        // console.log(stackRef.current.length)
         backEvent()
     },[])
 
@@ -64,9 +64,9 @@ export const NavigationView =(props: NavigationViewAttr)=> {
 }
 
 export const navigate =(context: {navigationStack: JSX.Element[], updateStack: (view: JSX.Element[]) => void;
-}, path: string, state: {})=> {
+}, path: string, state: {}, query: string = '')=> {
     const currentPath = window.location.pathname
-    const newPath = window.location.pathname.replace(currentPath, path)
+    const newPath = window.location.pathname.replace(currentPath, path + (query == '' ? '' : `?${query}`))
     const newState = {
         path: path,
         state: state
@@ -75,4 +75,5 @@ export const navigate =(context: {navigationStack: JSX.Element[], updateStack: (
     const element = RouterConfig[path]()
     const newStack = [...context.navigationStack, element]
     context.updateStack(newStack)
+    // console.log('navigate function')
 }

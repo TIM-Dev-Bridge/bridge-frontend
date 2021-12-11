@@ -8,14 +8,20 @@ import LoginPage from './views/Login/Login';
 import { AuthenProvider } from './Authen';
 import { NavigationView } from './components/Router/Router';
 import App from './App';
+import { ProfileProvider } from './views/UserProfile/ProfileContext';
+import { PopupProvider } from './views/Popup/PopupContext';
 
 
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthenProvider>
-    <NavigationView>
-      <App />
+      <NavigationView>
+        <ProfileProvider>
+          <PopupProvider>
+            <App />
+          </PopupProvider>
+        </ProfileProvider>
       </NavigationView>
     </AuthenProvider>
   </React.StrictMode>,

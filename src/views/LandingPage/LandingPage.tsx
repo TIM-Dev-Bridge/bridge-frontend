@@ -6,29 +6,94 @@ import { NavigationLink } from '../../components/Router/NavigationLink'
 import CreateTourPopup from '../Popup/CreateTourPopup'
 import styled from 'styled-components'
 import { device } from '../../Device'
+import BoardPage from '../Board/Board'
+import { usePopup } from '../Popup/PopupContext'
+import { useProfile } from '../UserProfile/ProfileContext'
 
 const LandingPage: React.FC =()=> {
     const context = React.useContext(AuthenContext)
+    const popup = usePopup()
+    const profile = useProfile()
     React.useEffect(()=> {
         console.log(context.authen.token)
     },[])
     const [displayDialog, setDialogDisplay] = React.useState(false);
 
+    const MenuListByRole =(): JSX.Element => {
+        if (profile.profile.access == 'user') {
+            return (
+                <MenuList>
+                    <ModePreviewContainer title="Online Plays" to="/lobby" state={{}} key="online-plays"/>
+                    <LocalModePreviewContainer 
+                        to="/lobby" 
+                        state={{}} 
+                        // onClick={()=> {
+                        // popup.setTourName('tour-f1')
+                        // popup.setDisplay(true)}} 
+                        title="Local Plays"
+                        key="local-plays"
+                        />
+                    <ModePreviewContainer title="Board" to="/admin-board" state={{}} key="board"/>
+                </MenuList>
+            )
+        }
+        if (profile.profile.access.toLowerCase() == 'admin') {
+            return (
+                <MenuList>
+                    <ModePreviewContainer 
+                        title="Announcement" 
+                        description="Announce things, deliver important infomation to every user" 
+                        to="/board" 
+                        state={{}} 
+                        key="online-plays"
+                        buttonTitle="Create"
+                        />
+
+                    <ModePreviewContainer 
+                        title="Tournament" 
+                        description="Manage tournament for  both ongoing tournaments and Finished tournaments." 
+                        // to="/lobby" 
+                        state={{}} 
+                        key="tour"
+                        buttonTitle="Create"
+                        onClick={()=> {
+                            popup.setTourName('')
+                            popup.setDisplay(true)
+                        }} 
+                        />
+                </MenuList>
+            )
+        }
+        if (profile.profile.access.toLowerCase() == 'td') {
+            return (
+                <MenuList>
+                    <ModePreviewContainer title="Online Plays" to="/lobby" state={{}} key="online-plays"/>
+                    <LocalModePreviewContainer 
+                        to="/lobby" 
+                        state={{}} 
+                        // onClick={()=> {
+                        // popup.setTourName('tour-f1')
+                        // popup.setDisplay(true)}} 
+                        title="Local Plays"
+                        key="local-plays"
+                        />
+                    <ModePreviewContainer title="Board" to="/admin-board" state={{}} key="board"/>
+                </MenuList>
+            )
+        }
+        return (
+            <></>
+        )
+    }
+
     return (
         <Container>
             <MenuContainer>
-                <MenuList>
-                    <ModePreviewContainer title="Online Plays" to="/lobby" state={{}}/>
-                    <LocalModePreviewContainer to="/lobby" state={{}} onClick={()=> {
-                        setDialogDisplay(!displayDialog)
-                    }} title="Local Plays"/>
-                    <LocalModePreviewContainer to="/lobby" state={{}} onClick={()=> {
-                        setDialogDisplay(!displayDialog)
-                    }} title="Local Plays"/>
-                </MenuList>
+                <MenuListByRole />
             </MenuContainer>
+            <BoardPage />
             <Banner />
-            <CreateTourPopup isVisible={displayDialog} onDismiss={()=> setDialogDisplay(!displayDialog)}/>
+            {/* <CreateTourPopup tourName="tour-f1" isVisible={displayDialog} onDismiss={()=> setDialogDisplay(!displayDialog)}/> */}
         </Container>
     )
 }

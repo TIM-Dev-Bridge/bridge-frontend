@@ -1,13 +1,19 @@
 import React from "react"
 import { useAuthen } from "../../Authen"
-import { PrimarySqButton, SecondaryButton } from "../../components/Button/Button"
+import { PrimaryButton, PrimarySqButton, SecondaryButton } from "../../components/Button/Button"
 import { NormalText, TitleText } from "../../components/Text/Text"
 import TextFieldNoWarning from "../../components/TextField/TextFieldNoWarning"
-import { PlayerPair, useLobby, useRoom } from "../../Service/SocketService"
+import {  socket, useLobby, useRoom } from "../../Service/SocketService"
 import CSS from 'csstype';
 import { useNavigator } from "../../components/Router/Router"
 import styled, { css } from "styled-components"
 import { motion } from "framer-motion"
+import { useProfile } from "../UserProfile/ProfileContext"
+import CreateTourPopup from "../Popup/CreateTourPopup"
+import MatchUpView from "./Matchup"
+import { TourData } from "../Popup/TourRequest"
+import { usePopup } from "../Popup/PopupContext"
+import { api } from "../../Service/ApiService"
 
 interface TourRoomProps {
     width?: number
@@ -19,22 +25,40 @@ interface TourRoomProps {
 export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: TourRoomProps) => {
     const { tourList, createTour, joinTour, getTourList, connect } = useLobby()
     const authenContext = useAuthen()
-    const { leaveTourRoom } = useRoom(props.tourName)
+    const profile = useProfile()
+    const { startTour, waitForStart } = useRoom(props.tourName)
+    const [displayPopup, setPopupDisplay] = React.useState(false)
+    const { leaveTourRoom, deleteThisTour } = useRoom(props.tourName)
+    const [start, setStart] = React.useState(false)
+    const popup = usePopup()
+    const [creator, setCreator] = React.useState('')
+    const [matchup, setMatchup] = React.useState({})
+
     React.useEffect(() => {
-        
-    }, [])
+        popup.setTourName(props.tourName)
+        api.getTourData(props.tourName)
+            .then( response => {
+                setCreator(response.data?.createBy)
+            })
+    }, [props.display])
+
+    React.useEffect(()=> {
+        waitForStart((table)=> {
+            setMatchup(table['round0'])
+            setStart(true)
+        })
+    }, [socket])
 
     return (
         <TourRoomContainer
+            data-testid="tour-room-container"
             width={props.width ?? 0}
             hide={props.display ?? false}
-            // variants={vartians(props.width ?? 0)}
-            // animate={props.display ? "show" : "hide"}
-            // transition={{ type: "spring", bounce: 0.1, duration: 0.3 }}
         >
             <InnerContainer width={props.width ?? 0}>
                 <div className="flex justify-between items-center">
                     <div className="self-start pt-4 pb-4  pl-8"><TitleText medium>{props.tourName}</TitleText></div>
+                    <div style={{display: "flex", gap: "4px"}}>
                     <ButtonContainer>
                         <PrimarySqButton onClick={() => {
                             leaveTourRoom(authenContext.authen.username)
@@ -42,46 +66,92 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                             props.onLeave?.()
                         }}>Leave</PrimarySqButton>
                     </ButtonContainer>
+                    {/* <ButtonContainer>
+                        <PrimarySqButton onClick={() => {
+                            startTour()
+                        }}>Start</PrimarySqButton>
+                    </ButtonContainer> */}
+                    {
+                        (profile.profile.access == "td" ) ? 
+                        <ButtonContainer>
+                            <PrimarySqButton onClick={() => {
+                                startTour()
+                            }}>Start</PrimarySqButton>
+                        </ButtonContainer> :
+                        <></>
+                    }
+                    </div>
                 </div>
-                <PlayerList tourName={props.tourName}/>
+                {
+                    start ? <MatchUpView matchup={matchup}/> : <PlayerList tourName={props.tourName} update={props.display ?? false}/>
+                }
                 <JoinRoomContainer>
                     <TextFieldNoWarning />
-                    <div className="h-8">
+                    <div className="h-8 flex">
                         <SecondaryButton twstyle="h-8" onClick={() => {
-                            createTour("testtest", (success, reason) => {
-                                if (success) {
-                                    console.log(success, reason)
-                                }
-                            })
+                            
                         }}>COPY</SecondaryButton>
+                        {
+                            (profile.profile.access == "td" && authenContext.authen.username == creator) ? 
+                            <>
+                            <SecondaryButton twstyle="h-8" 
+                                onClick={() => {
+                                    // setPopupDisplay(true)
+                                    
+                                    popup.setDisplay(true)
+                                    // console.log(popup)
+                                }}>Edit</SecondaryButton>
+                                <PrimaryButton 
+                                style={{width: "150px"}}
+                                onClick={()=> {
+                                deleteThisTour(authenContext.authen.username, ()=>{})
+                                leaveTourRoom(authenContext.authen.username)
+                            }}>Delete Tour</PrimaryButton>
+                            </>
+                            : 
+                            <></>
+                        }
+                        
                     </div>
                 </JoinRoomContainer>
             </InnerContainer>
+            {/* <CreateTourPopup 
+                isVisible={displayPopup} 
+                tourName={props.tourName}
+                onDismiss={ ()=> {
+                    setPopupDisplay(false)
+                }
+             } /> */}
         </TourRoomContainer>
     )
 }
 
 interface PlayerListProps {
     tourName: string
+    update: boolean
 }
 
 const PlayerList = (props: PlayerListProps) => {
     const navContext = useNavigator()
-    const { socket, players , getPlayerInRoom} = useRoom(props.tourName)
+    const {getUpdatedPlayerPair, playerPair} = useRoom(props.tourName)
 
     React.useEffect(()=> {
-        console.log("get from",props.tourName)
-        getPlayerInRoom()
+        // console.log("get from",props.tourName)
+        
+        // room.updatePlayerInWaiting()
     },[props.tourName])
+
+    React.useEffect(()=> {
+        // if (props.update) {
+            getUpdatedPlayerPair()
+        // }
+    },[socket])
 
     return (
         <div style={PlayerListCss}>
             <PlayerListScroll>
                 {
-                    Object.keys(players).map((key) => {
-                        const pair = players[key as keyof PlayerPair]
-                        return <PlayerListCell player_name1={pair[0] ?? ""} player_name2={pair[1] ?? ""} pair_name={key} />
-                    })
+                    playerPair.map(pair => <PlayerListCell player_name1={pair.user_a ?? ""} player_name2={pair.user_b ?? ""} pair_name={''} />)
                 }
             </PlayerListScroll>
         </div>
@@ -101,7 +171,7 @@ const PlayerListCell = (props: PlayerListCellProps) => {
                 <NormalText big>{props.player_name1}</NormalText>
             </div>
             <div style={{ width: "10%" }}>
-                <TitleText>{props.pair_name.split('_')[1].toUpperCase()}</TitleText>
+                {/* <TitleText>{props.pair_name.split('_')[1].toUpperCase()}</TitleText> */}
             </div>
             <div style={{ width: "45%" }}>
                 <NormalText>{props.player_name2}</NormalText>
@@ -134,14 +204,6 @@ const TourRoomContainer = styled(motion.div) <{width: number, hide: boolean}>`
     `}
     /* z-index: -1; */
 `
-
-function vartians(width: number) {
-    return {
-        show: { x: `-${width}px` },
-        hide: { x: 0 }
-    }
-}
-
 
 const InnerContainer = styled.div<{width: number}>`
     position: relative;
@@ -178,8 +240,8 @@ const JoinRoomContainer = styled.div`
     bottom: 0;
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-content: center;
+    justify-content: flex-start;
+    align-content: flex-start;
     align-items: center ;
     gap: 15px;
     width: 100%;

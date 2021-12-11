@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from 'react'
 
-const getKey =(): { token: string, username: string }=> {
+export const getKey = function(): { token: string, username: string } {
     if (window.localStorage.getItem('bridge-authen') == null) {
         return {
             token: '',

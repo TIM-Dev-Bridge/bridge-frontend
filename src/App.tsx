@@ -8,15 +8,18 @@ import CreateTourPopup from './views/Popup/CreateTourPopup';
 function App() {
   const { navigationStack, updateStack } = React.useContext(NavigationContext)
   React.useEffect(()=> {
-    console.log(navigationStack[navigationStack.length - 1])
+    // console.log(navigationStack[navigationStack.length - 1])
+    // console.log("INIT LOCATION", window.location.pathname)
   })
   return (
     <div className="App" style={{height: "100vh"}}>
       {
         window.location.pathname === '/' || window.location.pathname === '/lobby' ?  <></> : <NavigationBar />
       }
-      {/* <CreateTourPopup /> */}
       {navigationStack[navigationStack.length - 1]}
+      {/* <CreateTourPopup isVisible={false} onDismiss={function (): void {
+        throw new Error('Function not implemented.');
+      } } /> */}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { HTMLAttributes } from 'react'
-import { PrimaryButton } from '../../../components/Button/Button'
 import { NormalText, TitleText } from '../../../components/Text/Text'
 import TextFieldNoWarning from '../../../components/TextField/TextFieldNoWarning'
 import { useLobby } from '../../../Service/SocketService'
@@ -18,10 +17,11 @@ const Chat =(props: ChatProps)=> {
     const messageRef = React.useRef<{sender: string, message: string}[]>([])
     const [minimize, setSize] = React.useState(false)
     const [sendable, setSendable] = React.useState(false)
+    const mountedRef = React.useRef(true)
 
     const handleKeyDown = (event: { key: string }) => {
         if (event.key === 'Enter') {
-            console.log("SUBMIT CAHT")
+            //console.log("SUBMIT CAHT")
             sendMessage()
             setSendable(false)
         }
@@ -36,9 +36,10 @@ const Chat =(props: ChatProps)=> {
     }
 
     const updateSessionChat = React.useCallback(()=> {
-        console.log("udpate callback")
+        //console.log("udpate callback")
         
         updateChat((message)=> {
+            if (!mountedRef.current) return null 
             const newMessage = [...messageRef.current, message]
             updatemessage(newMessage)
             var objDiv = document.getElementById(`chat-bottom`)!;
@@ -49,6 +50,12 @@ const Chat =(props: ChatProps)=> {
     React.useEffect(()=> {
         messageRef.current = messages
     },[messages])
+
+    React.useEffect(() => {
+        return () => { 
+          mountedRef.current = false
+        }
+      }, [])
 
     const authContext = useAuthen()
 
@@ -61,7 +68,7 @@ const Chat =(props: ChatProps)=> {
         }
         if (message.length > 0) {
             (document.querySelector(`input[name='chat-input'`)as HTMLInputElement).value = ""
-            console.log(":=> send message to lobby >>>", message)
+            //console.log(":=> send message to lobby >>>", message)
             sendMessageToLobbyChat(messageToSend.sender, messageToSend.message)
         }
     }
@@ -73,7 +80,7 @@ const Chat =(props: ChatProps)=> {
     return (
         <ChatContainer hide={props.display}>
             <TitleAndChatContainer>
-                <TitleContainer onClick={()=> {setSize(!minimize)}}>
+                <TitleContainer >
                     <div className="flex">
                         <div className="self-start pt-4 pb-4"><TitleText medium>Lobby Chat</TitleText></div>
                     </div>
@@ -83,7 +90,25 @@ const Chat =(props: ChatProps)=> {
                     >
                     <ChatListInContainer id="chat-list">
                         {
-                            messages.map((message: MessageLineProps, i)=> <MessageLine id={`message-${i}`} {...message} key={i}/>)
+                            messages.map((message: MessageLineProps, i)=> {
+                                const previousSender =(index: number)=> {
+                                   
+                                    if (index <= 0) {
+                                        return true
+                                    }
+                                    
+                                    if (messages[i-1].sender == messages[i].sender) {
+                                        return false
+                                    }
+                                    return true
+                                }
+                                return <MessageLine 
+                                    id={`message-${i}`} 
+                                    sender={message.sender} 
+                                    message={message.message} 
+                                    displaySender={previousSender(i)}
+                                    key={i}/>
+                            })
                         }
                         <div id="chat-bottom" className="h-12"></div>
                     </ChatListInContainer>
@@ -95,9 +120,9 @@ const Chat =(props: ChatProps)=> {
                     <SendButton 
                         sendable={sendable}
                         onClick={()=> {
-                        console.log('send message')
+                        //console.log('send message')
                         sendMessage()
-                        console.log(messages)
+                        //console.log(messages)
                     }}>
                         <SendIcon />
                     </SendButton>
@@ -106,18 +131,33 @@ const Chat =(props: ChatProps)=> {
     )
 }
 
-interface MessageLineProps extends HTMLAttributes<HTMLElement>{
+interface MessageLineComponentProps extends HTMLAttributes<HTMLElement>{
+    sender: string
+    message: string
+    displaySender: boolean
+}
+
+interface MessageLineProps {
     sender: string
     message: string
 }
 
-const MessageLine =(props: MessageLineProps)=> {
+const MessageLine =(props: MessageLineComponentProps)=> {
     const authContext = useAuthen()
-
+    // console.log(props.sender, props.displaySender)
+    const showSender =()=> {
+        if (props.sender == authContext.authen.username) {
+            return false
+        }
+        if (props.displaySender) {
+            return true
+        }
+        return false
+    }
     return (
-        <div id={props.id} style={{display: "flex", justifyContent: props.sender == authContext.authen.username ? "end" : "start"}}>
+        <div id={props.id} style={{display: "flex", flexDirection: "column", alignItems: props.sender == authContext.authen.username ? "flex-end" : "flex-start"}}>
             {
-                props.sender == authContext.authen.username ? <></> : <NormalText>{props.sender}</NormalText>
+                (showSender()) ?  <NormalText>{props.sender}</NormalText> : <></>
             }
             <div className={`${props.sender == authContext.authen.username ? "bg-green-300" : "bg-blue-300"} rounded-xl pl-4 pr-4 text-left pt-2 pb-2`}>
                 <NormalText bold textColor="text-white">{props.message}</NormalText>
@@ -131,26 +171,33 @@ const ChatContainer = styled.div<{hide: boolean}>`
     position: absolute;
     bottom: 0;
     padding-top: 20px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    height: 100%;
+    /* max-height: 50vh; */
+    background-color: white;
+    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+    z-index: 1;
     ${props=> props.hide && css`
-        transform: translateY(55vh);
-        --webkit-transform: translateY(55vh);
+        transform: translateY(100vh);
+        --webkit-transform: translateY(100vh);
         transition: transform 0.3s ease;
         --webkit-transition: transform 0.3s ease;
-        z-index: -1;
+        /* z-index: -1; */
     `}
     ${props=> !props.hide && css`
         transform: translateY(0px);
         --webkit-transform: translateY(0px);
         transition: transform 0.3s ease;
         --webkit-transition: transform 0.3s ease;
-        z-index: 1
+        /* z-index: 1 */
     `}
 `
 
 const TitleAndChatContainer = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     padding-left: 15px;
     padding-right: 15px;
 `
@@ -161,7 +208,11 @@ const TitleContainer = styled.div`
 
 const ChatListOutContainer = styled(motion.div)<{hide: boolean}>`
     overflow: scroll;
-    ${props=> props.hide && css`
+`
+
+//
+    /* height: 100%; */
+    /* ${props=> props.hide && css`
         height: 48px;
         transition: height 0.3s ease;
         --webkit-transition: height 0.3s ease;
@@ -170,8 +221,7 @@ const ChatListOutContainer = styled(motion.div)<{hide: boolean}>`
         height: 40vh;
         transition: height 0.3s ease;
         --webkit-transition: height 0.3s ease;
-    `}
-`
+    `} */
 
 const ChatListInContainer = styled.div`
     display: flex;

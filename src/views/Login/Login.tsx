@@ -4,6 +4,9 @@ import RegisterForm from './components/RegisterForm';
 import LoginBG from './../../assets/images/login-bg.svg';
 import RegisterBG from './../../assets/images/register-bg.svg';
 
+// window.HTMLElement.prototype.scrollIntoView = function() {};
+
+
 const LoginPage: React.FC = ()=> {
     enum DisplayComponent {
         Login = 1,
@@ -50,9 +53,13 @@ const LoginPage: React.FC = ()=> {
                     animate={displayComponent === DisplayComponent.Register ? "show" : "hide"}
                     isDisplay={displayComponent === DisplayComponent.Register}
                     variants={formDisplay}
+                    onRegisterComplete={()=> {
+                        setDisplayComponent(DisplayComponent.Login)
+                    }}
                     onLoginClick={()=> {
                         setDisplayComponent(DisplayComponent.Login)
-                        }}/>
+                    }}
+                    />
             </Container>
             <Container id="login-screen" display={displayComponent === DisplayComponent.Login}
                 bg={RegisterBG}

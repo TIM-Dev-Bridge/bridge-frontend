@@ -20,10 +20,11 @@ const TourChat =(props: ChatProps)=> {
     const messageRef = React.useRef<{sender: string, message: string}[]>([])
     const [minimize, setSize] = React.useState(false)
     const [sendable, setSendable] = React.useState(false)
+    const mountedRef = React.useRef(true)
 
     const handleKeyDown = (event: { key: string }) => {
         if (event.key === 'Enter') {
-            console.log("SUBMIT CAHT")
+            //console.log("SUBMIT CAHT")
             sendMessage()
             setSendable(false)
         }
@@ -38,9 +39,9 @@ const TourChat =(props: ChatProps)=> {
     }
 
     const updateSessionChat = React.useCallback(()=> {
-        console.log("udpate callback")
-        
         updateTourChat((message)=> {
+            if (!mountedRef.current) return null    
+            //console.log("udpate callback", message)
             const newMessage = [...messageRef.current, message]
             updatemessage(newMessage)
             var objDiv = document.getElementById(`tour-chat-bottom`)!;
@@ -58,20 +59,25 @@ const TourChat =(props: ChatProps)=> {
         }
     }, [props.display])
 
+    React.useEffect(() => {
+        return () => { 
+          mountedRef.current = false
+        }
+      }, [])
+
     const authContext = useAuthen()
 
     const sendMessage =()=> {
-        
         const message = (document.querySelector(`input[name='tour-chat-input'`)as HTMLInputElement).value
         if (message == undefined) { return }
         const messageToSend = {
             sender: authContext.authen.username,
             message: message
         }
-        console.log("SEND MESSAGE TO : ", messageToSend)
+        //console.log("SEND MESSAGE TO : ", messageToSend)
         if (message.length > 0) {
             (document.querySelector(`input[name='tour-chat-input'`)as HTMLInputElement).value = ""
-            console.log(":=> send message to lobby >>>", message)
+            //console.log(":=> send message to lobby >>>", message)
             sendMessageToTourChat(messageToSend.sender, props.tourName, messageToSend.message)
         }
     }
@@ -83,17 +89,21 @@ const TourChat =(props: ChatProps)=> {
     return (
         <ChatContainer hide={props.display}>
             <TitleAndChatContainer>
-                <TitleContainer onClick={()=> {setSize(!minimize)}}>
+                <TitleContainer>
                     <div className="flex">
                         <div className="self-start pt-4 pb-4"><TitleText medium>Tournament Chat</TitleText></div>
                     </div>
                 </TitleContainer>
                 <ChatListOutContainer 
-                    hide={minimize}
                     >
-                    <ChatListInContainer>
+                    <ChatListInContainer id="chat-list-div">
                         {
-                            messages.map((message: MessageLineProps, i)=> <MessageLine {...message} key={i}/>)
+                            
+                            messages.map((message: MessageLineProps, i)=>{
+                                return (
+                                    <MessageLine {...message} key={i}/>
+                                )
+                            })
                         }
                         <div id="tour-chat-bottom" className="h-12"></div>
                     </ChatListInContainer>
@@ -105,9 +115,9 @@ const TourChat =(props: ChatProps)=> {
                 <SendButton 
                     sendable={sendable}
                     onClick={()=> {
-                    console.log('send message')
+                    //console.log('send message')
                     sendMessage()
-                    console.log(messages)
+                    //console.log(messages)
                 }}>
                     <SendIcon />
                 </SendButton>
@@ -125,7 +135,7 @@ const MessageLine =(props: MessageLineProps)=> {
     const authContext = useAuthen()
 
     return (
-        <div style={{display: "flex", justifyContent: props.sender == authContext.authen.username ? "end" : "start"}}>
+        <div style={{display: "flex flex-col", justifyContent: props.sender == authContext.authen.username ? "end" : "start"}}>
             {
                 props.sender == authContext.authen.username ? <></> : <NormalText>{props.sender}</NormalText>
             }
@@ -141,10 +151,14 @@ const ChatContainer = styled.div<{hide: boolean}>`
     position: absolute;
     bottom: 0;
     padding-top: 20px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    /* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    ${props=> props.hide && css`
+    height: 50%;
+    /* max-height: 50vh; */
+    background-color: white;
+    overflow: hidden;
+    /* ${props=> props.hide && css`
         transform: translateY(55vh);
         --webkit-transform: translateY(55vh);
         transition: transform 0.3s;
@@ -157,7 +171,7 @@ const ChatContainer = styled.div<{hide: boolean}>`
         transition: transform 0.3s;
         --webkit-transition: transform 0.3s;
         z-index: 1;
-    `}
+    `} */
 `
 
 const TitleAndChatContainer = styled.div`
@@ -169,18 +183,9 @@ const TitleContainer = styled.div`
     align-self: flex-start;
 `
 
-const ChatListOutContainer = styled(motion.div)<{hide: boolean}>`
+const ChatListOutContainer = styled(motion.div)`
     overflow: scroll;
-    ${props=> props.hide && css`
-        height: 48px;
-        transition: height 0.3s;
-        --webkit-transition: height 0.3s;
-    `}
-    ${props=> !props.hide && css`
-        height: 40vh;
-        transition: height 0.3s;
-        --webkit-transition: height 0.3s;
-    `}
+    height: 40vh;
 `
 
 const ChatListInContainer = styled.div`
