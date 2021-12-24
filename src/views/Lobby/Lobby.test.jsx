@@ -4,10 +4,16 @@ import {act, renderHook} from '@testing-library/react-hooks'
 import userEvent from "@testing-library/user-event";
 import { ProfileContext, ProfileProvider } from "../UserProfile/ProfileContext";
 import React, { HTMLAttributes } from "react";
+import axios from 'axios'
+
 
 Element.prototype.scrollIntoView = jest.fn();
 
 describe('Lobby Test', ()=> {
+    beforeAll(()=> {
+        
+    })
+
     test('Render', ()=> {
         render(<LobbyPage />)
     })
@@ -30,9 +36,9 @@ describe('Lobby Test', ()=> {
     })
 
     test("Display tour list", async()=> {
+
         await act( async()=> {
             render(<LobbyPage />)
-
         })
         expect(await screen.findAllByTestId('tbody-list', {}, {timeout: 3000})).toHaveLength(1)
     })
@@ -58,7 +64,7 @@ describe('Lobby Test', ()=> {
                 password: '',
             }
 
-            const MockedProfileProvider =(props: HTMLAttributes<HTMLElement>)=> {
+            const MockedProfileProvider =(props)=> {
                 const [profile, updateProfile] = React.useState(defaultProfile)
                 React.useEffect(()=> {
                 }, [])
@@ -88,7 +94,7 @@ describe('Lobby Test', ()=> {
                 password: '',
             }
 
-            const MockedProfileProvider =(props: HTMLAttributes<HTMLElement>)=> {
+            const MockedProfileProvider =(props)=> {
                 const [profile, updateProfile] = React.useState(defaultProfile)
                 React.useEffect(()=> {
                 }, [])
