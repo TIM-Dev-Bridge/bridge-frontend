@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { useContext } from 'react';
 import { navigate, NavigationContext } from './Router';
 
-interface NavigationAttr {
-    path: string,
-    children?: JSX.Element,
-    element: JSX.Element,
+interface NavigationAttr extends HTMLAttributes<HTMLElement> {
+    path: string | undefined,
+    // children?: JSX.Element,
+    state: {}
 }
 
 export const NavigationLink =(props: NavigationAttr)=> {    
     const context = useContext(NavigationContext)
     return (
         <div onClick={()=>{
-            navigate(context,props.path, props.element)
+            if (props.path) {
+                navigate(context,props.path, {})
+            }
             }}>
             {props.children}
         </div>

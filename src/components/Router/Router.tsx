@@ -2,6 +2,8 @@ import React from 'react'
 import LoginPage from '../../views/Login/Login'
 import { RouterConfig } from './RouterConfig'
 
+// const thisHistory = window.history
+
 export const NavigationContext = React.createContext({
     navigationStack: [<div></div>],
     updateStack: (view: JSX.Element[])=>{}
@@ -16,6 +18,23 @@ interface NavigationViewAttr {
 export const NavigationView =(props: NavigationViewAttr)=> {
     const [navigationStack, updateStack] = React.useState([<LoginPage />])
     const stackRef = React.useRef(navigationStack)
+
+    React.useEffect(()=> {
+        if (window.history.state != null) {
+            const stack = [...navigationStack, RouterConfig[window.history.state.path]()]
+            if (window.location.pathname != "/" && navigationStack[navigationStack.length - 1] != <LoginPage />) {
+                updateStack(stack)
+            }
+        } else {
+            const path = window.location.pathname
+            // console.log(path)
+            const stack = [...navigationStack, RouterConfig[window.location.pathname]()]
+            updateStack(stack)
+        }
+
+        // console.log(window.history.state)
+
+    },[window.location.pathname])
 
     const backEvent = React.useCallback(()=> {
         window.addEventListener('popstate', ()=> {
@@ -32,7 +51,7 @@ export const NavigationView =(props: NavigationViewAttr)=> {
     },[navigationStack])
 
     React.useEffect(()=> {
-        console.log(stackRef.current.length)
+        // console.log(stackRef.current.length)
         backEvent()
     },[])
 
@@ -45,10 +64,16 @@ export const NavigationView =(props: NavigationViewAttr)=> {
 }
 
 export const navigate =(context: {navigationStack: JSX.Element[], updateStack: (view: JSX.Element[]) => void;
-}, path: string, element: JSX.Element)=> {
+}, path: string, state: {}, query: string = '')=> {
     const currentPath = window.location.pathname
-    const newPath = window.location.pathname.replace(currentPath, path)
-    window.history.pushState(null,"",newPath)
+    const newPath = window.location.pathname.replace(currentPath, path + (query == '' ? '' : `?${query}`))
+    const newState = {
+        path: path,
+        state: state
+    }
+    window.history.pushState(newState,"",newPath)
+    const element = RouterConfig[path]()
     const newStack = [...context.navigationStack, element]
     context.updateStack(newStack)
+    // console.log('navigate function')
 }
