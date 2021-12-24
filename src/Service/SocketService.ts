@@ -2,7 +2,7 @@ import React from 'react'
 import { io } from 'socket.io-client'
 import { TourData } from '../views/Popup/TourRequest'
 // import { endpoint } from './ServiceConfig';
-const endpoint = "ws://localhost:4000"
+const endpoint = "http://localhost:4000"
 
 // const endpoint = "wss://bridge-api-tim.herokuapp.com/"
 export var socket = io(endpoint,{transports:['websocket']})
@@ -25,23 +25,23 @@ export const useLobby =()=> {
     },[])
 
     const createTour =(username: string, data: any, callback: (success: boolean, reason: string)=>void)=> {
-        var userName = "td1"
-        var tourdata = {
-            tour_name: "tour-fa;sdkfjas;dlfkja;s",
-            max_player: 20,
-            type: "Pairs",
-            password: "123",
-            player_name: [],
-            time_start: "11/12/2021, 11:18:00 PM",
-            status: "Pending",
-            board_to_play: 2,
-            minute_board: 2,
-            board_round: 1,
-            movement: "Clocked",
-            scoring: "MP",
-            barometer: true,
-            createBy: userName,
-        }
+        // var userName = "td1"
+        // var tourdata = {
+        //     tour_name: "tour-fa;sdkfjas;dlfkja;s",
+        //     max_player: 20,
+        //     type: "Pairs",
+        //     password: "123",
+        //     player_name: [],
+        //     time_start: "11/12/2021, 11:18:00 PM",
+        //     status: "Pending",
+        //     board_to_play: 2,
+        //     minute_board: 2,
+        //     board_round: 1,
+        //     movement: "Clocked",
+        //     scoring: "MP",
+        //     barometer: true,
+        //     createBy: userName,
+        // }
 
         const formatDate = data.date.split('-')[1] + '/' + data.date.split('-')[2] + '/' + data.date.split('-')[0]
         const dayNight = Number(data.time.split(':')[0]) > 12 ? "PM" : "AM"
@@ -51,24 +51,24 @@ export const useLobby =()=> {
         // console.log("date time", formatDate + ',' + formatTime)
         const formatDateTime = formatDate + ',' + formatTime
 
-        // const newData: TourData = {
-        //     tour_name: data.title,
-        //     max_player: 20,
-        //     type: data.type,
-        //     password: "",
-        //     player_name: [],
-        //     time_start: formatDateTime,
-        //     status: "Pending",
-        //     board_to_play: Number(data.boardToPlay),
-        //     minute_board: Number(data.minuteBoard),
-        //     board_round: Number(data.boardRound),
-        //     movement: data.movement,
-        //     scoring: data.scoring,
-        //     barometer: true,
-        //     createBy: username
-        // }
-        // console.log(newData)
-        socket.emit("create-tour", tourdata, (isValid: boolean, reason: string)=> {
+        const tourdata: TourData = {
+            tour_name: data.title,
+            max_player: 20,
+            type: data.movement,
+            password: "",
+            player_name: [],
+            time_start: formatDateTime,
+            status: "Pending",
+            board_to_play: Number(data.boardToPlay),
+            minute_board: Number(data.minuteBoard),
+            board_round: Number(data.boardRound),
+            movement: data.movement,
+            scoring: data.scoring,
+            barometer: true,
+            createBy: username
+        }
+        console.log(tourdata)
+        socket.emit('create-tour', tourdata, (isValid: boolean, reason: string)=> {
             if (isValid) {
                 getTourList()
             }

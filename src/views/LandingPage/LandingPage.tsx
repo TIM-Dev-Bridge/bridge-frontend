@@ -20,7 +20,7 @@ const LandingPage: React.FC =()=> {
     const [displayDialog, setDialogDisplay] = React.useState(false);
 
     const MenuListByRole =(): JSX.Element => {
-        if (profile.profile.access == 'user') {
+        if (profile.profile.access == 'admin') {
             return (
                 <MenuList>
                     <ModePreviewContainer title="Online Plays" to="/lobby" state={{}} key="online-plays"/>
@@ -33,11 +33,11 @@ const LandingPage: React.FC =()=> {
                         title="Local Plays"
                         key="local-plays"
                         />
-                    <ModePreviewContainer title="Board" to="/admin-board" state={{}} key="board"/>
+                    <ModePreviewContainer title="Board" to="/board" state={{}} key="board" buttonTitle="let's see" description="Let's see what's new today!"/>
                 </MenuList>
             )
         }
-        if (profile.profile.access.toLowerCase() == 'admin') {
+        if (profile.profile.access.toLowerCase() == 'user') {
             return (
                 <MenuList>
                     <ModePreviewContainer 
@@ -77,7 +77,7 @@ const LandingPage: React.FC =()=> {
                         title="Local Plays"
                         key="local-plays"
                         />
-                    <ModePreviewContainer title="Board" to="/admin-board" state={{}} key="board"/>
+                    <ModePreviewContainer title="Board" to="/board" state={{}} key="board" buttonTitle="Let's see" description="Let's see what's new today!"/>
                 </MenuList>
             )
         }

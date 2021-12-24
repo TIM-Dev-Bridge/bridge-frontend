@@ -9,7 +9,7 @@ describe('Input Validate Function', ()=> {
     test('check is Empty [input ==> not empty] [output ==> validator function]', ()=> {
         const input = "test"
         const expectOutput = validator(input)
-        console.log(validator(input).isEmpty().toString())
+        // console.log(validator(input).isEmpty().toString())
         expect(validator(input).isEmpty().toString()).toEqual(expectOutput.toString())
     })
 

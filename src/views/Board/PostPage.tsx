@@ -87,7 +87,7 @@ const PostPage = () => {
                         //     editorJS.current.render(window.history.state.post.data)
                         //     return
                         // }
-                        console.log("RESPONSE", response)
+                        // console.log("RESPONSE", response)
                         updateDefultData(response.data.data)
                         editorJS.current.clear()
                         editorJS.current.render(response.data.data)
@@ -95,7 +95,7 @@ const PostPage = () => {
                         setDate('date : ' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString())
                         setTitle(response.data.title)
                         setCreator(response.data.creator)
-                        console.log(response.data.creator == authen.authen.username)
+                        // console.log(response.data.creator == authen.authen.username)
                     })
                     .catch(response => {
 

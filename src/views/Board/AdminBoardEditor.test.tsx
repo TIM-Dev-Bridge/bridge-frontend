@@ -3,6 +3,6 @@ import AdminBoardEditor from "./AdminBoardEditor";
 
 describe("Abe test", ()=> {
     test("Render", ()=> {
-        // render(<AdminBoardEditor />)
+        render(<AdminBoardEditor />)
     })
 })

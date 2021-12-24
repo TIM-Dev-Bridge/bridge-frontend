@@ -32,14 +32,14 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
     })
 
     const onRegister =(value: {})=> {
-        console.log(value)
+        // console.log(value)
         api.register(value)
             .then( res => {
-                console.log(res)
+                // console.log(res)
                 props.onRegisterComplete?.()
             })
             .catch(err => {
-                console.log(err)
+                // console.log(err)
             })
     }
  
@@ -113,7 +113,6 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
                 <TextField type="password" name={`${props.isDisplay ? "confirm_password" : "" }`} placeholder="Confirm Password" isValid={isValid["confirm_password"].isValid} warningMessage={isValid["confirm_password"].message} data-testid="register-confirmpassword" warningVisible={true}/>
                 <PrimaryButton onClick={()=> {
                     handleSubmit((isValid,value)=> {
-                        
                         if (isValid) {
                             onRegister(value)
                         }
@@ -132,11 +131,11 @@ interface FormAttributes {
     children?: JSX.Element
 }
 
-const Form: React.FunctionComponent<FormAttributes> =(props: FormAttributes)=> {
-    return (<div>
-        {props.children}
-    </div>)
-}
+// const Form: React.FunctionComponent<FormAttributes> =(props: FormAttributes)=> {
+//     return (<div>
+//         {props.children}
+//     </div>)
+// }
 
 const Container = styled(motion.div)<{visible: boolean}>`
     display: flex;

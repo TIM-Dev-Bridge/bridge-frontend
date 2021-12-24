@@ -203,7 +203,7 @@ const CreateTourPopup =(props: DialogProps)=> {
                             />
                     </Section>
                     <AltSection title="Deals">
-                        <Selector disabled >
+                        <Selector disabled>
                                 
                         </Selector>
                         <BottomDiv>
@@ -213,9 +213,9 @@ const CreateTourPopup =(props: DialogProps)=> {
                                         tourForm.handleSubmit((isValid, value)=> {
                                             if (isValid) {
                                                 createTour(authen.authen.username, value, (success, reason) => {
-                                                    console.log(success, reason)
+                                                    // console.log(success, reason)
                                                     if (success) {
-                                                        console.log(success, reason)
+                                                        // console.log(success, reason)
                                                         props.onDismiss()
                                                     }
                                                 })
@@ -224,15 +224,15 @@ const CreateTourPopup =(props: DialogProps)=> {
                                     }}>Create Tour</PrimaryButton> :
                                 <PrimaryButton onClick={()=> {
                                     tourForm.handleSubmit((isValid, value)=> {
-                                        console.log((document.querySelector(`input[name='title']`) as HTMLInputElement).value)
+                                        // console.log((document.querySelector(`input[name='title']`) as HTMLInputElement).value)
                                         if (isValid) {
                                             updateTourWith(value)
                                                 .then( response => {
-                                                    console.log(response)
+                                                    // console.log(response)
                                                     props.onDismiss()
                                                 })
                                                 .catch( error =>{
-                                                    console.log(error)
+                                                    // console.log(error)
                                                 })
                                         }
                                     })

@@ -20,7 +20,7 @@ const EditUserProfile =()=> {
                 username: authen.authen.username
             }
         }).then( respone => {
-            console.log(respone)
+            // console.log(respone)
             const newData = {
                 username: respone.data.username,
                 first_name: respone.data.first_name,
@@ -52,13 +52,13 @@ const EditUserProfile =()=> {
             birth_date: data.birth_date
         }
         updateData(newData)
-        console.log(newData)
+        // console.log(newData)
         axios.post('https://bridge-api-tim.herokuapp.com/updateUserData', newData)
             .then( response => {
-                console.log(response)
+                // console.log(response)
             })
             .catch((error)=> {
-                console.log(error)
+                // console.log(error)
             })
     }
     

@@ -37,7 +37,7 @@ export const validator =(value: string, fieldName: string ='')=> {
             throw Error(message)
         },
         isCharacter: (message: string = `${fieldName} only accept alphabet`) => {
-            const emailRegex = /[^A-Za-z0-9\-_]/;
+            const emailRegex = /[^A-Za-z]+/;
             if (!emailRegex.test(initValue)) {
                 return validate
             }

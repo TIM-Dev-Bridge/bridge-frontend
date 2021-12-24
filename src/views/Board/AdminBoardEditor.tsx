@@ -87,7 +87,7 @@ const AdminBoardEditor =(props: AdminBoardEditorProps)=> {
             const id = window.history.state.state.id
             editorJS.current.isReady
                 .then(()=> {
-                    console.log(block)
+                    // console.log(block)
                     editorJS.current.render(block)
                     updateTitle(title)
                     updateCreator(block.creator)

@@ -35,10 +35,10 @@ const BoardPage: FunctionComponent<{max?: number}> =({max = 8})=> {
 
     React.useEffect(()=> {
         window.scrollTo(0,0)
-        console.log("Profile", profile.profile)
+        // console.log("Profile", profile.profile)
         api.getAnnouncements(0, 8)
             .then( response => {
-                console.log(response)
+                // console.log(response)
                 updatePostsList(response.data)
             })
             .catch( error => {

@@ -103,7 +103,7 @@ export const LobbyPage: React.FunctionComponent = () => {
                             }}>Join</SecondaryButton>
 
                         {
-                            profile.profile.access == "TD" ? 
+                            profile.profile.access == "user" ? 
                             <>
                             <SecondaryButton twstyle="h-8" 
                                 onClick={() => {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 import { useAuthen } from '../../Authen'
@@ -100,8 +100,25 @@ const TourChat =(props: ChatProps)=> {
                         {
                             
                             messages.map((message: MessageLineProps, i)=>{
+                                const previousSender =(index: number)=> {
+                                   
+                                    if (index <= 0) {
+                                        return true
+                                    }
+                                    
+                                    if (messages[i-1].sender == messages[i].sender) {
+                                        return false
+                                    }
+                                    return true
+                                }
                                 return (
-                                    <MessageLine {...message} key={i}/>
+                                    // <MessageLine {...message} key={i}/>
+                                    <MessageLine 
+                                    id={`message-${i}`} 
+                                    sender={message.sender} 
+                                    message={message.message} 
+                                    displaySender={previousSender(i)}
+                                    key={i}/>
                                 )
                             })
                         }
@@ -131,13 +148,28 @@ interface MessageLineProps {
     message: string
 }
 
-const MessageLine =(props: MessageLineProps)=> {
-    const authContext = useAuthen()
+interface MessageLineComponentProps extends HTMLAttributes<HTMLElement>{
+    sender: string
+    message: string
+    displaySender: boolean
+}
 
+const MessageLine =(props: MessageLineComponentProps)=> {
+    const authContext = useAuthen()
+    // console.log(props.sender, props.displaySender)
+    const showSender =()=> {
+        if (props.sender == authContext.authen.username) {
+            return false
+        }
+        if (props.displaySender) {
+            return true
+        }
+        return false
+    }
     return (
-        <div style={{display: "flex flex-col", justifyContent: props.sender == authContext.authen.username ? "end" : "start"}}>
+        <div id={props.id} style={{display: "flex", flexDirection: "column", alignItems: props.sender == authContext.authen.username ? "flex-end" : "flex-start"}}>
             {
-                props.sender == authContext.authen.username ? <></> : <NormalText>{props.sender}</NormalText>
+                (showSender()) ?  <NormalText>{props.sender}</NormalText> : <></>
             }
             <div className={`${props.sender == authContext.authen.username ? "bg-green-300" : "bg-blue-300"} rounded-xl pl-4 pr-4 text-left pt-2 pb-2`}>
                 <NormalText bold textColor="text-white">{props.message}</NormalText>

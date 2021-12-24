@@ -76,7 +76,7 @@ export const ProfileProvider =(props: HTMLAttributes<HTMLElement>)=> {
     const [profile, updateProfile] = React.useState<Profile>(currentProfile)
     React.useEffect(()=> {
         window.localStorage.setItem('bridge-profile', JSON.stringify(profile))
-        console.log("NEW PROFILE",profile)
+        // console.log("NEW PROFILE",profile)
     }, [profile])
     return (
         <ProfileContext.Provider value={{profile, updateProfile}}>{props.children}</ProfileContext.Provider>
