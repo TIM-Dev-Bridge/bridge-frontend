@@ -1,0 +1,13 @@
+<svg viewBox="0 0 216 216" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<!-- West -->
+<path d="M52 164L13 186.517L13 141.483L52 164Z" fill="current"/>
+<path d="M52 52L13 74.5167L13 29.4833L52 52Z" fill="current"/>
+<rect x="13" y="52" width="39" height="112" fill="current"/>
+
+<!-- East -->
+<path d="M163.992 52L202.992 29.4833L202.992 74.5167L163.992 52Z" fill="current"/>
+<path d="M163.992 164L202.992 141.483L202.992 186.517L163.992 164Z" fill="current"/>
+<rect x="202.992" y="164" width="39" height="112" transform="rotate(-180 202.992 164)" fill="current"/>
+
+</svg>
