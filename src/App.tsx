@@ -4,6 +4,7 @@ import NavigationBar from './components/NavigationBar/NavigationBar'
 import './App.css';
 import { NavigationContext } from './components/Router/Router';
 import CreateTourPopup from './views/Popup/CreateTourPopup';
+// import PlayPage from './views/Play/Play';
 
 function App() {
   const { navigationStack, updateStack } = React.useContext(NavigationContext)
@@ -21,6 +22,11 @@ function App() {
         throw new Error('Function not implemented.');
       } } /> */}
     </div>
+
+    
+    // <div className="App" style={{height: "100vh"}}>
+    //   <PlayPage />
+    // </div>
   );
 }
 
