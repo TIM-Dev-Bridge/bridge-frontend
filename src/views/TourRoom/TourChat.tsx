@@ -7,16 +7,24 @@ import { TitleText, NormalText } from '../../components/Text/Text'
 import TextFieldNoWarning from '../../components/TextField/TextFieldNoWarning'
 import { useLobby, useRoom } from '../../Service/SocketService'
 import { IoMdSend } from 'react-icons/io'
+import { ChatChanelType, ChatUseCase } from '../../Chat/ChatUseCases'
+import { SendChatUseCaseProtocol } from '../../Chat/SendChat'
+import UpdateChatUseCase from '../../Chat/UpdateChate'
 
 interface ChatProps {
     display: boolean
-    tourName: string
+    tourName?: string
+    sendMessageUseCase: SendChatUseCaseProtocol
+    updateChatUseCase: UpdateChatUseCase
 }
 
 const TourChat =(props: ChatProps)=> {
     const [messages, updatemessage] = React.useState<{sender: string, message: string}[]>([])
     const {socket } = useLobby()
-    const { updateTourChat, sendMessageToTourChat } = useRoom(props.tourName)
+    // const { updateTourChat, sendMessageToTourChat } = useRoom(props.tourName)
+    const authContext = useAuthen()
+    const sendMessageUseCase = props.sendMessageUseCase
+    const updateMessageUseCase = props.updateChatUseCase
     const messageRef = React.useRef<{sender: string, message: string}[]>([])
     const [minimize, setSize] = React.useState(false)
     const [sendable, setSendable] = React.useState(false)
@@ -39,7 +47,7 @@ const TourChat =(props: ChatProps)=> {
     }
 
     const updateSessionChat = React.useCallback(()=> {
-        updateTourChat((message)=> {
+        updateMessageUseCase.execute((message)=> {
             if (!mountedRef.current) return null    
             //console.log("udpate callback", message)
             const newMessage = [...messageRef.current, message]
@@ -65,7 +73,7 @@ const TourChat =(props: ChatProps)=> {
         }
       }, [])
 
-    const authContext = useAuthen()
+    
 
     const sendMessage =()=> {
         const message = (document.querySelector(`input[name='tour-chat-input'`)as HTMLInputElement).value
@@ -78,7 +86,8 @@ const TourChat =(props: ChatProps)=> {
         if (message.length > 0) {
             (document.querySelector(`input[name='tour-chat-input'`)as HTMLInputElement).value = ""
             //console.log(":=> send message to lobby >>>", message)
-            sendMessageToTourChat(messageToSend.sender, props.tourName, messageToSend.message)
+            sendMessageUseCase.execute(messageToSend.message)
+            // sendMessageToTourChat(messageToSend.sender, props.tourName, messageToSend.message)
         }
     }
 

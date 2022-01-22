@@ -14,6 +14,7 @@ import TourChat from '../TourRoom/TourChat'
 import BackButton from './components/BackButton'
 import { useProfile } from '../UserProfile/ProfileContext'
 import { usePopup } from '../Popup/PopupContext'
+import { ChatChanelType, ChatUseCase } from '../../Chat/ChatUseCases'
 
 export const LobbyPage: React.FunctionComponent = () => {
     const { socket, tourList, createTour, joinTour, getTourList, connect, updateChat, sendMessageToLobbyChat, getUpdatedTourList } = useLobby()
@@ -30,7 +31,7 @@ export const LobbyPage: React.FunctionComponent = () => {
         setWindowSize((document.querySelector(`div[id='lobby-window'`) as HTMLElement).clientWidth ?? 0)
         connect(authenContext.authen.token, authenContext.authen.username)
         // console.log("connect to socket")
-        
+
         getUpdatedTourList()
     }, [socket])
 
@@ -69,13 +70,13 @@ export const LobbyPage: React.FunctionComponent = () => {
 
     return (
         <CenterContainer>
-            <BackButton display={displayTourRoom}/>
+            <BackButton display={displayTourRoom} />
             <GridContainer>
                 <InnerContainer id="lobby-window">
                     <Stack>
                         <LobbyContainer
-                        hide={!displayTourRoom}
-                            >
+                            hide={!displayTourRoom}
+                        >
                             <div className="flex">
                                 <div className="self-start pt-4 pb-4 pl-8"><TitleText medium>Available Match</TitleText></div>
                             </div>
@@ -88,9 +89,9 @@ export const LobbyPage: React.FunctionComponent = () => {
                         </LobbyContainer>
                         <TourRoomPage tourName={tourName} width={windowSize} display={displayTourRoom} onLeave={() => setDisplayTourRoom(false)} />
                     </Stack>
-                    <JoinRoomContainer 
+                    <JoinRoomContainer
                         display={displayTourRoom}
-                        >
+                    >
                         <TextFieldNoWarning />
                         <div className="h-8 flex">
                             <SecondaryButton twstyle="h-8" onClick={() => {
@@ -102,27 +103,31 @@ export const LobbyPage: React.FunctionComponent = () => {
                                 // })
                             }}>Join</SecondaryButton>
 
-                        {
-                            profile.profile.access == "user" ? 
-                            <>
-                            <SecondaryButton twstyle="h-8" 
-                                onClick={() => {
-                                    // setPopupDisplay(true)
-                                    
-                                    popup.setDisplay(true)
-                                    
-                                }}>Create</SecondaryButton>
-                            </>
-                            : 
-                            <></>
-                        }
+                            {
+                                profile.profile.access == "user" ?
+                                    <>
+                                        <SecondaryButton twstyle="h-8"
+                                            onClick={() => {
+                                                // setPopupDisplay(true)
+
+                                                popup.setDisplay(true)
+
+                                            }}>Create</SecondaryButton>
+                                    </>
+                                    :
+                                    <></>
+                            }
                         </div>
                     </JoinRoomContainer>
                 </InnerContainer>
                 <RightSideBox>
-                    <OnlineFriends display={displayTourRoom} tourName={tourName}/>
-                    <Chat display={displayTourRoom}/>
-                    <TourChat display={!displayTourRoom} tourName={tourName}/>
+                    <OnlineFriends display={displayTourRoom} tourName={tourName} />
+                    <Chat display={displayTourRoom} />
+                    <TourChat 
+                        display={!displayTourRoom} 
+                        tourName={tourName} 
+                        sendMessageUseCase={new ChatUseCase(ChatChanelType.lobby).getSendMessageToLobbyUseCase(authenContext.authen.username)}
+                        updateChatUseCase={new ChatUseCase(ChatChanelType.lobby).getUpdateMessageUseCase()}/>
                 </RightSideBox>
             </GridContainer>
         </CenterContainer>
@@ -153,7 +158,7 @@ const Lobby: React.FunctionComponent<LobbyProps> = (props: LobbyProps) => {
                 {
                     props.tours.map((tour, i) => <LobbyListTr key={i} {...tour} onClick={() => {
                         console.log("JOIN", tour.title)
-                        props.onJoinTourRoom(tour.title,true)
+                        props.onJoinTourRoom(tour.title, true)
                         joinTour(authContext.authen.username, tour.title, (success) => {
 
                         })
@@ -225,17 +230,17 @@ const InnerContainer = styled(motion.div)`
     overflow: hidden;
     border-right: 0.5px solid #e6e6e6;
 `
-const LobbyContainer = styled.div<{hide: boolean}>`
+const LobbyContainer = styled.div<{ hide: boolean }>`
     height: 100%;
     width: 100%;
-    ${props=> props.hide && css`
+    ${props => props.hide && css`
         transform: translateX(0px);
         --webkit-transform: translateX(0px);
         opacity: 1;
         transition: transform 0.3s, opacity 0.1s;
         --webkit-transition: transform 0.3s, opacity 0.1s;
     `}
-    ${props=> !props.hide && css`
+    ${props => !props.hide && css`
         transform: translateX(-50px);
         --webkit-transform: translateX(-50px);
         opacity: 0;
@@ -251,7 +256,7 @@ const LobbyList = styled.div`
 `
 
 
-const JoinRoomContainer = styled(motion.div)<{display: boolean}>`
+const JoinRoomContainer = styled(motion.div) <{ display: boolean }>`
     position: absolute;
     bottom: 0;
     display: flex;
@@ -266,15 +271,15 @@ const JoinRoomContainer = styled(motion.div)<{display: boolean}>`
     background-color: rgba(255,255,255,0.6);
     backdrop-filter: blur(24px);
     --webkit-backdrop-filter: blur(24px);
-    transform: translateY(${props=>props.display ? "50px" : "0px"});
-    --webkit-transform: translateY(${props=>props.display ? "50px" : "0px"});
+    transform: translateY(${props => props.display ? "50px" : "0px"});
+    --webkit-transform: translateY(${props => props.display ? "50px" : "0px"});
     transition: transform 0.2s;
     --webkit-transition: transform 0.2s;
 `
 
 const JoinRoomContainerVariants = {
-    show: {y: 0},
-    hide: {y: 48}
+    show: { y: 0 },
+    hide: { y: 48 }
 }
 
 const RightSideBox = styled.div`
@@ -292,6 +297,6 @@ const Stack = styled.div`
 `
 
 const LobbyVariants = {
-    hide: {x: -50, opacity: 0},
-    show: {x: 0, opacity: 1}
+    hide: { x: -50, opacity: 0 },
+    show: { x: 0, opacity: 1 }
 }
