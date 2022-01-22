@@ -4,6 +4,14 @@ import NavigationBar from './components/NavigationBar/NavigationBar'
 import './App.css';
 import { NavigationContext } from './components/Router/Router';
 import CreateTourPopup from './views/Popup/CreateTourPopup';
+import BiddingControl from './views/Bidding/BiddingCotrol';
+import BiddingTable from './views/Bidding/BiddingPage';
+import BiddingPage from './views/Bidding/BiddingPage';
+import AdminPageContainer from './views/Admin/AdminPage';
+import DefaultPage from './views/DefaultPage/DefaultPage';
+import Winner from './views/Summary/Winner';
+import DefaultPlace from './views/Summary/DefaultPlace';
+import Summary from './views/Summary/Summary';
 
 function App() {
   const { navigationStack, updateStack } = React.useContext(NavigationContext)
@@ -16,7 +24,12 @@ function App() {
       {
         window.location.pathname === '/' || window.location.pathname === '/lobby' ?  <></> : <NavigationBar />
       }
-      {navigationStack[navigationStack.length - 1]}
+
+      <Summary />
+      {/* {navigationStack[navigationStack.length - 1]} */}
+
+
+      {/* <DefaultPage leftSideContainer={<AdminPageContainer />} displayTourRoom={false} title='User Management' /> */}
       {/* <CreateTourPopup isVisible={false} onDismiss={function (): void {
         throw new Error('Function not implemented.');
       } } /> */}
