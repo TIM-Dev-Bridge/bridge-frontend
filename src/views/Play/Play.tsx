@@ -7,9 +7,14 @@ import { api } from "../../Service/ApiService";
 import { useProfile } from "../UserProfile/ProfileContext";
 import PlayArea from "./components/PlayArea";
 import PlaySideTab, { IPlaySideTabProps } from "./components/PlaySideTab";
+import PlayingPage from "./components/PlayState";
 
 const PlayPage: React.FC = () => {
   const [selectedPopup, setSelectedPopup] = React.useState(null)
+  React.useEffect(()=> {
+    window.getComputedStyle(document.body)
+  }, [])
+
   const [sideTabInfo, setSideTabInfo] =
     React.useState<IPlaySideTabProps>({
       round: 1,
@@ -82,7 +87,8 @@ const PlayPage: React.FC = () => {
   return (
     <div className="lg:flex flex-row w-screen h-screen overflow-hidden">
       <PlaySideTab {...sideTabInfo} />
-      <PlayArea selectedPopup={selectedPopup} setSelectedPopup={setSelectedPopup}/>
+      {/* <PlayArea /> */}
+      <PlayingPage />
       {/* <div className="lg:flex flex-col w-1/6 h-screen overflow-hidden justify-around">
         <button
           style={{ backgroundColor: "lightgrey", width: "100%" }}
