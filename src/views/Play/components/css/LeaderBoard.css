@@ -1,0 +1,127 @@
+.ant-table-wrapper {
+    width: 80%;
+  }
+  
+  .ant-table-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    overflow: hidden;
+    font-size: 2.5vh;
+    width: 100%;
+  }
+  
+  table {
+    table-layout: fixed;
+    width: 100%;
+    height: 70vh;
+  }
+  
+  .pale {
+    opacity: 50%;
+  }
+  
+  .ant-table-thead {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    height: 10vh;
+  }
+  
+  .ant-table-tbody tr {
+    height: 7.5vh;
+  }
+  
+  .ant-table-tbody {
+    font-weight: bold;
+  }
+  
+  td {
+    max-height: 7.5vh;
+  }
+  
+  th:nth-child(1),
+  td:nth-child(1) {
+    width: 10%;
+  }
+  
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 10%;
+  }
+  
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 25%;
+  }
+  
+  th:nth-child(4),
+  td:nth-child(4) {
+    width: 15%;
+  }
+  
+  th:nth-child(5),
+  td:nth-child(5) {
+    width: 10%;
+  }
+  
+  th:nth-child(6),
+  td:nth-child(6) {
+    width: 10%;
+  }
+  
+  th:nth-child(7),
+  td:nth-child(7) {
+    width: 10%;
+  }
+  
+  th:nth-child(8),
+  td:nth-child(8) {
+    width: 10%;
+  }
+  
+  .ant-pagination {
+    display: flex;
+    margin: 1vh 0;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    row-gap: 1vw;
+  }
+  
+  .ant-pagination li {
+    flex: none;
+    background-color: azure;
+    width: 2vw;
+    height: auto;
+    display: inline-block;
+    min-width: 2vw;
+    height: 2vw;
+    color: #000000d9;
+    line-height: 2vw;
+    text-align: center;
+    vertical-align: middle;
+    list-style: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .anticon {
+    display: inline-block;
+    color: inherit;
+    font-style: normal;
+    line-height: 0;
+    text-align: center;
+    text-transform: none;
+    vertical-align: 0.125em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .ant-pagination-item {
+    margin-right: 0.5vw;
+    font-weight: bold;
+  }
+  
+  .ant-pagination-prev {
+    margin-right: 0.5vw;
+  }
+  

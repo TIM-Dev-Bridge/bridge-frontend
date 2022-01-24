@@ -1,0 +1,157 @@
+.title {
+  font-size: 5vh;
+  font-weight: bold;
+  color: white;
+  text-align: left;
+  width: 80%;
+}
+
+.tableContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-table-wrapper {
+  width: 80%;
+}
+
+.ant-table-container {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  overflow: hidden;
+  font-size: 2.5vh;
+  width: 100%;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  height: 70vh;
+}
+
+.pale {
+  opacity: 50%;
+}
+
+.ant-table-thead {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  height: 10vh;
+}
+
+.ant-table-tbody tr {
+  height: 7.5vh;
+}
+
+.ant-table-tbody {
+  font-weight: bold;
+}
+
+td {
+  max-height: 7.5vh;
+}
+
+.ant-pagination {
+  display: flex;
+  margin: 1vh 0;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  row-gap: 1vw;
+}
+
+.ant-pagination li {
+  flex: none;
+  background-color: azure;
+  width: 2vw;
+  height: auto;
+  display: inline-block;
+  min-width: 2vw;
+  height: 2vw;
+  color: #000000d9;
+  line-height: 2vw;
+  text-align: center;
+  vertical-align: middle;
+  list-style: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.anticon {
+  display: inline-block;
+  color: inherit;
+  font-style: normal;
+  line-height: 0;
+  text-align: center;
+  text-transform: none;
+  vertical-align: 0.125em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ant-pagination-item {
+  margin-right: 0.5vw;
+  font-weight: bold;
+}
+
+.ant-pagination-prev {
+  margin-right: 0.5vw;
+}
+
+
+/* scoreboard */
+
+.scoreBoard th:nth-child(1),
+.scoreBoard td:nth-child(1),
+.scoreBoard th:nth-child(2),
+.scoreBoard td:nth-child(2),
+.scoreBoard th:nth-child(5),
+.scoreBoard td:nth-child(5),
+.scoreBoard th:nth-child(6),
+.scoreBoard td:nth-child(6),
+.scoreBoard th:nth-child(7),
+.scoreBoard td:nth-child(7),
+.scoreBoard th:nth-child(8),
+.scoreBoard td:nth-child(8) {
+  width: 10%;
+}
+
+.scoreBoard th:nth-child(3),
+.scoreBoard td:nth-child(3) {
+  width: 25%;
+}
+
+.scoreBoard th:nth-child(4),
+.scoreBoard td:nth-child(4) {
+  width: 15%;
+}
+
+/* leaderBoard */
+
+.leaderBoard th:nth-child(1),
+.leaderBoard td:nth-child(1),
+.leaderBoard th:nth-child(3),
+.leaderBoard td:nth-child(3),
+.leaderBoard th:nth-child(6),
+.leaderBoard td:nth-child(6) {
+  width: 10%;
+}
+
+.leaderBoard th:nth-child(2),
+.leaderBoard td:nth-child(2),
+.leaderBoard th:nth-child(5),
+.leaderBoard td:nth-child(5) {
+  width: 20%;
+}
+
+.leaderBoard th:nth-child(4),
+.leaderBoard td:nth-child(4),
+.leaderBoard th:nth-child(7),
+.leaderBoard td:nth-child(7) {
+  width: 15%;
+}

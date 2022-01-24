@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Table } from "antd";
-import "./ScoreBoardTable.css";
+import "./Table.css";
 
 interface RoundScore {
   key: number;
@@ -31,11 +31,11 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
       title: "Round",
       dataIndex: "key",
       key: "key",
-      render: (key: string, record: RoundScore) =>
+      render: (key: number, record: RoundScore) => 
         record.hasOwnProperty("mps") ? (
           <span>{key + 1}</span>
         ) : (
-          <span className="pale">{record.key + 1}</span>
+          <span className="pale">{key + 1}</span>
         ),
     },
     {
@@ -82,72 +82,35 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
   ];
 
   return (
-    <Container style={{ zIndex: 100 }}>
-      <BlackOverlay style={{ zIndex: -1 }} />
-      <FloatingButton style={{ position: "absolute", left: "5px", top: "5px" }}>
-        <IconButton
-          src={require("./../../../assets/images/WhiteCross.svg").default}
-          height="auto"
-          width="100%"
-        />
-      </FloatingButton>
-      <Title> Scoreboard </Title>
+    <div className="tableContainer" style={{ zIndex: 100 }}>
+      <p className="title"> Scoreboard </p>
       <Table
+        className="scoreBoard"
         dataSource={ScoreData}
         columns={columns}
         pagination={{ hideOnSinglePage: true, pageSize: 8 }}
         locale={{ emptyText: <span> No Data </span> }}
       />
-    </Container>
+    </div>
   );
 };
 
-const Title = styled.p`
-  font-size: 5vh;
-  font-weight: bold;
-  color: white;
-  text-align: left;
-  width: 80%;
-`;
+// const Title = styled.p`
+//   font-size: 5vh;
+//   font-weight: bold;
+//   color: white;
+//   text-align: left;
+//   width: 80%;
+// `;
 
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-`;
-
-const BlackOverlay = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
-`;
-
-const IconButton = styled.img`
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-const FloatingButton = styled.div`
-  display: block;
-  height: 5vmin;
-  width: 5vmin;
-  max-height: 50px;
-  max-width: 50px;
-  border-radius: 50%;
-  background: #ed1c24;
-  box-shadow: 4px 4px 22px -9px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-
-`;
+// const Container = styled.div`
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+//   flex-direction: column;
+//   position: relative;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
 export default ScoreBoard;
