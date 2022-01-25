@@ -71,13 +71,13 @@ const Card =(props: CardProps)=> {
         return true
     }
 
-    // const getAnimationDiv =(elementX: number, elementY: number): {x: number, y: number, width: number, height: number} => {
+    // const getAnimationDiv =(elementX: number, elementY: number): {x: number, y: number, scale: number} => {
     //     const x = props.placePositionRef.current!.getBoundingClientRect().x - elementX
     //     const y = props.placePositionRef.current!.getBoundingClientRect().y - elementY 
     //     return {
     //         x: x,
     //         y: y,
-    //         width: 50, height: 50
+    //         scale: 0.5
     //     }
     // }
 
@@ -171,12 +171,13 @@ const Card =(props: CardProps)=> {
 }
 
 const CardContainer = styled(motion.div)<{visible: boolean}>`
-    width: 15%;
+    width: 5vw;
     max-width: 4em;
-    height: 50%;
+    /* height: 50%; */
     border-radius: 6px;
     box-shadow: var(--app-shadow);
     background-color: white;
+    aspect-ratio: 9/16;
 `
 
 export default Card;

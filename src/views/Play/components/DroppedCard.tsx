@@ -14,9 +14,9 @@ const DroppedCard =(props: DroppedCardProps)=> {
 }
 
 const CardContainer = styled.div`
-    width: 40%;
-    /* max-width: 4em; */
-    height: 100%;
+    width: 5vw;
+    max-width: 4em;
+    aspect-ratio: 9 / 16;
     border-radius: 6px;
     box-shadow: var(--app-shadow);
     background-color: white;
