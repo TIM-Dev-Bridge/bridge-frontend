@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {motion} from 'framer-motion'
+import {animate, motion} from 'framer-motion'
 import Card from './Card'
 import { indexOf, remove } from 'lodash'
 import Hand, { HandPosition } from './Hand'
@@ -16,6 +16,13 @@ const PlayingPage = ()=> {
     const [rightDroppedCard, setRightDroppedCard] = React.useState(<></>)
     const [leftDroppedCard, setLefttDroppedCard] = React.useState(<></>)
     const [topDroppedCard, setTopDroppedCard] = React.useState(<></>)
+
+    const [leftPlaceCardAnimate, setLeftPlaceCardAnimate] = React.useState(true)
+
+    const dropCard =(animateAnimation: React.Dispatch<React.SetStateAction<boolean>>, dropFunction: React.Dispatch<React.SetStateAction<JSX.Element>>)=> {
+        animateAnimation(false)
+        return dropFunction
+    }
 
     return (
         // <RatioContainer>
@@ -57,7 +64,8 @@ const PlayingPage = ()=> {
                     position={HandPosition.LEFT}
                     initialCard={cards} 
                     dropRef={leftPlayedCardRef} 
-                    onDrop={setLefttDroppedCard}/>
+                    onDrop={item => dropCard(setLeftPlaceCardAnimate, setLefttDroppedCard)(item)}
+                    placeCard={leftPlaceCardAnimate}/>
                 <Hand 
                     position={HandPosition.RIHGT}
                     initialCard={cards} 

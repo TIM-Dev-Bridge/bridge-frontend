@@ -7,7 +7,8 @@ interface HandProps {
     initialCard: String[]
     dropRef: React.RefObject<HTMLDivElement>
     onDrop: (item: JSX.Element) => void
-    position: HandPosition
+    position: HandPosition,
+    placeCard?: boolean
 }
 
 export enum HandPosition {
@@ -32,6 +33,7 @@ const Hand =(props: HandProps)=> {
                         index={i}
                         placePositionRef={props.dropRef}
                         onDrop={props.onDrop}
+                        selfAnimate={props.placeCard && i == 0}
                         onAnimationCompleted={()=>{
                             
                             setCards(cards.filter(e=>cards.indexOf(e) != i))

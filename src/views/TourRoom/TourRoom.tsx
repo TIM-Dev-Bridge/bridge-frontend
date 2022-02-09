@@ -134,6 +134,7 @@ interface PlayerListProps {
 const PlayerList = (props: PlayerListProps) => {
     const navContext = useNavigator()
     const {getUpdatedPlayerPair, playerPair} = useRoom(props.tourName)
+    const playerPairs = playerPair.map( pair => pair)
 
     React.useEffect(()=> {
         // console.log("get from",props.tourName)
@@ -151,7 +152,7 @@ const PlayerList = (props: PlayerListProps) => {
         <div style={PlayerListCss}>
             <PlayerListScroll>
                 {
-                    playerPair.map(pair => <PlayerListCell player_name1={pair.user_a ?? ""} player_name2={pair.user_b ?? ""} pair_name={''} />)
+                    playerPair.map(pair => <PlayerListCell player_name1={pair.name ?? ""} player_name2={pair.name ?? ""} pair_name={''} />)
                 }
             </PlayerListScroll>
         </div>

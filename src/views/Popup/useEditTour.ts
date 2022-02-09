@@ -74,7 +74,7 @@ const useEditTour =(tourName: string, onCreate: (success : boolean, reason: stri
             max_player: tourData!.max_player,
             type: data.type,
             password: tourData!.password ?? "",
-            player_name: tourData?.player_name ?? [],
+            players: tourData?.players ?? [],
             time_start: formatDateTime,
             status: tourData?.status ?? "",
             board_to_play: Number(data.boardToPlay),

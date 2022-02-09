@@ -53,7 +53,7 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
                 } 
             })
             .catch( error => {
-                // console.log("Error ",error.response.status == 400)
+                console.log("Error ",error.response.status == 400)
                 if (error.response.status == 400) {
                     setErrorResponse({
                         email: {

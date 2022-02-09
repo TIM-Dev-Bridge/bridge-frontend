@@ -85,7 +85,7 @@ const PlayPage: React.FC = () => {
   }
 
   return (
-    <div className="lg:flex flex-row w-screen h-screen overflow-hidden">
+    <Container>
       <PlaySideTab {...sideTabInfo} />
       {/* <PlayArea /> */}
       <PlayingPage />
@@ -121,8 +121,14 @@ const PlayPage: React.FC = () => {
           Round
         </button>
       </div> */}
-    </div>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+`
 
 export default PlayPage;

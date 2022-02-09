@@ -3,7 +3,7 @@ export interface TourData {
     max_player: number,
     type: string,
     password: string,
-    player_name: string[],
+    players: string[],
     time_start: string,//"11/12/2021, 11:18:00 PM"
     status: string,
     board_to_play: number,

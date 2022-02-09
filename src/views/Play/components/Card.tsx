@@ -10,7 +10,8 @@ interface CardProps {
     onAnimationCompleted: ()=>void,
     onDrop: (item: JSX.Element)=>void,
     index: number
-    shouldCollapse: number
+    shouldCollapse: number,
+    selfAnimate?: boolean,
 }
 
 type Position = {x: number, y: number}
@@ -40,6 +41,14 @@ const Card =(props: CardProps)=> {
         defaultPosition.current = {x: cardRef.current!.getBoundingClientRect().x, y: cardRef.current!.getBoundingClientRect().y}
     }, [])
 
+    React.useEffect(()=> {
+        if (props.selfAnimate != null) {
+            if (props.selfAnimate) {
+                placeAnimatation()
+            }
+        }
+    }, [props.selfAnimate])
+
     const onDragDetect =(event: MouseEvent)=> {
         setMovingState(State.DRAG)
     }
@@ -54,14 +63,15 @@ const Card =(props: CardProps)=> {
     const onMouseUp =(ev: MouseEvent)=> {        
         const x = Math.abs((ev.target as HTMLDivElement).getBoundingClientRect().x)
         const y = Math.abs((ev.target as HTMLDivElement).getBoundingClientRect().y)
-        if (shouldDropOnPlayedPosition(x,y)) {
-            setMovingState(State.MOVE_TO_POSITION)
-            previousState = State.MOVE_TO_POSITION
-        }
-        else {
-            setMovingState(State.MOVE_BACK)
-            previousState =  State.MOVE_BACK
-        }
+        // if (shouldDropOnPlayedPosition(x,y)) {
+        //     setMovingState(State.MOVE_TO_POSITION)
+        //     previousState = State.MOVE_TO_POSITION
+        // }
+        // else {
+        //     setMovingState(State.MOVE_BACK)
+        //     previousState =  State.MOVE_BACK
+        // }
+        setMovingState(State.MOVE_TO_POSITION)
     }
 
     const shouldDropOnPlayedPosition =(elementX: number, elementY: number)=> {
@@ -153,6 +163,14 @@ const Card =(props: CardProps)=> {
             props.onAnimationCompleted()
             setMovingState(State.IDLE)
         }
+    }
+
+    const placeAnimatation =()=> {
+        const x = Math.abs((cardRef.current as HTMLDivElement).getBoundingClientRect().x)
+        const y = Math.abs((cardRef.current as HTMLDivElement).getBoundingClientRect().y)
+        
+        setAnimation(getAnimationDiv(x,y))
+        setMovingState(State.MOVE_TO_POSITION)
     }
 
     return (

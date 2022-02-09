@@ -56,7 +56,7 @@ export const useLobby =()=> {
             max_player: 20,
             type: data.movement,
             password: "",
-            player_name: [],
+            players: [],
             time_start: formatDateTime,
             status: "Pending",
             board_to_play: Number(data.boardToPlay),
@@ -155,16 +155,17 @@ interface Player {
 }
 
 interface Pair {
-    user_a: string,
-    user_b: string
+    
 }
+
+
 
 
 //useRoom
 
 export const useRoom =(roomID: string)=> {
     const [players, updatePlayers] = React.useState<string[]>([]);
-    const [playerPair, updatePlayerPair] = React.useState<Pair[]>([]);
+    const [playerPair, updatePlayerPair] = React.useState<{id:string, name:string, status:string, pair_id:number}[]>([]);
     const [invitation, updateInvitation] = React.useState<string[]>([]);
     const [watingPlayers, udpateWaitingPlayers] = React.useState<string[]>([]);
 
@@ -191,7 +192,7 @@ export const useRoom =(roomID: string)=> {
     }
 
     const getPlayerPair =()=> {
-        socket.emit('get-player-pair', roomID, (playerPair: Pair[])=> {
+        socket.emit('get-player-pair', roomID, (playerPair: {id:string, name:string, status:string, pair_id:number}[])=> {
             updatePlayerPair(playerPair)
         })
     }
@@ -244,6 +245,69 @@ export const useRoom =(roomID: string)=> {
         })
     }
 
+    interface TourData {
+        roundNum: string,
+        tables: [Table]
+    }
+
+    interface Table {
+        tableId: string,
+        versus: string,
+        boards: number[],
+        currentBoard: number,
+        direction: Direction
+    }
+
+    interface Direction {
+        id: any,
+        direction: any
+    }
+    
+    // new_table: {
+    //     table_id: string;
+    //     versus: string;
+    //     boards: number[];
+    //     cur_board: number;
+    //     directions: {
+    //         id: any;
+    //         direction: any;
+    //     }[];
+    // }[]
+
+    const onTourStart =(callback: (data: TourData)=>void)=> {
+        socket.on('start-tour', (data: TourData)=> {
+            callback(data)
+        })
+    }
+
+    const joinTable =(playerId: string, playerName: string, tourName: string, direction: Direction, room: string, roundNum: string, tableId: string)=> {
+        socket.emit('join', playerId, playerName, tourName, direction, room, roundNum, tableId )
+    }
+
+    const updateCardOpposite =()=> {
+        socket.on("opposite", (cards)=> {
+
+        })
+    }
+
+    const updateCard =()=> {
+        socket.on("card", cards => {
+            
+        })
+    }
+
+
+
+    const subscribePlayingStatus =(onReceive: (status: string, payload: any)=>void)=> {
+        socket.on("playing", (status, payload: string)=> {
+            onReceive(status, payload)
+        })
+    }
+
+    const playCard =(playerId: string, room: string, card: any, direction: Direction, turn: any, tourName: string, roundNum: number, tableId: string)=> {
+        socket.emit("play_card", playerId, room, card, direction, turn, tourName, roundNum, tableId)
+    }
+
     const sendMessageToTourChat =(sender: string, tour_name: string, message: string)=> {
         socket.emit('send-tour-chat', sender, tour_name, message, ()=> {
             
@@ -251,7 +315,7 @@ export const useRoom =(roomID: string)=> {
     }
 
     const getUpdatedPlayerPair =()=> {
-        socket.on('update-player-pair', pairs => {
+        socket.on('update-player-pair', (pairs: {id:string, name:string, status:string, pair_id:number}[]) => {
             updatePlayerPair(pairs)
         })
     }
