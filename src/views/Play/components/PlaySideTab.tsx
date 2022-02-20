@@ -7,6 +7,8 @@ import chunk from "lodash/chunk";
 export interface IPlaySideTabProps {
   round: number;
   permission: "player" | "td" | "spectator";
+  boardsPerRound: number;
+  boardsPlayed: number;
   // Vulnerable { 0: notVul, 1: NS, 2: EW, 3: NSEW}
   boardType?: {
     boardNo: number;
@@ -69,9 +71,17 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
 
   return (
     <Container style={{ backgroundColor: PermissionColor[props.permission] }}>
-      {props.round && (
-        <p style={{ fontSize: "2.5vh" }}> Round {props.round} </p>
-      )}
+      <div>
+        {props.round && (
+          <p style={{ fontSize: "2.5vh" }}> Round {props.round} </p>
+        )}
+        {props.boardsPlayed && (
+          <p style={{ fontSize: "1.5vh" }}>
+            {" "}
+            Board {props.boardsPlayed} / {props.boardsPerRound}{" "}
+          </p>
+        )}
+      </div>
       <BoardFormat>
         {/* Filled Color Depend on Vulnerable on boardtype : black, red */}
         <BoardFormatN_S

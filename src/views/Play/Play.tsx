@@ -12,7 +12,9 @@ const PlayPage: React.FC = () => {
   const [sideTabInfo, setSideTabInfo] =
     React.useState<IPlaySideTabProps>({
       round: 1,
-      permission: "player",
+      permission: "td",
+      boardsPerRound: 8,
+      boardsPlayed: 1,
       boardType: {
         boardNo: 1,
         dealer: "North",

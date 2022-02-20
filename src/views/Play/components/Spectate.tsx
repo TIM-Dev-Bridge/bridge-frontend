@@ -3,63 +3,37 @@ import styled from "styled-components";
 import { Table, Input, InputNumber, Popconfirm, Form, Typography } from "antd";
 import "./Table.css";
 import _ from "lodash";
-// import 'antd/dist/antd.css'
 
-interface LeaderRow {
+interface SpectateRow {
   key: string;
   nsTeam?: string;
-  nsMps?: number;
-  nsPercentage?: number;
   ewTeam?: string;
-  ewMps?: number;
-  ewPercentage?: number;
+  status?: "Ongoing" | "Finished";
 }
 
-interface NSLeaderBoard {
-  nsTeam: string;
-  nsMps: number;
-  nsPercentage: number;
+export interface ISpectateProps {
+  spectateList: SpectateRow[];
 }
 
-interface EWLeaderBoard {
-  ewTeam: string;
-  ewMps: number;
-  ewPercentage: number;
-}
+const Spectate: React.FC<ISpectateProps> = (props: ISpectateProps) => {
+  const spectateData: SpectateRow[] = [...props.spectateList];
 
-export interface ILeaderBoardProps {
-  nsLeader: NSLeaderBoard[];
-  ewLeader: EWLeaderBoard[];
-}
-
-const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
-  const rawDataSource = _.zipWith(
-    props.nsLeader,
-    props.ewLeader,
-    (nsObject, ewObject) => {
-      return { ...nsObject, ...ewObject };
-    }
-  );
-
-  const dataSource: LeaderRow[] = rawDataSource.map((element, index) => {
-    return { key: index.toString(), ...element };
-  });
-
-  while (dataSource.length % 8 != 0)
-    dataSource.push({
-      key: dataSource.length.toString(),
+  while (spectateData.length % 8 != 0) {
+    spectateData.push({
+      key: spectateData.length.toString(),
     });
+  }
 
   const [form] = Form.useForm();
-  const [currentData, setCurrentData] = React.useState(dataSource);
+  const [currentData, setCurrentData] = React.useState(spectateData);
   const [editingKey, setEditingKey] = React.useState("");
 
-  const isEditing = (record: LeaderRow) => record.key === editingKey;
+  const isEditing = (record: SpectateRow) => record.key === editingKey;
 
-  const edit = (record: Partial<LeaderRow> & { key: React.Key }) => {
+  const edit = (record: Partial<SpectateRow> & { key: React.Key }) => {
     form.setFieldsValue({
-      nsMps: "",
-      ewMps: "",
+      nsTeam: "",
+      ewTeam: "",
       ...record,
     });
     setEditingKey(record.key);
@@ -74,7 +48,7 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
     dataIndex: string;
     title: any;
     inputType: "number" | "text";
-    record: LeaderRow;
+    record: SpectateRow;
     index: number;
     children: React.ReactNode;
   }
@@ -115,7 +89,7 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await form.validateFields()) as LeaderRow;
+      const row = (await form.validateFields()) as SpectateRow;
 
       const newData = [...currentData];
       const index = newData.findIndex((item) => key === item.key);
@@ -139,12 +113,12 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
 
   const columns = [
     {
-      title: "Position",
+      title: "Table",
       dataIndex: "key",
       key: "key",
       editable: false,
-      render: (_: any, record: LeaderRow, index: number) =>
-        record.hasOwnProperty("nsMps") || record.hasOwnProperty("ewMps") ? (
+      render: (_: any, record: SpectateRow, index: number) =>
+        record.hasOwnProperty("status") ? (
           <span>{index + 1}</span>
         ) : (
           <span className="pale">{index + 1}</span>
@@ -157,36 +131,66 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
       editable: false,
     },
     {
-      title: "MPs",
-      dataIndex: "nsMps",
-      key: "nsMps",
-      editable: true,
-    },
-    {
-      title: "Percentage",
-      dataIndex: "nsPercentage",
-      key: "nsPercentage",
-      editable: false,
-      render: (percent: number) => percent && percent + "%",
-    },
-    {
       title: "E/W Team",
       dataIndex: "ewTeam",
       key: "ewTeam",
       editable: false,
     },
     {
-      title: "MPs",
-      dataIndex: "ewMps",
-      key: "ewMps",
-      editable: true,
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      editable: false,
     },
     {
-      title: "Percentage",
-      dataIndex: "ewPercentage",
-      key: "ewPercentage",
+      title: "Action",
+      dataIndex: "",
+      key: "spec",
       editable: false,
-      render: (percent: number) => percent && percent + "%",
+      render: (_: any, record: SpectateRow, index: number) => {
+        return record.hasOwnProperty("status") ? (
+          record.status === "Ongoing" ? (
+            <button style={{ fontWeight: "inherit" }}>
+              <span>
+                <img
+                  src={
+                    require("./../../../assets/images/PlaySideTab/Spectate.png")
+                      .default
+                  }
+                  height="auto"
+                  width="10%"
+                  style={{ display: "inline-block" }}
+                />
+                <text> Spectate</text>
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                console.log("first");
+              }}
+              disabled
+              className="pale"
+              style={{ cursor: "default", fontWeight: "inherit" }}
+            >
+              <span>
+                <img
+                  src={
+                    require("./../../../assets/images/PlaySideTab/Spectate.png")
+                      .default
+                  }
+                  height="auto"
+                  width="10%"
+                  style={{ display: "inline-block" }}
+                />
+                <text> Spectate</text>
+              </span>
+            </button>
+          )
+        ) : (
+          {}
+        );
+      },
     },
   ];
 
@@ -196,7 +200,7 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
     }
     return {
       ...col,
-      onCell: (record: LeaderRow) => ({
+      onCell: (record: SpectateRow) => ({
         record,
         inputType: col.dataIndex === "age" ? "number" : "text",
         dataIndex: col.dataIndex,
@@ -208,19 +212,17 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
 
   return (
     <div className="tableContainer" style={{ zIndex: 100 }}>
-      <p className="title"> LeaderBoard </p>
+      <p className="title"> Spectate </p>
       <Form form={form} component={false}>
         <Table
-          className="leaderBoard"
+          className="spectate"
           components={{
             body: {
               cell: EditableCell,
             },
           }}
-          bordered
           dataSource={currentData}
           columns={mergedColumns}
-          rowClassName="editable-row"
           pagination={{
             hideOnSinglePage: true,
             pageSize: 20,
@@ -230,28 +232,11 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
           }}
           scroll={{ y: "60vh", scrollToFirstRowOnChange: true }}
           locale={{ emptyText: <span> No Data </span> }}
+          bordered
         />
       </Form>
     </div>
   );
 };
 
-// const Title = styled.p`
-//   font-size: 5vh;
-//   font-weight: bold;
-//   color: white;
-//   text-align: left;
-//   width: 80%;
-// `;
-
-// const Container = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   display: flex;
-//   flex-direction: column;
-//   position: relative;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
-export default LeaderBoard;
+export default Spectate;

@@ -2,31 +2,60 @@ import React from "react";
 import styled from "styled-components";
 import ScoreBoard, { IScoreBoardProps } from "./ScoreBoard";
 import LeaderBoard, { ILeaderBoardProps } from "./LeaderBoard";
+import Spectate, { ISpectateProps } from "./Spectate";
+import TdChatSelect, { ITdChatSelectProps } from "./TdChatSelect";
+import RecapSheet, { IRecapSheetProps } from "./RecapSheet";
+;
 
 const PlayArea: React.FC = () => {
   const [scoreBoardData, setScoreBoardData] = React.useState<IScoreBoardProps>({
     scoreData: [
-      {
-        key: 0,
-        position: "ns",
-        opponent: "Team B",
-        contractor: "ew",
-        nsScore: 250,
-        ewScore: 0,
-        mps: 8,
-        totalMps: 8,
-      },
-      {
-        key: 1,
-        position: "ew",
-        opponent: "Team C",
-        contractor: "ns",
-      },
-      {
-        key: 2,
-        position: "ns",
-        opponent: "Team D",
-      },
+      [
+        {
+          key: '00',
+          position: "ns",
+          opponent: "Team B",
+          contractor: "ew",
+          nsScore: 250,
+          ewScore: 0,
+          mps: 8,
+          totalMps: 8,
+        },
+        {
+          key: '01',
+          position: "ew",
+          opponent: "Team C",
+          contractor: "ns",
+        },
+        {
+          key: '02',
+          position: "ns",
+          opponent: "Team D",
+        },
+      ],
+      [
+        {
+          key: '10',
+          position: "ew",
+          opponent: "Team X",
+          contractor: "ew",
+          nsScore: 250,
+          ewScore: 0,
+          mps: 8,
+          totalMps: 8,
+        },
+        {
+          key: '11',
+          position: "ew",
+          opponent: "Team Y",
+          contractor: "ns",
+        },
+        {
+          key: '12',
+          position: "ns",
+          opponent: "Team Z",
+        },
+      ],
     ],
   });
 
@@ -65,29 +94,233 @@ const PlayArea: React.FC = () => {
           ewMps: 15,
           ewPercentage: 55,
         },
+        {
+          ewTeam: "Team G",
+          ewMps: 21,
+          ewPercentage: 80,
+        },
       ],
     });
 
-  function recordContractor(index: number, position: "ns" | "ew") {
-    scoreBoardData.scoreData[index] = {
-      ...scoreBoardData.scoreData[index],
+  const [spectateData, setSpectateData] = React.useState<ISpectateProps>({
+    spectateList: [
+      {
+        key: '0',
+        nsTeam: "Team A",
+        ewTeam: "Team B",
+        status: "Ongoing",
+      },
+      {
+        key: '1',
+        nsTeam: "Team C",
+        ewTeam: "Team D",
+        status: "Finished",
+      },
+    ],
+  });
+
+  const [tablePlayersData, setTablePlatersData] =
+    React.useState<ITdChatSelectProps>({
+      playerList: [
+        {
+          key: '0',
+          north: "Seele",
+          south: "Rozaliya",
+          east: "Bronya",
+          west: "Liliya",
+        },
+        {
+          key: '1',
+          north: "Kiana",
+          south: "Theresa",
+          east: "Sirin",
+          west: "Bianka",
+        },
+      ],
+    });
+
+  const [recapData, setRecapData] = React.useState<IRecapSheetProps>({
+    scoreData: [
+      [
+        {
+          key: '00',
+          nsTeam: "Team A",
+          ewTeam: "Team B",
+          children: [
+            {
+              key: '000',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '001',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '002',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+          ],
+        },
+        {
+          key: '01',
+          nsTeam: "Team C",
+          ewTeam: "Team D",
+          children: [
+            {
+              key: '010',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '011',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '012',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+          ],
+        },
+      ],
+      [
+        {
+          key: '10',
+          nsTeam: "Team E",
+          ewTeam: "Team F",
+          children: [
+            {
+              key: '101',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '102',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '103',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+          ],
+        },
+        {
+          key: '11',
+          nsTeam: "Team G",
+          ewTeam: "Team H",
+          children: [
+            {
+              key: '110',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '111',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+            {
+              key: '112',
+              declarer: "North",
+              contract: "3H",
+              made: 4,
+              nsScore: 170,
+              ewScore: 0,
+              nsMps: 4,
+              ewMps: 0,
+            },
+          ],
+        },
+      ],
+    ],
+  });
+
+  const recordContractor = (
+    round: number,
+    index: number,
+    position: "ns" | "ew"
+  ) => {
+    scoreBoardData.scoreData[round][index] = {
+      ...scoreBoardData.scoreData[round][index],
       contractor: position,
     };
 
     setScoreBoardData({
       scoreData: [...scoreBoardData.scoreData],
     });
-  }
+  };
 
-  function recordScore(
+  const recordScore = (
+    round: number,
     index: number,
     nsScore: number,
     ewScore: number,
     mps: number,
     totalMps: number
-  ) {
-    scoreBoardData.scoreData[index] = {
-      ...scoreBoardData.scoreData[index],
+  ) => {
+    scoreBoardData.scoreData[round][index] = {
+      ...scoreBoardData.scoreData[round][index],
       nsScore: nsScore,
       ewScore: ewScore,
       mps: mps,
@@ -97,16 +330,17 @@ const PlayArea: React.FC = () => {
     setScoreBoardData({
       scoreData: [...scoreBoardData.scoreData],
     });
-  }
+  };
 
-  function recordTeamPosition(
+  const recordTeamPosition = (
+    round: number,
     index: number,
     position: "ns" | "ew",
     opponent: string
-  ) {
-    scoreBoardData.scoreData[index] = {
-      ...scoreBoardData.scoreData[index],
-      key: index,
+  ) => {
+    scoreBoardData.scoreData[round][index] = {
+      ...scoreBoardData.scoreData[round][index],
+      key: index.toString(),
       position: position,
       opponent: opponent,
     };
@@ -114,7 +348,47 @@ const PlayArea: React.FC = () => {
     setScoreBoardData({
       scoreData: [...scoreBoardData.scoreData],
     });
-  }
+  };
+
+  const updateNsLeaderBoard = (
+    nsTeam: string,
+    nsMps: number,
+    nsPercentage: number
+  ) => {
+    const index = leaderBoardData.nsLeader.findIndex(
+      (object) => object.nsTeam === nsTeam
+    );
+    leaderBoardData.nsLeader[index] = {
+      ...leaderBoardData.nsLeader[index],
+      nsMps: nsMps,
+      nsPercentage: nsPercentage,
+    };
+
+    setLeaderBoardData({
+      ...leaderBoardData,
+      nsLeader: [...leaderBoardData.nsLeader],
+    });
+  };
+
+  const updateEwLeaderBoard = (
+    ewTeam: string,
+    ewMps: number,
+    ewPercentage: number
+  ) => {
+    const index = leaderBoardData.ewLeader.findIndex(
+      (object) => object.ewTeam === ewTeam
+    );
+    leaderBoardData.ewLeader[index] = {
+      ...leaderBoardData.ewLeader[index],
+      ewMps: ewMps,
+      ewPercentage: ewPercentage,
+    };
+
+    setLeaderBoardData({
+      ...leaderBoardData,
+      ewLeader: [...leaderBoardData.ewLeader],
+    });
+  };
 
   return (
     <Container>
@@ -128,7 +402,10 @@ const PlayArea: React.FC = () => {
       </FloatingButton>
 
       {/* <ScoreBoard {...scoreBoardData} /> */}
-      <LeaderBoard {...leaderBoardData} />
+      {/* <LeaderBoard {...leaderBoardData} /> */}
+      {/* <Spectate {...spectateData} /> */}
+      {/* <TdChatSelect {...tablePlayersData} /> */}
+      <RecapSheet {...recapData} />
 
       {/* <div style={{display:"flex", flexDirection: "column", rowGap:"20px"}}>
         <button
