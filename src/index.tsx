@@ -10,12 +10,14 @@ import { NavigationView } from './components/Router/Router';
 import App from './App';
 import { ProfileProvider } from './views/UserProfile/ProfileContext';
 import { PopupProvider } from './views/Popup/PopupContext';
+import { PlayingProvider } from './views/PlayingContext/PlayingContextProvider';
 
 
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthenProvider>
+      <PlayingProvider>
       <NavigationView>
         <ProfileProvider>
           <PopupProvider>
@@ -23,6 +25,7 @@ ReactDOM.render(
           </PopupProvider>
         </ProfileProvider>
       </NavigationView>
+      </PlayingProvider>
     </AuthenProvider>
   </React.StrictMode>,
   document.getElementById('root')

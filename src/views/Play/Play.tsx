@@ -1,19 +1,35 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import styled from "styled-components";
 import { PrimarySqButton } from "../../components/Button/Button";
 import { navigate, useNavigator } from "../../components/Router/Router";
 import { device } from "../../Device";
 import { api } from "../../Service/ApiService";
+import BiddingPage from "../Bidding/BiddingPage";
+import { ConnectTable, useTable } from "../TourRoom/UseTable";
 import { useProfile } from "../UserProfile/ProfileContext";
 import PlayArea from "./components/PlayArea";
 import PlaySideTab, { IPlaySideTabProps } from "./components/PlaySideTab";
 import PlayingPage from "./components/PlayState";
 
-const PlayPage: React.FC = () => {
-  const [selectedPopup, setSelectedPopup] = React.useState(null)
+interface PlayPageProps extends HTMLAttributes<HTMLDivElement> {
+  tableId: string
+  tableDetail?: ConnectTable | undefined
+  ref?:  React.RefObject<HTMLDivElement>
+}
+
+const PlayPage = (props: PlayPageProps) => {
+  const table = useTable()
+
   React.useEffect(()=> {
     window.getComputedStyle(document.body)
   }, [])
+
+  React.useEffect(()=> {
+      if (props.tableDetail != null || props.tableDetail != undefined) {
+        console.log("CONNECT TO",  props.tableId, props.tableDetail)
+        table.connect(props.tableId, props.tableDetail)
+      }
+  }, [props.tableDetail])
 
   const [sideTabInfo, setSideTabInfo] =
     React.useState<IPlaySideTabProps>({
@@ -85,10 +101,10 @@ const PlayPage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <Container ref={props.ref}>
       <PlaySideTab {...sideTabInfo} />
       {/* <PlayArea /> */}
-      <PlayingPage />
+      <PlayingPage tableDetail={props.tableDetail}/>
       {/* <div className="lg:flex flex-col w-1/6 h-screen overflow-hidden justify-around">
         <button
           style={{ backgroundColor: "lightgrey", width: "100%" }}

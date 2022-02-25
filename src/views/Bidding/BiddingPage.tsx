@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+import { socket } from '../../Service/SocketService'
 import BiddingControl from './BiddingCotrol'
+import { useBidding } from './UseBidding'
 
 const BiddingPage =()=> {
     return (
@@ -12,31 +14,62 @@ const BiddingPage =()=> {
 }
 
 const BiddingTable =()=> {
+    const {subscribePlayingStatus} = useBidding()
+    const [bidItems, setBidItems] = React.useState<JSX.Element[]>([])
+    const bidItemsRef = React.useRef(bidItems)
+
+    React.useEffect(()=> {
+        bidItemsRef.current = bidItems
+    }, [bidItems])
+
+    React.useEffect(()=> {
+        subscribePlayingStatus((status)=> {
+            // console.log("STATUS AND PAYLOAD", status, status['payload']['nextDirection'] == playState.playState.direction)
+            // setBidable(status['payload']['nextDirection'] == playState.playState.direction)
+            if (status['payload'].hasOwnProperty('contract')) {
+                // setCurrentBid(status['payload']['contract'])
+                if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItems.length == 0) { return }
+                const newItems = [...bidItemsRef.current]
+                newItems.push(<BidItem>{status['payload']['contract']}</BidItem>)
+                setBidItems(newItems)
+                console.log("Set current Bid")
+                // setLvlToBid(lvlToBidFrom(status['payload']['contract']))
+            }
+            else {
+                // setLvlToBid(lvlToBid())
+            }
+        })
+    }, [])
+    
     return (
         <Container>
             <HeaderItem>North</HeaderItem>
             <HeaderItem>East</HeaderItem>
             <HeaderItem>West</HeaderItem>
             <HeaderItem>South</HeaderItem>
-            <BidItem>1</BidItem>
+            {
+                bidItems
+            }
+            {/* <BidItem>1</BidItem>
             <BidItem>2</BidItem>
             <BidItem>3</BidItem>
             <BidItem>4</BidItem>
             <BidItem>5</BidItem>
-            <BidItem>6</BidItem>
+            <BidItem>6</BidItem> */}
         </Container>
     )
 }
 
 const BidContainer = styled.div`
-    min-height: calc(100vh - 56px);
+    /* min-height: calc(100vh - 56px); */
+    height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(24px);
+    background-color: rgba(200, 200, 200, 0.4);
+    /* backdrop-filter: blur(24px); */
     gap: 10px;
 `
 

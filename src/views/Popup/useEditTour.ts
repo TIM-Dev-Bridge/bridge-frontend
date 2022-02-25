@@ -79,7 +79,7 @@ const useEditTour =(tourName: string, onCreate: (success : boolean, reason: stri
             status: tourData?.status ?? "",
             board_to_play: Number(data.boardToPlay),
             minute_board: Number(data.minuteBoard),
-            board_round: Number(data.boardRound),
+            board_per_round: Number(data.boardRound),
             movement: data.movement,
             scoring: data.scoring,
             barometer: tourData?.barometer ?? true,

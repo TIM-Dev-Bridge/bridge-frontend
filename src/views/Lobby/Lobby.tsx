@@ -82,6 +82,7 @@ export const LobbyPage: React.FunctionComponent = () => {
                             </div>
                             <Lobby tours={tourList} onJoinTourRoom={(tourName, success) => {
                                 if (success) {
+                                    console.log("TOURNAME", tourName)
                                     setTourName(tourName)
                                     setDisplayTourRoom(true)
                                 }

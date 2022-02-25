@@ -8,7 +8,7 @@ export interface TourData {
     status: string,
     board_to_play: number,
     minute_board: number,
-    board_round: number,
+    board_per_round: number,
     movement: string,
     scoring: string,
     barometer: boolean,

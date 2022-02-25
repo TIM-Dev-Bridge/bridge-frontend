@@ -28,8 +28,8 @@ function App() {
         window.location.pathname === '/' || window.location.pathname === '/lobby' ?  <></> : <NavigationBar />
       }
 
-      <Summary />
-      {/* {navigationStack[navigationStack.length - 1]} */}
+      {/* <Summary /> */}
+      {navigationStack[navigationStack.length - 1]}
 
 
       {/* <DefaultPage leftSideContainer={<AdminPageContainer />} displayTourRoom={false} title='User Management' /> */}

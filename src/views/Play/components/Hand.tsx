@@ -21,6 +21,11 @@ export enum HandPosition {
 
 const Hand =(props: HandProps)=> {
     const [cards, setCards] = React.useState(props.initialCard)
+
+    React.useEffect(()=> {
+        setCards(props.initialCard)
+    }, [props.initialCard])
+
     return (
         <HandContainer
             position={props.position}

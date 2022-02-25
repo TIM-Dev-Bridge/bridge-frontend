@@ -1,6 +1,10 @@
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import BsSuitSpade, { BsSuitClub, BsSuitClubFill, BsSuitDiamondFill, BsSuitHeartFill, BsSuitSpadeFill } from 'react-icons/bs'
+import { BiddingRequest, useBidding } from './UseBidding'
+import { socket } from '../../Service/SocketService'
+import { usePlayState } from '../PlayingContext/PlayingContext'
+import { useAuthen } from '../../Authen'
 
 const BiddingControl =()=> {
     const initLevel = [false, false, false, false, false, false, false]
@@ -14,54 +18,192 @@ const BiddingControl =()=> {
     const [bidableLvl, setLvlToBid] = React.useState(initLevel)
     const [bidableSuite, setSuiteToBid] = React.useState(initSuite)
     const [selectedSuite, setSelectedSuite] = React.useState(initSuite)
-    const [selectedLevel, setSelectedLevel] = React.useState(initLevel)
+    // const [selectedLevel, setSelectedLevel] = React.useState(initLevel)
+    const [selectedLevel, setSelectedLevel] = React.useState(0)
+    const [currentBid, setCurrentBid] = React.useState(0)
+    const [bidable, setBidable] = React.useState(false)
+
+    const {
+        bid,
+        updateCard,
+        updateCardOpposite,
+        subscribePlayingStatus
+    } = useBidding()
+
+    const playState = usePlayState()
+    const authen = useAuthen()
+
+    React.useEffect(()=> {
+        console.log("BIDDING PAGE")
+        subscribePlayingStatus((status)=> {
+            console.log("STATUS AND PAYLOAD", status, status['payload']['nextDirection'] == playState.playState.direction)
+            setBidable(status['payload']['nextDirection'] == playState.playState.direction)
+            if (status['payload'].hasOwnProperty('contract')) {
+                setCurrentBid(status['payload']['contract'])
+                console.log("Set current Bid")
+                setLvlToBid(lvlToBidFrom(status['payload']['contract']))
+            }
+            else {
+                setLvlToBid(lvlToBid())
+            }
+        })
+    }, [socket])
+
     React.useEffect(()=> {
         setLvlToBid(lvlToBid())
     }, [])
+
+    const makeBiddingRequest =(level: number, suit: string)=> {
+        let body: BiddingRequest = {
+            player_id: authen.authen.username,
+            room: playState.playState.room,
+            contract: convertContractToNum(level, suit),
+            direction: playState.playState.direction,
+            tour_name: playState.playState.tourName,
+            round_num: playState.playState.round,
+            table_id: playState.playState.table
+        }
+        bid(body)
+    }
+
+    const convertContractToNum =(level: number, suit: string)=> {
+        const dict: {[key:string]: number} = {
+            'C': 1,
+            'D': 2,
+            'H': 3,
+            'S': 4,
+            'NT': 5
+        }
+        console.log(((level - 1) * 5) + dict[suit])
+        return ((level - 1) * 5) + dict[suit]
+    }
+
+    const numToString =(contract: number)=> {
+        const dict: {[key:number]: string} = {
+            1: 'C',
+            2: 'D',
+            3: 'H',
+            4: 'S',
+            5: 'NT'
+        }
+        const level = ((contract - 1) / 5) + 1
+        const suite = contract % 5
+        const bidString = level.toString() + "_" + dict[suite]
+        return bidString
+    }
+
+    const lvlToBid =()=> {
+        // const lastBid = "3_D"
+        if (currentBid == 0) {
+            return [true,true,true,true,true,true,true]
+        }
+        const lastBid = numToString(currentBid)
+        const suite = lastBid.split("_")[1]
+        const lvl = lastBid.split('_')[0]
+    
+        var availableLevel = []
+        for (var i = 0; i < 8; i++) {
+            if (i < parseInt(lvl)) {
+                availableLevel.push(false)
+            }
+            else {
+                availableLevel.push(true)
+            }
+        }
+        return availableLevel
+    }
+
+    const lvlToBidFrom =(currentBid: number)=> {
+        // const lastBid = "3_D"
+        if (currentBid == 0) {
+            return [true,true,true,true,true,true,true]
+        }
+        const lastBid = numToString(currentBid)
+        const suite = lastBid.split("_")[1]
+        const lvl = lastBid.split('_')[0]
+    
+        var availableLevel = []
+        for (var i = 0; i < 8; i++) {
+            if (i < parseInt(lvl)) {
+                availableLevel.push(false)
+            }
+            else {
+                availableLevel.push(true)
+            }
+        }
+        return availableLevel
+    }
+
+    const suiteToBid =(currentBid: number, selectLvl : number)=> {
+        // const lastBid = "3_D"
+        const lastBid = numToString(currentBid)
+        console.log("suite available to bid", currentBid)
+        const suite = lastBid.split("_")[1]
+        const lvl = lastBid.split('_')[0]
+        var availableSuite : {[key: string] : boolean} = {
+            'S': cardSuite['S'] >= cardSuite[suite],
+            'H': cardSuite['H'] >= cardSuite[suite],
+            'D': cardSuite['D'] >= cardSuite[suite],
+            'C': cardSuite['C'] >= cardSuite[suite],
+            'NT': cardSuite['NT'] >= cardSuite[suite],
+        }
+    
+        if (selectLvl == parseInt(lvl)) {
+            availableSuite = {
+                'S': cardSuite['S'] >= cardSuite[suite],
+                'H': cardSuite['H'] >= cardSuite[suite],
+                'D': cardSuite['D'] >= cardSuite[suite],
+                'C': cardSuite['C'] >= cardSuite[suite],
+                'NT': cardSuite['NT'] >= cardSuite[suite],
+            }
+            availableSuite[suite] = false
+        }
+        else {
+            availableSuite = {
+                'NT' : true,
+                'S' : true,
+                'H' : true,
+                'D' : true,
+                'C' : true,
+            }
+        }
+        return availableSuite
+    }
+
     return (
         <Container>
             <RightColumn>
-                <Pass enabled={true}>Pass</Pass>
+                <Pass enabled={bidable}>Pass</Pass>
                 {
                     Array.from({length: 7}, (_, i) => i + 1).map(num => 
                         <Item 
                             onClick={()=> {
                                 setSelectedSuite(initSuite)
-                                setSelectedLevel(selectLvl(num))
-                                setSuiteToBid(suiteToBid(num))
+                                setSelectedLevel(num)
+                                setSuiteToBid(suiteToBid(currentBid, num))
                             }}
-                            style={{border: selectedLevel[num] ? "1px solid blue" : ""}} 
-                            enabled={bidableLvl[num]}>{num}</Item> )
+                            style={{border: selectedLevel == num ? "1px solid blue" : ""}} 
+                            enabled={bidableLvl[num - 1] && bidable}>{num}</Item> )
                 }
-                <Double enabled={true}>Double</Double>
+                <Double enabled={bidable}>Double</Double>
                 <TrumpContainer>
-                    <Item enabled={bidableSuite['C']} onClick={()=> setSelectedSuite(selectSuite('C'))} style={{border: selectedSuite['C'] ? "1px solid blue" : ""}}><BsSuitClubFill /></Item>
-                    <Item enabled={bidableSuite['D']} onClick={()=> setSelectedSuite(selectSuite('D'))} style={{border: selectedSuite['D'] ? "1px solid blue" : ""}}><BsSuitDiamondFill style={{color: bidableSuite['D'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
-                    <Item enabled={bidableSuite['H']} onClick={()=> setSelectedSuite(selectSuite('H'))} style={{border: selectedSuite['H'] ? "1px solid blue" : ""}}><BsSuitHeartFill style={{color: bidableSuite['H'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
-                    <Item enabled={bidableSuite['S']} onClick={()=> setSelectedSuite(selectSuite('S'))} style={{border: selectedSuite['S'] ? "1px solid blue" : ""}}><BsSuitSpadeFill /></Item>
-                    <NoTrump enabled={bidableSuite['NT']} onClick={()=> setSelectedSuite(selectSuite('NT'))} style={{border: selectedSuite['NT'] ? "1px solid blue" : ""}}>No-Trump</NoTrump>
+                    <Item 
+                        enabled={bidableSuite['C'] && bidable} 
+                        onClick={()=> {
+                            makeBiddingRequest(selectedLevel, 'C')
+                            setSelectedSuite(selectSuite('C'))}} 
+                        style={{border: selectedSuite['C'] ? "1px solid blue" : ""}}><BsSuitClubFill /></Item>
+                    <Item enabled={bidableSuite['D'] && bidable} onClick={()=> setSelectedSuite(selectSuite('D'))} style={{border: selectedSuite['D'] ? "1px solid blue" : ""}}><BsSuitDiamondFill style={{color: bidableSuite['D'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
+                    <Item enabled={bidableSuite['H'] && bidable} onClick={()=> setSelectedSuite(selectSuite('H'))} style={{border: selectedSuite['H'] ? "1px solid blue" : ""}}><BsSuitHeartFill style={{color: bidableSuite['H'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
+                    <Item enabled={bidableSuite['S'] && bidable} onClick={()=> setSelectedSuite(selectSuite('S'))} style={{border: selectedSuite['S'] ? "1px solid blue" : ""}}><BsSuitSpadeFill /></Item>
+                    <NoTrump enabled={bidableSuite['NT'] && bidable} onClick={()=> setSelectedSuite(selectSuite('NT'))} style={{border: selectedSuite['NT'] ? "1px solid blue" : ""}}>No-Trump</NoTrump>
                 </TrumpContainer>
             </RightColumn>
         </Container>
     )
 }
 
-const lvlToBid =()=> {
-    const lastBid = "3_D"
-    const suite = lastBid.split("_")[1]
-    const lvl = lastBid.split('_')[0]
 
-    var availableLevel = []
-    for (var i = 0; i < 8; i++) {
-        if (i < parseInt(lvl)) {
-            availableLevel.push(false)
-        }
-        else {
-            availableLevel.push(true)
-        }
-    }
-    return availableLevel
-}
 
 const cardSuite : {[key: string] : number} = {
     'NT' : 4,
@@ -71,39 +213,7 @@ const cardSuite : {[key: string] : number} = {
     'C' : 0,
 }
 
-const suiteToBid =(selectLvl : number)=> {
-    const lastBid = "3_D"
-    const suite = lastBid.split("_")[1]
-    const lvl = lastBid.split('_')[0]
-    var availableSuite : {[key: string] : boolean} = {
-        'S': cardSuite['S'] >= cardSuite[suite],
-        'H': cardSuite['H'] >= cardSuite[suite],
-        'D': cardSuite['D'] >= cardSuite[suite],
-        'C': cardSuite['C'] >= cardSuite[suite],
-        'NT': cardSuite['NT'] >= cardSuite[suite],
-    }
 
-    if (selectLvl == parseInt(lvl)) {
-        availableSuite = {
-            'S': cardSuite['S'] >= cardSuite[suite],
-            'H': cardSuite['H'] >= cardSuite[suite],
-            'D': cardSuite['D'] >= cardSuite[suite],
-            'C': cardSuite['C'] >= cardSuite[suite],
-            'NT': cardSuite['NT'] >= cardSuite[suite],
-        }
-        availableSuite[suite] = false
-    }
-    else {
-        availableSuite = {
-            'NT' : true,
-            'S' : true,
-            'H' : true,
-            'D' : true,
-            'C' : true,
-        }
-    }
-    return availableSuite
-}
 
 const selectSuite =(suite: string)=> {
     var selected : {[key: string] : boolean} = {
