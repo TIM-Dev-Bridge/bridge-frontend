@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { socket } from '../../Service/SocketService'
+import { usePlayState } from '../PlayingContext/PlayingContext'
 import BiddingControl from './BiddingCotrol'
 import { useBidding } from './UseBidding'
 
@@ -17,6 +18,7 @@ const BiddingTable =()=> {
     const {subscribePlayingStatus} = useBidding()
     const [bidItems, setBidItems] = React.useState<JSX.Element[]>([])
     const bidItemsRef = React.useRef(bidItems)
+    const playState = usePlayState()
 
     React.useEffect(()=> {
         bidItemsRef.current = bidItems
@@ -24,22 +26,48 @@ const BiddingTable =()=> {
 
     React.useEffect(()=> {
         subscribePlayingStatus((status)=> {
-            // console.log("STATUS AND PAYLOAD", status, status['payload']['nextDirection'] == playState.playState.direction)
-            // setBidable(status['payload']['nextDirection'] == playState.playState.direction)
+            handleBidding(status)
+            handlePlaying(status)
+        })
+    }, [socket, playState])
+
+    const handleBidding =(status: {[key: string]: any})=> {
+        if (status['status'] == 'waiting_for_bid') {
+            if (playState.playState.status != 'waiting_for_bid') {
+                playState.updatePlayState({
+                    ...playState.playState, status: 'waiting_for_bid'
+                })
+            }
+
             if (status['payload'].hasOwnProperty('contract')) {
                 // setCurrentBid(status['payload']['contract'])
-                if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItems.length == 0) { return }
+                if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItemsRef.current.length == 0) { return }
                 const newItems = [...bidItemsRef.current]
                 newItems.push(<BidItem>{status['payload']['contract']}</BidItem>)
                 setBidItems(newItems)
                 console.log("Set current Bid")
-                // setLvlToBid(lvlToBidFrom(status['payload']['contract']))
             }
             else {
                 // setLvlToBid(lvlToBid())
             }
-        })
-    }, [])
+        }
+    }
+
+    const handlePlaying =(status: {[key: string]: any})=> {
+        if (status['status'] == 'initial_playing') {
+            if (status['payload'].hasOwnProperty('contract')) {
+                // setCurrentBid(status['payload']['contract'])
+                if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItemsRef.current.length == 0) { return }
+                const newItems = [...bidItemsRef.current]
+                newItems.push(<BidItem>{status['payload']['contract']}</BidItem>)
+                setBidItems(newItems)
+                console.log("Set current Bid")
+            }
+            else {
+                // setLvlToBid(lvlToBid())
+            }
+        }
+    }
     
     return (
         <Container>

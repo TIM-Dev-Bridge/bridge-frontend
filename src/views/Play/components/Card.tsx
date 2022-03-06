@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import {motion} from 'framer-motion'
 import { AnimationDefinition } from 'framer-motion/types/render/utils/animation'
 import DroppedCard from './DroppedCard'
+import { CardImage, CardMapping } from '../../../assets/images/AllCards/cards_mapping'
 
 interface CardProps {
-    text: String,
+    text: number,
     placePositionRef: React.RefObject<HTMLElement>,
     onAnimationCompleted: ()=>void,
-    onDrop: (item: JSX.Element)=>void,
+    onDrop: (item: number)=>void,
     index: number
     shouldCollapse: number,
     selfAnimate?: boolean,
@@ -138,12 +139,12 @@ const Card =(props: CardProps)=> {
         if (movingState == State.MOVE_TO_POSITION) {
             // setMovingState(State.DROPPING)
             setMovingState(State.DROPPED)
-            props.onDrop(<DroppedCard text={props.text}/>)
+            props.onDrop(props.text)
         }
 
         if (movingState == State.DROPPING) {
             setMovingState(State.DROPPED)
-            props.onDrop(<DroppedCard text={props.text}/>)
+            props.onDrop(props.text)
         }
 
         if (movingState == State.DROPPED) {
@@ -175,6 +176,7 @@ const Card =(props: CardProps)=> {
 
     return (
         <CardContainer
+            background={CardImage(props.text)}
             visible={visible}
             drag 
             animate={makeAnimation(movingState)}
@@ -183,19 +185,21 @@ const Card =(props: CardProps)=> {
             onDrag={e => onDragDetect(e as MouseEvent)}
             onAnimationComplete={onAnimationComplete}
             ref={cardRef}>
-                {props.text}
+                {/* {props.text} */}
         </CardContainer>
     )
 }
 
-const CardContainer = styled(motion.div)<{visible: boolean}>`
+const CardContainer = styled(motion.div)<{visible: boolean, background: string}>`
     width: 5vw;
     max-width: 4em;
     /* height: 50%; */
-    border-radius: 6px;
+    border-radius: 3px;
     box-shadow: var(--app-shadow);
     background-color: white;
-    aspect-ratio: 9/16;
+    aspect-ratio: 169/244;
+    background-image: url(${props=>props.background});
+    background-size: contain;
 `
 
 export default Card;

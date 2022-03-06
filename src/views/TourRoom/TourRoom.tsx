@@ -22,6 +22,7 @@ import NewWindow from "react-new-window"
 import { ConnectTable } from "./UseTable"
 import { PlayingProvider } from "../PlayingContext/PlayingContextProvider"
 import { usePlayState } from "../PlayingContext/PlayingContext"
+import { useGame } from "../Play/components/GameContext"
 
 interface TourRoomProps {
     width?: number
@@ -53,6 +54,8 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
 
     const playState = usePlayState()
     const playStateRef = React.useRef(playState)
+
+    const game = useGame()
     
     
 
@@ -100,7 +103,9 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
 
             console.log("DETAIL", detail)
             setStart(true)
-            updateConnectionDetail(detail)
+            // updateConnectionDetail(detail)
+            game.setConnectDetail(detail)
+            game.setDisplay(true)
 
             // playState.updatePlayState({
             //     round: "",
@@ -208,16 +213,17 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                 
                 
                 {/* {playingComponent()} */}
-                {
+                {/* {
                     start &&
-                    <StyleSheetManager target={newWindowNode!}>
-                        <NewWindow  features={{width: window.screen.width, height: window.screen.height}}>
-                            <div ref={nwRef}>
+                    // <StyleSheetManager target={newWindowNode!}>
+                        // <NewWindow  features={{width: window.screen.width, height: window.screen.height}}>
+                            // <div ref={nwRef}>
+                            <div style={{position: "absolute", top: "0", left: "0"}}>
                             <PlayPage tableId={""} tableDetail={connectDetail ?? undefined} /> 
                             </div>
-                        </NewWindow>
-                    </StyleSheetManager>
-                }
+                        // </NewWindow>
+                    // </StyleSheetManager>
+                } */}
                 
                 {/* </PlayContainer> */}
             </TourRoomContainer>
@@ -312,6 +318,7 @@ const TourRoomContainer = styled(motion.div) <{width: number, hide: boolean}>`
     width: ${props => props.width}px;
     background-color: white;
     height: 100%;
+    overflow: visible;
 
     ${props=> !props.hide && css`
         transform: translateX(0px);

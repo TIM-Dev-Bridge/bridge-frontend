@@ -39,9 +39,12 @@ const BiddingControl =()=> {
             console.log("STATUS AND PAYLOAD", status, status['payload']['nextDirection'] == playState.playState.direction)
             setBidable(status['payload']['nextDirection'] == playState.playState.direction)
             if (status['payload'].hasOwnProperty('contract')) {
-                setCurrentBid(status['payload']['contract'])
-                console.log("Set current Bid")
-                setLvlToBid(lvlToBidFrom(status['payload']['contract']))
+                let currentBid = status['payload']['contract']
+                if (currentBid != -1) {
+                    setCurrentBid(status['payload']['contract'])
+                    console.log("Set current Bid")
+                    setLvlToBid(lvlToBidFrom(status['payload']['contract']))
+                }
             }
             else {
                 setLvlToBid(lvlToBid())
@@ -58,6 +61,32 @@ const BiddingControl =()=> {
             player_id: authen.authen.username,
             room: playState.playState.room,
             contract: convertContractToNum(level, suit),
+            direction: playState.playState.direction,
+            tour_name: playState.playState.tourName,
+            round_num: playState.playState.round,
+            table_id: playState.playState.table
+        }
+        bid(body)
+    }
+
+    const pass =()=> {
+        let body: BiddingRequest = {
+            player_id: authen.authen.username,
+            room: playState.playState.room,
+            contract: -1,
+            direction: playState.playState.direction,
+            tour_name: playState.playState.tourName,
+            round_num: playState.playState.round,
+            table_id: playState.playState.table
+        }
+        bid(body)
+    }
+
+    const double =()=> {
+        let body: BiddingRequest = {
+            player_id: authen.authen.username,
+            room: playState.playState.room,
+            contract: 99,
             direction: playState.playState.direction,
             tour_name: playState.playState.tourName,
             round_num: playState.playState.round,
@@ -173,7 +202,11 @@ const BiddingControl =()=> {
     return (
         <Container>
             <RightColumn>
-                <Pass enabled={bidable}>Pass</Pass>
+                <Pass 
+                    enabled={bidable}
+                    onClick={()=> {
+                        pass()
+                    }}>Pass</Pass>
                 {
                     Array.from({length: 7}, (_, i) => i + 1).map(num => 
                         <Item 
@@ -185,7 +218,9 @@ const BiddingControl =()=> {
                             style={{border: selectedLevel == num ? "1px solid blue" : ""}} 
                             enabled={bidableLvl[num - 1] && bidable}>{num}</Item> )
                 }
-                <Double enabled={bidable}>Double</Double>
+                <Double 
+                    enabled={bidable && currentBid != -1 && currentBid != 0}
+                    onClick={()=> double()}>Double</Double>
                 <TrumpContainer>
                     <Item 
                         enabled={bidableSuite['C'] && bidable} 
@@ -193,10 +228,30 @@ const BiddingControl =()=> {
                             makeBiddingRequest(selectedLevel, 'C')
                             setSelectedSuite(selectSuite('C'))}} 
                         style={{border: selectedSuite['C'] ? "1px solid blue" : ""}}><BsSuitClubFill /></Item>
-                    <Item enabled={bidableSuite['D'] && bidable} onClick={()=> setSelectedSuite(selectSuite('D'))} style={{border: selectedSuite['D'] ? "1px solid blue" : ""}}><BsSuitDiamondFill style={{color: bidableSuite['D'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
-                    <Item enabled={bidableSuite['H'] && bidable} onClick={()=> setSelectedSuite(selectSuite('H'))} style={{border: selectedSuite['H'] ? "1px solid blue" : ""}}><BsSuitHeartFill style={{color: bidableSuite['H'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
-                    <Item enabled={bidableSuite['S'] && bidable} onClick={()=> setSelectedSuite(selectSuite('S'))} style={{border: selectedSuite['S'] ? "1px solid blue" : ""}}><BsSuitSpadeFill /></Item>
-                    <NoTrump enabled={bidableSuite['NT'] && bidable} onClick={()=> setSelectedSuite(selectSuite('NT'))} style={{border: selectedSuite['NT'] ? "1px solid blue" : ""}}>No-Trump</NoTrump>
+                    <Item 
+                        enabled={bidableSuite['D'] && bidable} 
+                        onClick={()=> {
+                            makeBiddingRequest(selectedLevel, 'D')
+                            setSelectedSuite(selectSuite('D'))}} 
+                        style={{border: selectedSuite['D'] ? "1px solid blue" : ""}}><BsSuitDiamondFill style={{color: bidableSuite['D'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
+                    <Item 
+                        enabled={bidableSuite['H'] && bidable} 
+                        onClick={()=> {
+                            makeBiddingRequest(selectedLevel, 'H')
+                            setSelectedSuite(selectSuite('H'))}} 
+                        style={{border: selectedSuite['H'] ? "1px solid blue" : ""}}><BsSuitHeartFill style={{color: bidableSuite['H'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
+                    <Item 
+                        enabled={bidableSuite['S'] && bidable} 
+                        onClick={()=> {
+                            makeBiddingRequest(selectedLevel, 'S')
+                            setSelectedSuite(selectSuite('S'))}} 
+                        style={{border: selectedSuite['S'] ? "1px solid blue" : ""}}><BsSuitSpadeFill /></Item>
+                    <NoTrump 
+                        enabled={bidableSuite['NT'] && bidable} 
+                        onClick={()=> {
+                            makeBiddingRequest(selectedLevel, 'NT')
+                            setSelectedSuite(selectSuite('NT'))}} 
+                        style={{border: selectedSuite['NT'] ? "1px solid blue" : ""}}>No-Trump</NoTrump>
                 </TrumpContainer>
             </RightColumn>
         </Container>

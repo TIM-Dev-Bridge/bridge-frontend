@@ -9,9 +9,22 @@ import { socket } from '../../../Service/SocketService'
 import BiddingPage from '../../Bidding/BiddingPage'
 import { usePlayState } from '../../PlayingContext/PlayingContext'
 import { AuthenContext, useAuthen } from '../../../Authen'
+import { PlayCardRequest, usePlaying } from '../../Bidding/UsePlaying'
+import DroppedCard from './DroppedCard'
 
 interface PlayingPageProps {
     tableDetail?: ConnectTable
+}
+
+interface PlayingDirectionFn {
+    direction: HandPosition,
+    updateCard: React.Dispatch<React.SetStateAction<number[]>>,
+    animate: React.Dispatch<React.SetStateAction<boolean>>,
+    dropCard: React.Dispatch<React.SetStateAction<number>>
+}
+
+type PlayingDirection = {
+    [key : number]: PlayingDirectionFn
 }
 
 const PlayingPage = (props: PlayingPageProps) => {
@@ -20,31 +33,48 @@ const PlayingPage = (props: PlayingPageProps) => {
         Playing
     }
 
-    const { connect, updateCard } = useTable()
-    const [cards, setCards] = React.useState<string[]>([])
-    const [eastCards, setEastCards] = React.useState([])
-    const [westCards, setWestCards] = React.useState([])
-    const [northCards, setNorthCards] = React.useState([])
+    const { connect, updateCard, updateCardOpposite } = useTable()
+    const [cards, setCards] = React.useState<number[]>([])
+    const [leftCards, setLeftCards] = React.useState<number[]>([])
+    const [rightCards, setRightCards] = React.useState<number[]>([])
+    const [topCards, setTopCards] = React.useState<number[]>([])
     const southPlayedCardRef = React.useRef<HTMLDivElement>(null)
     const rightPlayedCardRef = React.useRef<HTMLDivElement>(null)
     const leftPlayedCardRef = React.useRef<HTMLDivElement>(null)
     const topPlayedCardRef = React.useRef<HTMLDivElement>(null)
-    const [shouldMoveToFinished, setShouldMoveToFinished] = React.useState(false)
     const [droppedCard, setDroppedCard] = React.useState(<></>)
     const [rightDroppedCard, setRightDroppedCard] = React.useState(<></>)
     const [leftDroppedCard, setLefttDroppedCard] = React.useState(<></>)
     const [topDroppedCard, setTopDroppedCard] = React.useState(<></>)
-    const [leftPlaceCardAnimate, setLeftPlaceCardAnimate] = React.useState(true)
-    const [playState, setPlayState] = React.useState(PlayState.Bidding)
+
+    const [leftPlaceCardAnimate, setLeftPlaceCardAnimate] = React.useState(false)
+    const [rightPlaceCardAnimate, setRightPlaceCardAnimate] = React.useState(false)
+    const [topPlaceCardAnimate, setTopPlaceCardAnimate] = React.useState(false)
+    // const [leftPlaceCardAnimate, setLeftPlaceCardAnimate] = React.useState(true)
+
 
     const playContext = usePlayState()
     const authen = useAuthen()
+    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying} = usePlaying()
+    const [playDirection, setPlayDirection] = React.useState(-1)
+    const [turn, setTurn] = React.useState(-1)
+    const turnRef = React.useRef(turn)
+    const [declarer, setDeclarer] = React.useState(0)
+
+    const [dropCardBottom, setDropCardBottom] = React.useState(0)
+    const [dropCardLeft, setDropCardLeft] = React.useState(0)
+    const [dropCardRight, setDropCardRight] = React.useState(0)
+    const [dropCardTop, setDropCardTop] = React.useState(0)
+    
+    const [playingDirection, setPlayingDirection] = React.useState<PlayingDirection>()
+    const playingDirectionRef = React.useRef(playingDirection)
 
     // React.useEffect(() => {
     //     if (props.tableDetail != null || props.tableDetail != undefined) {
     //         connect(props.tableDetail.table_id, props.tableDetail)
     //     }
     // }, [props.tableDetail])
+    
 
     React.useEffect(() => {
         if (playContext.playState.table != null && playContext.playState.table != undefined && playContext.playState.table != "") {
@@ -57,6 +87,35 @@ const PlayingPage = (props: PlayingPageProps) => {
                 round_num: playContext.playState.round,
                 table_id: playContext.playState.table
             }
+            const newState: PlayingDirection = {
+                [playContext.playState.direction] : {
+                    direction: HandPosition.DOWN,
+                    updateCard: ()=>{},
+                    animate: ()=>{},
+                    dropCard: ()=>{}
+                },
+                [(playContext.playState.direction + 1) % 4] : {
+                    direction: HandPosition.LEFT,
+                    updateCard: setLeftCards,
+                    animate: setLeftPlaceCardAnimate,
+                    dropCard: setDropCardLeft
+                },
+                [(playContext.playState.direction + 3) % 4] : {
+                    direction: HandPosition.RIHGT,
+                    updateCard: setRightCards,
+                    animate: setRightPlaceCardAnimate,
+                    dropCard: setDropCardRight
+                },
+                [(playContext.playState.direction + 2) % 4] : {
+                    direction: HandPosition.TOP,
+                    updateCard: setTopCards,
+                    animate: setTopPlaceCardAnimate,
+                    dropCard: setDropCardTop
+                }
+            }
+            setPlayingDirection(newState)
+            
+            
             connect(playContext.playState.table, detail)
         }
     }, [playContext.playState.table])
@@ -65,19 +124,103 @@ const PlayingPage = (props: PlayingPageProps) => {
         updateCard((cards) => {
             let cardString = cards.map(num => num.toString())
             console.log("cards update", cards, cardString)
-            setCards(cardString)
+            setCards(cards)
         })
     }, [socket])
 
+    React.useEffect(() => {
+        updateCardOpposite((newcards, direction) => {
+            let cardString = cards.map(num => num.toString())
+            console.log("cards update", cards, cardString)
+{/*             directionsRef.current[direction](newcards) */}
+            playingDirectionRef.current?.[direction].updateCard(newcards)
+            let cardEmpty = [-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13]
+            playingDirectionRef.current?.[(direction + 1) % 4].updateCard(cardEmpty)
+            playingDirectionRef.current?.[(direction + 2) % 4].updateCard(cardEmpty)
+            playingDirectionRef.current?.[(direction + 3) % 4].updateCard(cardEmpty)
+            setDeclarer(direction)
+            playContext.updatePlayState({
+                tourName: playContext.playState.tourName,
+                room: playContext.playState.room,
+                round: playContext.playState.round,
+                table: playContext.playState.table,
+                direction: playContext.playState.direction,
+                status: 'initial_playing',
+                pairId: playContext.playState.pairId
+            })
+        })
+    }, [socket, declarer])
+
+    React.useEffect(()=> {
+        onInitialTurn( data => {
+            console.log("DATA : ", data)
+            let direction = data.payload.leader
+            setPlayDirection(direction)
+            setTurn(data.payload.turn)
+            // animateDirectionRef.current[direction](true)
+            // animateDirection[direction](true)
+        })
+    }, [socket, playDirection])
+
+    React.useEffect(()=> {
+        onDefaultTurn( data => {
+            console.log("DATA : ", data)
+            let direction = data.payload.nextDirection
+            let prev = data.payload.prevDirection
+            setPlayDirection(direction)
+            // setTurn(turn => turn += 1)
+            if (prev != playContext.playState.direction) {
+                playingDirection?.[prev].dropCard(data.payload.card)
+                playingDirection?.[prev].animate(true)
+                if (declarer == data.payload.nextDirection) {
+
+                }
+            }
+        })
+    }, [socket, playDirection])
+
+    React.useEffect(()=> {
+        onInitialPlaying( data => {
+            console.log("DATA : ", data)
+            let direction = data.payload.leader
+            setPlayDirection(direction)
+            setTurn(data.payload.turn)
+        })
+    }, [socket, playDirection])
+
+    React.useEffect(()=> {
+        turnRef.current = turn
+    }, [turn])
+    
+    React.useEffect(()=> {
+        playingDirectionRef.current = playingDirection
+    }, [playingDirection])
+
+    const makePlayCardRequest =(card: number, turn: number)=> {
+        let request : PlayCardRequest = {
+            player_id: authen.authen.username,
+            room: playContext.playState.room,
+            card: card,
+            direction: playContext.playState.direction,
+            turn: turn,
+            tour_name: playContext.playState.tourName,
+            round_num: playContext.playState.round,
+            table_id: playContext.playState.table
+        }
+
+        playCard(request)
+    }
+
     const dropCard = (animateAnimation: React.Dispatch<React.SetStateAction<boolean>>, dropFunction: React.Dispatch<React.SetStateAction<JSX.Element>>) => {
         animateAnimation(false)
+        
         return dropFunction
     }
 
     return (
-        // <RatioContainer>
         <PlayingPageContainer>
-            <InnerContainer>
+            <InnerContainer isYourTurn={playDirection == playContext.playState.direction}>
+                
                 <Center>
                     <CenterTop>
                         <PlayedCard ref={topPlayedCardRef}>
@@ -101,33 +244,50 @@ const PlayingPage = (props: PlayingPageProps) => {
                     </CenterRight>
                 </Center>
                 <Hand
+                    enabled={false}
                     position={HandPosition.TOP}
-                    initialCard={northCards}
+                    initialCard={topCards}
                     dropRef={topPlayedCardRef}
-                    onDrop={setTopDroppedCard} />
+                    placeCard={topPlaceCardAnimate}
+                    cardToFind={dropCardTop}
+                    onDrop={() => {
+                        dropCard(setTopPlaceCardAnimate, setTopDroppedCard)(<DroppedCard text={dropCardTop} />)
+                        }} />
                 <Hand
+                    enabled={playDirection == playContext.playState.direction}
                     position={HandPosition.DOWN}
                     initialCard={cards}
                     dropRef={southPlayedCardRef}
-                    onDrop={setDroppedCard} />
+                    cardToFind={dropCardBottom}
+                    onDrop={(item)=> {
+                        setDroppedCard(<DroppedCard text={item} />)
+                        makePlayCardRequest(item, turnRef.current)}} />
                 <Hand
+                    enabled={false}
                     position={HandPosition.LEFT}
-                    initialCard={westCards}
+                    initialCard={leftCards}
                     dropRef={leftPlayedCardRef}
-                    onDrop={item => dropCard(setLeftPlaceCardAnimate, setLefttDroppedCard)(item)}
+                    cardToFind={dropCardLeft}
+                    onDrop={() => {
+                        dropCard(setLeftPlaceCardAnimate, setLefttDroppedCard)(<DroppedCard text={dropCardLeft} />)
+                        }}
                     placeCard={leftPlaceCardAnimate} />
                 <Hand
+                    enabled={false}
                     position={HandPosition.RIHGT}
-                    initialCard={eastCards}
+                    initialCard={rightCards}
                     dropRef={rightPlayedCardRef}
-                    onDrop={setRightDroppedCard} />
+                    placeCard={rightPlaceCardAnimate}
+                    cardToFind={dropCardRight}
+                    onDrop={() => {
+                        dropCard(setRightPlaceCardAnimate, setRightDroppedCard)(<DroppedCard text={dropCardRight} />)
+                        }} />
             </InnerContainer>
 
-            <PopupArea>
+            <PopupArea visible={playContext.playState.status == 'waiting_for_bid'}>
                 <BiddingPage />
             </PopupArea>
         </PlayingPageContainer>
-        // </RatioContainer>
     )
 }
 
@@ -149,7 +309,7 @@ const RatioContainer = styled.div`
     position: relative;
 `
 
-const InnerContainer = styled.div`
+const InnerContainer = styled.div<{isYourTurn: boolean}>`
     background-color: white;
     display: grid;
     /* position: absolute; 
@@ -158,6 +318,7 @@ const InnerContainer = styled.div`
     /* margin: 0 auto; */
     width: 100%;
     height: 100%;
+    border: ${props=>props.isYourTurn ? "5px solid green" : "5px solid white"};
     /* aspect-ratio: 16 / 10; */
     grid-template-columns: 33% 33% 33%;
     grid-template-rows: 33% 33% 33%;
@@ -224,11 +385,10 @@ const CenterLeft = styled.div`
 const PlayedCard = styled.div`
     width: 5vw;
     max-width: 4em;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 169 / 244;
     /* background-color: red; */
     /* box-shadow: var(--app-shadow); */
 `
-
 
 const Iframe = styled.iframe`
     display: block; 
@@ -237,12 +397,13 @@ const Iframe = styled.iframe`
     padding:0px;
 `
 
-const PopupArea = styled.div`
+const PopupArea = styled.div<{visible: boolean}>`
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    visibility: ${props=>props.visible ? "visible" : "hidden"};
 `
 
 

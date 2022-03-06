@@ -33,9 +33,9 @@ export const useTable =()=> {
         socket.emit('join', tableDetail)
     }
 
-    const updateCardOpposite =()=> {
-        socket.on("opposite", (cards)=> {
-
+    const updateCardOpposite =(callback: (cards: number[], direction: number)=>void)=> {
+        socket.on("opposite", (cards, direction)=> {
+            callback(cards, direction)
         })
     }
 
