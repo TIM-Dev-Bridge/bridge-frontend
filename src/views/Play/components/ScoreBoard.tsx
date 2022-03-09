@@ -137,6 +137,7 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
       title: "Board",
       dataIndex: "key",
       key: "key",
+      width: "10%",
       editable: false,
       render: (_: any, record: TableScore, index: number) =>
         record.hasOwnProperty("mps") ? (
@@ -149,6 +150,7 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
       title: "Position",
       dataIndex: "position",
       key: "position",
+      width: "10%",
       editable: false,
       render: (position: string, record: TableScore) =>
         record.hasOwnProperty("mps") ? (
@@ -164,6 +166,7 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
       title: "Opponent",
       dataIndex: "opponent",
       key: "opponent",
+      width: "25%",
       editable: false,
       render: (opponent: string, record: TableScore) =>
         record.hasOwnProperty("mps") ? (
@@ -176,6 +179,7 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
       title: "Contractor",
       dataIndex: "contractor",
       key: "contractor",
+      width: "15%",
       editable: false,
       render: (contractor: string, record: TableScore) =>
         record.hasOwnProperty("mps") ? (
@@ -191,24 +195,28 @@ const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
       title: "N/S Score",
       dataIndex: "nsScore",
       key: "nsScore",
+      width: "10%",
       editable: true,
     },
     {
       title: "E/W Score",
       dataIndex: "ewScore",
       key: "ewScore",
+      width: "10%",
       editable: true,
     },
     {
       title: "MPs",
       dataIndex: "mps",
       key: "mps",
+      width: "10%",
       editable: true,
     },
     {
       title: "Total MPs",
       dataIndex: "totalMps",
       key: "totalMps",
+      width: "10%",
       editable: true,
     },
     // {

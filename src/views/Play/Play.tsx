@@ -9,6 +9,7 @@ import PlayArea from "./components/PlayArea";
 import PlaySideTab, { IPlaySideTabProps } from "./components/PlaySideTab";
 
 const PlayPage: React.FC = () => {
+  const [selectedPopup, setSelectedPopup] = React.useState(null)
   const [sideTabInfo, setSideTabInfo] =
     React.useState<IPlaySideTabProps>({
       round: 1,
@@ -28,7 +29,10 @@ const PlayPage: React.FC = () => {
         nsTricks: 0,
         ewTricks: 2,
       },
+      setSelectedPopup: setSelectedPopup,
     });
+
+  
 
   function changeBoardType() {
     setSideTabInfo({
@@ -78,7 +82,7 @@ const PlayPage: React.FC = () => {
   return (
     <div className="lg:flex flex-row w-screen h-screen overflow-hidden">
       <PlaySideTab {...sideTabInfo} />
-      <PlayArea />
+      <PlayArea selectedPopup={selectedPopup} setSelectedPopup={setSelectedPopup}/>
       {/* <div className="lg:flex flex-col w-1/6 h-screen overflow-hidden justify-around">
         <button
           style={{ backgroundColor: "lightgrey", width: "100%" }}

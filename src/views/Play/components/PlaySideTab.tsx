@@ -20,17 +20,20 @@ export interface IPlaySideTabProps {
     contract: string;
   };
   tricks?: { nsTricks: number; ewTricks: number };
+  setSelectedPopup : Function;
 }
 
 const buttonDatas = [
   {
     id: 1,
     src: require("./../../../assets/images/PlaySideTab/ScoreBoard.png").default,
+    name: 'ScoreBoard',
   },
   {
     id: 2,
     src: require("./../../../assets/images/PlaySideTab/LeaderBoard.png")
       .default,
+    name: 'LeaderBoard',
   },
   {
     id: 3,
@@ -39,11 +42,19 @@ const buttonDatas = [
         .default,
       td: require("./../../../assets/images/PlaySideTab/TournamentDirector.png")
         .default,
+      spectator: require("./../../../assets/images/PlaySideTab/Spectate.png")
+      .default,
+    },
+    name: {
+      player: 'Spectate',
+      td: 'TournamentDirector',
+      spectator: 'Spectate',
     },
   },
   {
     id: 4,
     src: require("./../../../assets/images/PlaySideTab/Chat.png").default,
+    name: 'Chat',
   },
 ];
 
@@ -186,7 +197,7 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
         </tbody>
       </Panel>
       {props.permission == "td" && (
-        <BigButton>
+        <BigButton onClick={ () => props.setSelectedPopup('RecapSheet')}>
           <IconButton
             src={
               require("./../../../assets/images/PlaySideTab/RecapSheet.png")
@@ -202,7 +213,11 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
           <ButtonGroup>
             {chunkedButton.map((button) => {
               return (
-                <FloatingButton>
+                <FloatingButton onClick={ () =>
+                  typeof button.name === "object"
+                  ? props.setSelectedPopup(button.name[props.permission])
+                  : props.setSelectedPopup(button.name)
+                }>
                   <IconButton
                     src={
                       typeof button.src === "object"
@@ -327,6 +342,7 @@ const BigButton = styled.div`
   background: rgba(255, 255, 255, 0.4);
   box-shadow: 4px 4px 22px -9px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+  cursor: pointer;
 
   &:hover {
     background: rgba(255, 255, 255, 0.8);

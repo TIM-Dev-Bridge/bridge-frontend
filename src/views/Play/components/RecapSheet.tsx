@@ -5,6 +5,7 @@ import { FormInstance } from "antd/lib/form";
 import "./Table.css";
 import { Type } from "typescript";
 import { forEach } from "lodash";
+import { useScore } from "../../../Service/SocketService";
 // import 'antd/dist/antd.css'
 
 interface BoardScore {
@@ -26,25 +27,88 @@ interface RoundScore {
 }
 
 export interface IRecapSheetProps {
-  scoreData: RoundScore[][];
+  // scoreData: RoundScore[][];
   currentRound?: number;
 }
 
+// const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
 const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
-  const data = props.scoreData;
+  // const data = props.scoreData;
+  const { getAllScore } = useScore("123456789");
 
-  data.forEach((roundScore, index) => {
-    while (roundScore.length < 8)
-      roundScore.push({
-        key: index.toString() + roundScore.length.toString(),
+  React.useEffect(() => {
+    console.log('fetching Data')
+
+    getAllScore((recapscores)=>{
+      const fetchedData: RoundScore[][] = recapscores.map((roundScores) => {
+        return roundScores.tables.map((tableScores, index_1) => {
+          return {
+            key:
+              (parseInt(roundScores.round_num) - 1).toLocaleString("en-US", {
+                minimumIntegerDigits: 2,
+                useGrouping: false,
+              }) +
+              index_1.toLocaleString("en-US", {
+                minimumIntegerDigits: 2,
+                useGrouping: false,
+              }),
+            nsTeam: "Team A?",
+            ewTeam: "Team B?",
+            children: tableScores.score.map((boardScore, index_2) => {
+              return {
+                key:
+                  parseInt(roundScores.round_num).toLocaleString("en-US", {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  }) +
+                  index_1.toLocaleString("en-US", {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  }) +
+                  index_2.toLocaleString("en-US", {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  }),
+                declarer: "North",
+                contract: "3H",
+                made: 4,
+                nsScore: tableScores.score[0],
+                ewScore: tableScores.score[1],
+                nsMps: 4,
+                ewMps: 0,
+              };
+            }),
+          };
+        });
       });
-  });
 
+      fetchedData.forEach((roundScore, index) => {
+        while (roundScore.length < 8)
+          roundScore.push({
+            key: index.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false}) + roundScore.length.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false}),
+          });
+      });
+
+      setData(fetchedData)
+      setCurrentData(fetchedData[displayRound - 1])
+
+    })
+
+  }, []);
+
+  // data.forEach((roundScore, index) => {
+  //   while (roundScore.length < 8)
+  //     roundScore.push({
+  //       key: index.toString() + roundScore.length.toString(),
+  //     });
+  // });
+
+  const [data, setData] = React.useState<RoundScore[][]>([])
   const [displayRound, setDisplayRound] = React.useState<number>(
     props.currentRound || 1
   );
   const [form] = Form.useForm();
-  const [currentData, setCurrentData] = React.useState(data[displayRound - 1]);
+  const [currentData, setCurrentData] = React.useState<RoundScore[]>([]);
   const [editingKey, setEditingKey] = React.useState("");
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
 
@@ -196,10 +260,7 @@ const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
                   style={{ display: "inline-block" }}
                 />
               </button>
-              <button
-                onClick={cancel}
-                style={{ height: "3vh", width: "3vh" }}
-              >
+              <button onClick={cancel} style={{ height: "3vh", width: "3vh" }}>
                 <img
                   src={
                     require("./../../../assets/images/PlaySideTab/Cross.png")
@@ -269,7 +330,8 @@ const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
         ) : record.hasOwnProperty("contract") ? (
           <text>
             Board {index + 1} /{" "}
-            {currentData[parseInt(record.key.charAt(0))].children?.length}
+            {currentData[parseInt(record.key.substring(2,4))].children?.length}
+            {/* {currentData[parseInt(record.key.charAt(0))].children?.length} */}
           </text>
         ) : (
           {}
@@ -424,9 +486,9 @@ const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
   const onTableRowExpand = (collapsed: boolean, record: RoundScore) => {
     const keys = expandedRowKeys;
     if (collapsed) {
-      if(record.hasOwnProperty("children")){
-      keys.push(record.key); // I have set my record.id as row key. Check the documentation for more details.
-      setExpandedRowKeys(keys);
+      if (record.hasOwnProperty("children")) {
+        keys.push(record.key); // I have set my record.id as row key. Check the documentation for more details.
+        setExpandedRowKeys(keys);
       }
     } else {
       setExpandedRowKeys(keys.filter((key) => key != record.key));
@@ -479,10 +541,10 @@ const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
 //   const [disabled, setDisabled] = React.useState(true);
 //   const [image, setImage] = React.useState("Edit");
 
-  // const focusDiv = React.useRef();
-  // React.useEffect(() => {
-  //   if (focusDiv.current) focusDiv.current.focus();
-  // }, [focusDiv]);
+// const focusDiv = React.useRef();
+// React.useEffect(() => {
+//   if (focusDiv.current) focusDiv.current.focus();
+// }, [focusDiv]);
 
 //   function handleClick() {
 //     setDisabled(!disabled);
