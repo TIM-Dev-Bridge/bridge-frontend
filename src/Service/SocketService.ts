@@ -292,3 +292,35 @@ export const useRoom =(roomID: string)=> {
         waitForStart
     }
 }
+
+export const useScore = (tourId: string) => {
+
+    interface RoundScore {
+        score: number[]
+    }
+
+    interface RecapScoreOBJ {
+        round_num: string
+        tables : RoundScore[]
+    }
+    // const [allScore, updateAllScore] = React.useState<RecapScore[]>([])
+
+    const getAllScore = (callback: (recapScore: RecapScoreOBJ[])=>void) => {
+        socket.emit('get-all-score', tourId)
+        socket.on('score', (recapScore: RecapScoreOBJ[]) => {
+            // updateAllScore(recapScore)
+            callback(recapScore)
+        })
+    }
+    // const updateTourChat =(callback: (message: ChatObj)=>void)=> {
+    //     socket.on('update-tour-chat', (message: ChatObj)=> {
+    //         //console.log("Get message from ", message)
+    //         callback(message)
+    //     })
+    // }
+    
+
+    return {
+        getAllScore,
+    }
+}

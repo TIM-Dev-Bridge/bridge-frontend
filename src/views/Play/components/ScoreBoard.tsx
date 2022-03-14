@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { Table } from "antd";
-import "./ScoreBoardTable.css";
+import { Table, Input, InputNumber, Popconfirm, Form, Typography } from "antd";
+import "./Table.css";
+import { Type } from "typescript";
+// import "antd/dist/antd.css";
 
-interface RoundScore {
-  key: number;
+interface TableScore {
+  key: string;
   position?: "ns" | "ew";
   opponent?: string;
   contractor?: "ns" | "ew";
@@ -15,139 +17,327 @@ interface RoundScore {
 }
 
 export interface IScoreBoardProps {
-  scoreData: RoundScore[];
+  scoreData: TableScore[][];
+  currentRound?: number;
 }
 
 const ScoreBoard: React.FC<IScoreBoardProps> = (props: IScoreBoardProps) => {
-  const ScoreData: RoundScore[] = props.scoreData;
+  const data = props.scoreData;
 
-  while (ScoreData.length % 8 != 0)
-    ScoreData.push({
-      key: ScoreData.length,
+  data.forEach((roundScore, index) => {
+    while (roundScore.length < 8)
+      roundScore.push({
+        key: index.toString() + roundScore.length.toString(),
+      });
+  });
+
+  const [displayRound, setDisplayRound] = React.useState(
+    props.currentRound || 1
+  );
+  const [form] = Form.useForm();
+  const [currentData, setCurrentData] = React.useState(
+    data[displayRound - 1]
+  );
+  const [editingKey, setEditingKey] = React.useState("");
+
+  const isEditing = (record: TableScore) => record.key === editingKey;
+
+  const edit = (record: Partial<TableScore> & { key: React.Key }) => {
+    form.setFieldsValue({
+      nsScore: "",
+      ewScore: "",
+      mps: "",
+      totalMps: "",
+      ...record,
     });
+    setEditingKey(record.key);
+  };
+
+  const cancel = () => {
+    setEditingKey("");
+  };
+
+  const changeRound = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setDisplayRound(parseInt(event.target.value));
+    setCurrentData(data[parseInt(event.target.value) - 1]);
+  };
+
+  interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+    editing: boolean;
+    dataIndex: string;
+    title: any;
+    inputType: "number" | "text";
+    record: TableScore;
+    index: number;
+    children: React.ReactNode;
+  }
+
+  const EditableCell: React.FC<EditableCellProps> = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
+
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{ margin: 0 }}
+            rules={[
+              {
+                required: true,
+                message: `Please Input ${title}!`,
+              },
+            ]}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
+
+  const save = async (key: React.Key) => {
+    try {
+      const row = (await form.validateFields()) as TableScore;
+
+      const newData = [...currentData];
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+        data[displayRound - 1] = newData;
+        setCurrentData(newData);
+        setEditingKey("");
+      } else {
+        newData.push(row);
+        data[displayRound - 1] = newData;
+        setCurrentData(newData);
+        setEditingKey("");
+      }
+    } catch (errInfo) {
+      console.log("Validate Failed:", errInfo);
+    }
+  };
 
   const columns = [
     {
-      title: "Round",
+      title: "Board",
       dataIndex: "key",
       key: "key",
-      render: (key: string, record: RoundScore) =>
+      width: "10%",
+      editable: false,
+      render: (_: any, record: TableScore, index: number) =>
         record.hasOwnProperty("mps") ? (
-          <span>{key + 1}</span>
+          <span>{index + 1}</span>
         ) : (
-          <span className="pale">{record.key + 1}</span>
+          <span className="pale">{index + 1}</span>
         ),
     },
     {
       title: "Position",
       dataIndex: "position",
       key: "position",
-      render: (position: string, record: RoundScore) =>
-          record.hasOwnProperty("mps") ? position?.toUpperCase().split("").join("/"): <span className="pale"> {position?.toUpperCase().split("").join("/")} </span>
+      width: "10%",
+      editable: false,
+      render: (position: string, record: TableScore) =>
+        record.hasOwnProperty("mps") ? (
+          position?.toUpperCase().split("").join("/")
+        ) : (
+          <span className="pale">
+            {" "}
+            {position?.toUpperCase().split("").join("/")}{" "}
+          </span>
+        ),
     },
     {
       title: "Opponent",
       dataIndex: "opponent",
       key: "opponent",
-      render: (opponent: string, record: RoundScore) =>
-        record.hasOwnProperty("mps") ? opponent : <span className="pale"> {opponent} </span>
+      width: "25%",
+      editable: false,
+      render: (opponent: string, record: TableScore) =>
+        record.hasOwnProperty("mps") ? (
+          opponent
+        ) : (
+          <span className="pale"> {opponent} </span>
+        ),
     },
     {
       title: "Contractor",
       dataIndex: "contractor",
       key: "contractor",
-      render: (contractor: string, record: RoundScore) =>
-      record.hasOwnProperty("mps") ? contractor?.toUpperCase().split("").join("/") : <span className="pale"> {contractor?.toUpperCase().split("").join("/")} </span>,
+      width: "15%",
+      editable: false,
+      render: (contractor: string, record: TableScore) =>
+        record.hasOwnProperty("mps") ? (
+          contractor?.toUpperCase().split("").join("/")
+        ) : (
+          <span className="pale">
+            {" "}
+            {contractor?.toUpperCase().split("").join("/")}{" "}
+          </span>
+        ),
     },
     {
       title: "N/S Score",
       dataIndex: "nsScore",
       key: "nsScore",
+      width: "10%",
+      editable: true,
     },
     {
       title: "E/W Score",
       dataIndex: "ewScore",
       key: "ewScore",
+      width: "10%",
+      editable: true,
     },
     {
       title: "MPs",
       dataIndex: "mps",
       key: "mps",
+      width: "10%",
+      editable: true,
     },
     {
       title: "Total MPs",
       dataIndex: "totalMps",
       key: "totalMps",
+      width: "10%",
+      editable: true,
     },
+    // {
+    //   title: "operation",
+    //   dataIndex: "operation",
+    //   render: (_: any, record: TableScore) => {
+    //     const editable = isEditing(record);
+    //     return editable ? (
+    //       <span>
+    //         <Typography.Link
+    //           onClick={() => save(record.key)}
+    //           style={{ marginRight: 8 }}
+    //         >
+    //           Save
+    //         </Typography.Link>
+    //         <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+    //           <a>Cancel</a>
+    //         </Popconfirm>
+    //       </span>
+    //     ) : (
+    //       <Typography.Link
+    //         disabled={editingKey !== ""}
+    //         onClick={() => edit(record)}
+    //       >
+    //         Edit
+    //       </Typography.Link>
+    //     );
+    //   },
+    // },
   ];
 
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: TableScore) => ({
+        record,
+        inputType: col.dataIndex === "age" ? "number" : "text",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
+  const recordScore = (
+    round: number,
+    index: number,
+    nsScore: number,
+    ewScore: number,
+    mps: number,
+    totalMps: number
+  ) => {
+    const newData = [...currentData];
+    newData[index] = {
+      ...data[round - 1][index],
+      nsScore: nsScore,
+      ewScore: ewScore,
+      mps: mps,
+      totalMps: totalMps,
+    };
+
+    data[displayRound - 1] = newData;
+    setCurrentData(newData);
+  };
+
+  // const ScoreData: TableScore[][] = [...props.scoreData];
+
+  // ScoreData.forEach((roundScore) => {
+  //   while (roundScore.length < 8)
+  //     roundScore.push({
+  //       key: roundScore.length,
+  //     });
+  // });
+
   return (
-    <Container style={{ zIndex: 100 }}>
-      <BlackOverlay style={{ zIndex: -1 }} />
-      <FloatingButton style={{ position: "absolute", left: "5px", top: "5px" }}>
-        <IconButton
-          src={require("./../../../assets/images/WhiteCross.svg").default}
-          height="auto"
-          width="100%"
+    <div className="tableContainer" style={{ zIndex: 100 }}>
+      <p className="title"> Scoreboard </p>
+      <Form form={form} component={false}>
+        <Table
+          className="scoreBoard"
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          bordered
+          dataSource={currentData}
+          columns={mergedColumns}
+          rowClassName="editable-row"
+          pagination={{
+            hideOnSinglePage: true,
+            pageSize: 32,
+            onChange: cancel,
+          }}
+          scroll={{ y: "60vh", scrollToFirstRowOnChange: true }}
+          locale={{ emptyText: <span> No Data </span> }}
         />
-      </FloatingButton>
-      <Title> Scoreboard </Title>
-      <Table
-        dataSource={ScoreData}
-        columns={columns}
-        pagination={{ hideOnSinglePage: true, pageSize: 8 }}
-        locale={{ emptyText: <span> No Data </span> }}
-      />
-    </Container>
+      </Form>
+      <div className="footerWrapper">
+        {/* <button
+          style={{ backgroundColor: "lightgrey", width: "100%" }}
+          onClick={() => recordScore(1, 1, 0, 100, 3, 11)}
+        >
+          setScore
+        </button> */}
+
+        <select
+          className="roundSelector"
+          onChange={changeRound}
+          value={displayRound}
+        >
+          {[...Array(data.length)].map((round, index) => (
+            <option value={index + 1}>Round {index + 1}</option>
+          ))}
+        </select>
+      </div>
+    </div>
   );
 };
-
-const Title = styled.p`
-  font-size: 5vh;
-  font-weight: bold;
-  color: white;
-  text-align: left;
-  width: 80%;
-`;
-
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-`;
-
-const BlackOverlay = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
-`;
-
-const IconButton = styled.img`
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-const FloatingButton = styled.div`
-  display: block;
-  height: 5vmin;
-  width: 5vmin;
-  max-height: 50px;
-  max-width: 50px;
-  border-radius: 50%;
-  background: #ed1c24;
-  box-shadow: 4px 4px 22px -9px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-
-`;
 
 export default ScoreBoard;

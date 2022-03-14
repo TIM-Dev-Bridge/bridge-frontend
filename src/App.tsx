@@ -4,7 +4,7 @@ import NavigationBar from './components/NavigationBar/NavigationBar'
 import './App.css';
 import { NavigationContext } from './components/Router/Router';
 import CreateTourPopup from './views/Popup/CreateTourPopup';
-// import PlayPage from './views/Play/Play';
+import PlayPage from './views/Play/Play';
 
 function App() {
   const { navigationStack, updateStack } = React.useContext(NavigationContext)
@@ -13,20 +13,20 @@ function App() {
     // console.log("INIT LOCATION", window.location.pathname)
   })
   return (
-    <div className="App" style={{height: "100vh"}}>
-      {
-        window.location.pathname === '/' || window.location.pathname === '/lobby' ?  <></> : <NavigationBar />
-      }
-      {navigationStack[navigationStack.length - 1]}
-      {/* <CreateTourPopup isVisible={false} onDismiss={function (): void {
-        throw new Error('Function not implemented.');
-      } } /> */}
-    </div>
+    // <div className="App" style={{height: "100vh"}}>
+    //   {
+    //     window.location.pathname === '/' || window.location.pathname === '/lobby' ?  <></> : <NavigationBar />
+    //   }
+    //   {navigationStack[navigationStack.length - 1]}
+    //   {/* <CreateTourPopup isVisible={false} onDismiss={function (): void {
+    //     throw new Error('Function not implemented.');
+    //   } } /> */}
+    // </div>
 
     
-    // <div className="App" style={{height: "100vh"}}>
-    //   <PlayPage />
-    // </div>
+    <div className="App" style={{height: "100vh"}}>
+      <PlayPage />
+    </div>
   );
 }
 
