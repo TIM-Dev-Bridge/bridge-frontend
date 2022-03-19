@@ -4,6 +4,7 @@ import { socket } from '../../Service/SocketService'
 import { usePlayState } from '../PlayingContext/PlayingContext'
 import BiddingControl from './BiddingCotrol'
 import { useBidding } from './UseBidding'
+import BsSuitSpade, { BsSuitClub, BsSuitClubFill, BsSuitDiamondFill, BsSuitHeartFill, BsSuitSpadeFill } from 'react-icons/bs'
 
 const BiddingPage =()=> {
     return (
@@ -29,7 +30,7 @@ const BiddingTable =()=> {
             handleBidding(status)
             handlePlaying(status)
         })
-    }, [socket, playState])
+    }, [socket])
 
     const handleBidding =(status: {[key: string]: any})=> {
         if (status['status'] == 'waiting_for_bid') {
@@ -42,8 +43,10 @@ const BiddingTable =()=> {
             if (status['payload'].hasOwnProperty('contract')) {
                 // setCurrentBid(status['payload']['contract'])
                 if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItemsRef.current.length == 0) { return }
-                const newItems = [...bidItemsRef.current]
-                newItems.push(<BidItem>{status['payload']['contract']}</BidItem>)
+                const newItems = bidItemsRef.current.map(item => item)
+                const component = stringToComponent(numToString(status['payload']['contract']))
+                const element = <>{component[0]}{component[1]}</>
+                newItems.push(<BidItem>{element}</BidItem>)
                 setBidItems(newItems)
                 console.log("Set current Bid")
             }
@@ -67,6 +70,42 @@ const BiddingTable =()=> {
                 // setLvlToBid(lvlToBid())
             }
         }
+    }
+
+    const numToString =(contract: number)=> {
+        const dict: {[key:number]: string} = {
+            1: 'C',
+            2: 'D',
+            3: 'H',
+            4: 'S',
+            0: 'NT'
+        }
+        const level: Number = Math.floor(((contract - 1) / 5) + 1)
+        const suite = contract % 5
+        var bidString = level.toString() + "_" + dict[suite]
+        if (contract == -1) {
+            return "PASS"
+        }
+        if (contract == -99) {
+            return "DOUBLE"
+        }
+        return bidString
+    }
+
+    const stringToComponent =(str: string)=> {
+        const level = str.split("_")[0]
+        const suit = str.split("_")[1]
+        const img: {[key:string]: JSX.Element} = {
+            "C": <BsSuitClub/>,
+            "S": <BsSuitSpadeFill />,
+            "D": <BsSuitDiamondFill />,
+            "H": <BsSuitHeartFill />
+        }
+        var element = img[suit]
+        if (suit == "PASS" || suit == "NT" || suit == "DOUBLE") {
+            return [level, suit]
+        }
+        return [level, element]
     }
     
     return (

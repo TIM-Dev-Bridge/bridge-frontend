@@ -31,6 +31,7 @@ const PlayPage = (props: PlayPageProps) => {
       }
   }, [props.tableDetail])
 
+  const [selectedPopup, setSelectedPopup] = React.useState(null)
   const [sideTabInfo, setSideTabInfo] =
     React.useState<IPlaySideTabProps>({
       round: 1,
