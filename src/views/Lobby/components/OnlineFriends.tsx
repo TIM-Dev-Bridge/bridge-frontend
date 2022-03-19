@@ -59,12 +59,12 @@ const OnlineFriends =(props: OnlineFriendsProps)=> {
                 <div className="self-start pt-4 pb-4"><TitleText medium>Player in Waiting</TitleText></div>
             </div>
             {
-                watingPlayers.includes(authContext.authen.username) ? <FriendBlock name={authContext.authen.username} displayMode="none"/> : <></>
+                watingPlayers.includes(authContext.authen.username) ? <FriendBlock name={authContext.authen.username} displayMode="none" isWaiting={watingPlayers.includes(authContext.authen.username)}/> : <></>
             }
             {
                 watingPlayers.filter(player=>player!=authContext.authen.username).map((player) => {
                     const displayMode = invitation.includes(player) ? "accept-invite" : "invite"
-
+                    const isWaiting = watingPlayers.includes(authContext.authen.username)
                     return (
                         <FriendBlock 
                             name={player} 
@@ -77,6 +77,7 @@ const OnlineFriends =(props: OnlineFriendsProps)=> {
                                 updateInvitation([])
                             }}
                             displayMode={displayMode}
+                            isWaiting={isWaiting}
                             />)
                 })
             }
@@ -89,6 +90,7 @@ interface FriendProps {
     onInvite?: ()=>void
     onAccept?: ()=>void
     displayMode: string
+    isWaiting: boolean
 }
 
 const FriendBlock =(props: FriendProps)=> {
@@ -102,13 +104,20 @@ const FriendBlock =(props: FriendProps)=> {
                 return <AcceptButton onClick={props.onAccept}>Accept</AcceptButton>
         }
     }
+    
+    const displayButton =()=> {
+        if (props.name == authContext.authen.username || !(props.isWaiting)) {
+            return <></>
+        } 
+        return displayMode(props.displayMode)  
+    }
 
     return (
         <div className="flex justify-between" data-testid="friends">
             {/* <img src={props.img} alt={props.name} /> */}
             <NormalText>{props.name}</NormalText>
             {
-                props.name == authContext.authen.username ? <></> : displayMode(props.displayMode)
+                props.name == authContext.authen.username ? <></> : displayButton()
             }
             
         </div>

@@ -331,7 +331,8 @@ export const useRoom =(roomID: string)=> {
 
     const getUpdatedPlayerPair =(username: string, callback: (pair_id:number)=>void )=> {
         socket.on('update-player-pair', (pairs: {id:string, name:string, status:string, pair_id:number}[]) => {
-            const pair = mapPlayerPair(pairs)
+            const sortedPair = pairs.sort((a,b) => a.pair_id - b.pair_id)
+            const pair = mapPlayerPair(sortedPair)
             var pairId = 0
             for (var i = 0; i < pair.length; i++) {
                 for (var player = 0; player < pair[i].length; player ++) {
@@ -340,7 +341,7 @@ export const useRoom =(roomID: string)=> {
                     }
                 }
             }
-            console.log("PAIR ID", pair)
+            console.log("PAIR ID", pairs)
             callback(pairId)
             updatePlayerPair(pair)
         })
