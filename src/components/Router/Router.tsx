@@ -28,7 +28,7 @@ export const NavigationView =(props: NavigationViewAttr)=> {
         } else {
             const path = window.location.pathname
             // console.log(path)
-            const stack = [...navigationStack, RouterConfig[window.location.pathname]()]
+            const stack = [...navigationStack, RouterConfig[path]()]
             updateStack(stack)
         }
 

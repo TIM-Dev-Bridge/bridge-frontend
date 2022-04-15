@@ -8,6 +8,27 @@ const endpoint = "http://localhost:4000"
 export var socket = io(endpoint,{transports:['websocket']})
 //useLobby
 
+
+
+
+interface Direction {
+    id: any,
+    direction: any
+}
+
+interface Table {
+    table_id: string,
+    versus: string,
+    boards: number[],
+    currentBoard: number,
+    directions: Direction[]
+}
+
+export interface RoundData {
+    roundNum: string,
+    tables: [Table]
+}
+
 interface TourItem {
     host: string,
     title: string,
@@ -56,12 +77,12 @@ export const useLobby =()=> {
             max_player: 20,
             type: data.movement,
             password: "",
-            player_name: [],
+            players: [],
             time_start: formatDateTime,
             status: "Pending",
             board_to_play: Number(data.boardToPlay),
             minute_board: Number(data.minuteBoard),
-            board_round: Number(data.boardRound),
+            board_per_round: Number(data.boardRound),
             movement: data.movement,
             scoring: data.scoring,
             barometer: true,
@@ -155,16 +176,17 @@ interface Player {
 }
 
 interface Pair {
-    user_a: string,
-    user_b: string
+    
 }
+
+
 
 
 //useRoom
 
 export const useRoom =(roomID: string)=> {
     const [players, updatePlayers] = React.useState<string[]>([]);
-    const [playerPair, updatePlayerPair] = React.useState<Pair[]>([]);
+    const [playerPair, updatePlayerPair] = React.useState<{id:string, name:string, status:string, pair_id:number}[][]>([]);
     const [invitation, updateInvitation] = React.useState<string[]>([]);
     const [watingPlayers, udpateWaitingPlayers] = React.useState<string[]>([]);
 
@@ -191,9 +213,69 @@ export const useRoom =(roomID: string)=> {
     }
 
     const getPlayerPair =()=> {
-        socket.emit('get-player-pair', roomID, (playerPair: Pair[])=> {
-            updatePlayerPair(playerPair)
+        socket.emit('get-player-pair', roomID, (player: {id:string, name:string, status:string, pair_id:number}[])=> {
+            const pair = mapPlayerPair(player)
+            updatePlayerPair(pair)
         })
+    }
+
+    const mapPlayerPair =(pairFromServer: {
+        id: string;
+        name: string;
+        status: string;
+        pair_id: number;
+    }[])=> {
+
+        var pair: {
+            id: string;
+            name: string;
+            status: string;
+            pair_id: number;
+        }[][] = []
+        var numberOfPair = 0
+        var temp = pairFromServer ?? playerPair
+        if (temp.length > 0) {
+            pair.push([temp[0]])
+        }
+        temp.splice(0,1)
+
+
+        while (temp.length != 0) {
+            var found = false
+            var currentPlayerToPair = pair[numberOfPair][0]
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i].pair_id == currentPlayerToPair.pair_id) {
+                    pair[numberOfPair].push(temp[i])
+                    numberOfPair += 1
+                    temp.splice(i,1)
+                    if (temp[0] != undefined || temp[0] != null){
+                        pair.push([temp[0]])
+                        temp.splice(0,1)
+                    }
+                    found = true
+                    break;
+                }
+                
+                if (i == temp.length - 1) {
+                    if (!found) {
+                        numberOfPair += 1
+                        if (temp[0] != undefined || temp[0] != null){
+                            pair.push([temp[0]])
+                            temp.splice(0,1)
+                        }
+                    }
+                }
+            }
+            
+        }
+        // let indexToFilter = 0
+        // for (var i = 0; i < pair.length; i++) {
+        //     if (pair[i][0] == undefined) {
+        //         indexToFilter = i
+        //     }
+        // }
+        // pair.splice(indexToFilter, 1)
+        return pair
     }
 
     const invitePlayer =(invite_player_name: string, player_name: string)=> {
@@ -244,15 +326,29 @@ export const useRoom =(roomID: string)=> {
         })
     }
 
+    
+
     const sendMessageToTourChat =(sender: string, tour_name: string, message: string)=> {
         socket.emit('send-tour-chat', sender, tour_name, message, ()=> {
             
         })
     }
 
-    const getUpdatedPlayerPair =()=> {
-        socket.on('update-player-pair', pairs => {
-            updatePlayerPair(pairs)
+    const getUpdatedPlayerPair =(username: string, callback: (pair_id:number)=>void )=> {
+        socket.on('update-player-pair', (pairs: {id:string, name:string, status:string, pair_id:number}[]) => {
+            const sortedPair = pairs.sort((a,b) => a.pair_id - b.pair_id)
+            const pair = mapPlayerPair(sortedPair)
+            var pairId = 0
+            for (var i = 0; i < pair.length; i++) {
+                for (var player = 0; player < pair[i].length; player ++) {
+                    if(pair[i][player].name == username) {
+                        pairId = pair[i][player].pair_id
+                    }
+                }
+            }
+            console.log("PAIR ID", pairs)
+            callback(pairId)
+            updatePlayerPair(pair)
         })
     }
     
@@ -264,7 +360,7 @@ export const useRoom =(roomID: string)=> {
         socket.emit('start', roomID)
     }
 
-    const waitForStart =(callback: (table: {[key: string]:string})=>void)=> {
+    const waitForStart =(callback: (table: RoundData[])=>void)=> {
         socket.on('start-tour', (table)=> {
             callback(table)
         })

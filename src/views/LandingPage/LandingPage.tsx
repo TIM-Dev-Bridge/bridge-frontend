@@ -20,7 +20,7 @@ const LandingPage: React.FC =()=> {
     const [displayDialog, setDialogDisplay] = React.useState(false);
 
     const MenuListByRole =(): JSX.Element => {
-        if (profile.profile.access == 'admin') {
+        if (profile.profile.access == 'user') {
             return (
                 <MenuList>
                     <ModePreviewContainer title="Online Plays" to="/lobby" state={{}} key="online-plays"/>
@@ -37,7 +37,7 @@ const LandingPage: React.FC =()=> {
                 </MenuList>
             )
         }
-        if (profile.profile.access.toLowerCase() == 'user') {
+        if (profile.profile.access.toLowerCase() == 'td') {
             return (
                 <MenuList>
                     <ModePreviewContainer 

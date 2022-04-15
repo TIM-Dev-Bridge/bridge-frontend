@@ -1,14 +1,36 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import styled from "styled-components";
 import { PrimarySqButton } from "../../components/Button/Button";
 import { navigate, useNavigator } from "../../components/Router/Router";
 import { device } from "../../Device";
 import { api } from "../../Service/ApiService";
+import BiddingPage from "../Bidding/BiddingPage";
+import { ConnectTable, useTable } from "../TourRoom/UseTable";
 import { useProfile } from "../UserProfile/ProfileContext";
 import PlayArea from "./components/PlayArea";
 import PlaySideTab, { IPlaySideTabProps } from "./components/PlaySideTab";
+import PlayingPage from "./components/PlayState";
 
-const PlayPage: React.FC = () => {
+interface PlayPageProps extends HTMLAttributes<HTMLDivElement> {
+  tableId: string
+  tableDetail?: ConnectTable | undefined
+  ref?:  React.RefObject<HTMLDivElement>
+}
+
+const PlayPage = (props: PlayPageProps) => {
+  const table = useTable()
+
+  React.useEffect(()=> {
+    window.getComputedStyle(document.body)
+  }, [])
+
+  React.useEffect(()=> {
+      if (props.tableDetail != null || props.tableDetail != undefined) {
+        console.log("CONNECT TO",  props.tableId, props.tableDetail)
+        table.connect(props.tableId, props.tableDetail)
+      }
+  }, [props.tableDetail])
+
   const [selectedPopup, setSelectedPopup] = React.useState(null)
   const [sideTabInfo, setSideTabInfo] =
     React.useState<IPlaySideTabProps>({
@@ -80,9 +102,10 @@ const PlayPage: React.FC = () => {
   }
 
   return (
-    <div className="lg:flex flex-row w-screen h-screen overflow-hidden">
+    <Container ref={props.ref}>
       <PlaySideTab {...sideTabInfo} />
-      <PlayArea selectedPopup={selectedPopup} setSelectedPopup={setSelectedPopup}/>
+      {/* <PlayArea /> */}
+      <PlayingPage tableDetail={props.tableDetail}/>
       {/* <div className="lg:flex flex-col w-1/6 h-screen overflow-hidden justify-around">
         <button
           style={{ backgroundColor: "lightgrey", width: "100%" }}
@@ -115,8 +138,14 @@ const PlayPage: React.FC = () => {
           Round
         </button>
       </div> */}
-    </div>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+`
 
 export default PlayPage;

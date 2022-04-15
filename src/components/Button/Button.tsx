@@ -32,6 +32,8 @@ export const PrimaryButton = styled.div`
     border-width: 2px;
     border-radius: 16px;
     text-align: center;
+    display: flex;
+    justify-content: center;
     line-height: 250%;
     padding-left: 32px;
     padding-right: 32px;
