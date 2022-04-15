@@ -9,6 +9,9 @@ const initialPlayState: PlayState = {
     room: '',
     status: '',
     pairId: 0,
+    currentRound: 0,
+    tableCount: 0,
+    data: []
 }
 
 export const PlayingProvider =(props: HTMLAttributes<HTMLElement>)=> {

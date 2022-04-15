@@ -8,6 +8,27 @@ const endpoint = "http://localhost:4000"
 export var socket = io(endpoint,{transports:['websocket']})
 //useLobby
 
+
+
+
+interface Direction {
+    id: any,
+    direction: any
+}
+
+interface Table {
+    table_id: string,
+    versus: string,
+    boards: number[],
+    currentBoard: number,
+    directions: Direction[]
+}
+
+export interface RoundData {
+    roundNum: string,
+    tables: [Table]
+}
+
 interface TourItem {
     host: string,
     title: string,
@@ -305,23 +326,7 @@ export const useRoom =(roomID: string)=> {
         })
     }
 
-    interface TourData {
-        roundNum: string,
-        tables: [Table]
-    }
-
-    interface Table {
-        table_id: string,
-        versus: string,
-        boards: number[],
-        currentBoard: number,
-        directions: Direction[]
-    }
-
-    interface Direction {
-        id: any,
-        direction: any
-    }
+    
 
     const sendMessageToTourChat =(sender: string, tour_name: string, message: string)=> {
         socket.emit('send-tour-chat', sender, tour_name, message, ()=> {
@@ -355,7 +360,7 @@ export const useRoom =(roomID: string)=> {
         socket.emit('start', roomID)
     }
 
-    const waitForStart =(callback: (table: TourData[])=>void)=> {
+    const waitForStart =(callback: (table: RoundData[])=>void)=> {
         socket.on('start-tour', (table)=> {
             callback(table)
         })

@@ -13,6 +13,7 @@ interface CardProps {
     index: number
     shouldCollapse: number,
     selfAnimate?: boolean,
+    available: boolean
 }
 
 type Position = {x: number, y: number}
@@ -38,6 +39,7 @@ const Card =(props: CardProps)=> {
     const defaultPosition = React.useRef<Position>()
 
     React.useEffect(()=> {
+        console.log("AVAILABLE", props.available)
         cardRef.current!.onmouseup = onMouseUp
         defaultPosition.current = {x: cardRef.current!.getBoundingClientRect().x, y: cardRef.current!.getBoundingClientRect().y}
     }, [])
@@ -177,6 +179,7 @@ const Card =(props: CardProps)=> {
     return (
         <CardContainer
             background={CardImage(props.text)}
+            highlight={props.available}
             visible={visible}
             drag 
             animate={makeAnimation(movingState)}
@@ -190,16 +193,20 @@ const Card =(props: CardProps)=> {
     )
 }
 
-const CardContainer = styled(motion.div)<{visible: boolean, background: string}>`
+const CardContainer = styled(motion.div)<{visible: boolean, background: string, highlight: boolean}>`
     width: 5vw;
     max-width: 4em;
     /* height: 50%; */
     border-radius: 3px;
+    background-position: center; 
     box-shadow: var(--app-shadow);
     background-color: white;
     aspect-ratio: 169/244;
     background-image: url(${props=>props.background});
-    background-size: contain;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: ${props=>props.highlight ? "4px solid green" : "4px solid transparent"};
+    pointer-events: ${props=>props.highlight ? "auto" : "none"} ;
 `
 
 export default Card;

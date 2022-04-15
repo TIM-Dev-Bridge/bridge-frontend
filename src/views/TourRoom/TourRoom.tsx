@@ -76,7 +76,7 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
     React.useEffect(()=> {
         waitForStart((rounds)=> {
             console.log("TABLE", playStateRef.current.playState)
-            const table = rounds[0].tables.find( table => table.versus.includes(playStateRef.current.playState.pairId.toString()))
+            const table = rounds[playStateRef.current.playState.currentRound].tables.find( table => table.versus.includes(playStateRef.current.playState.pairId.toString()))
             console.log(rounds)
             console.log(tourNameRef.current)
             
@@ -98,7 +98,10 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                 table: table?.table_id ?? "",
                 direction: detail.direction,
                 status: "",
-                pairId: playStateRef.current.playState.pairId
+                pairId: playStateRef.current.playState.pairId,
+                currentRound: 1,
+                tableCount: rounds[playState.playState.currentRound].tables.length,
+                data: rounds
             })
 
             console.log("DETAIL", detail)
@@ -167,7 +170,10 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                                         table: "",
                                         direction: 0,
                                         status: "",
-                                        pairId: num
+                                        pairId: num,
+                                        currentRound: 0,
+                                        tableCount: 0,
+                                        data: []
                                     })
                                 }
                             }/>

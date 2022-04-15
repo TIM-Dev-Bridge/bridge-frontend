@@ -10,7 +10,8 @@ interface HandProps {
     position: HandPosition,
     placeCard?: boolean,
     enabled: boolean,
-    cardToFind: number
+    cardToFind: number,
+    currentSuite?: number|null
 }
 
 export enum HandPosition {
@@ -22,7 +23,7 @@ export enum HandPosition {
 
 
 const Hand =(props: HandProps)=> {
-    const [cards, setCards] = React.useState(props.initialCard)
+    const [cards, setCards] = React.useState<number[]>(props.initialCard)
 
     React.useEffect(()=> {
         setCards(props.initialCard)
@@ -33,6 +34,34 @@ const Hand =(props: HandProps)=> {
             return props.placeCard && val == props.cardToFind
         }
         return props.placeCard && index == 0
+    }
+
+    const isCardAvailable =(currentCard: number)=> {
+        if (props.currentSuite === null) {
+            return true
+        }
+
+        if (props.currentSuite === undefined) {
+            return false
+        }
+
+        if (props.currentSuite === Math.floor(Number(currentCard / 13))) {
+            return true
+        }
+        return false
+    }
+
+    const isAvailable =(suite: number)=> {
+        var isExist =  false
+        cards.map( card => {
+            if (props.currentSuite === Math.floor(Number(Number(card) / 13))) {
+                isExist = true
+            }
+        })
+        if (isExist) {
+            return isCardAvailable(suite) && props.enabled
+        }
+        return props.enabled
     }
 
     return (
@@ -48,6 +77,7 @@ const Hand =(props: HandProps)=> {
                         placePositionRef={props.dropRef}
                         onDrop={props.onDrop}
                         selfAnimate={animateCondition(val, i)}
+                        available={isAvailable(val)}
                         onAnimationCompleted={()=>{
                             
                             setCards(cards.filter(e=>cards.indexOf(e) != i))

@@ -33,7 +33,9 @@ export const usePlaying =()=> {
         payload: {
             card: number,
             nextDirection: number,
-            prevDirection: number
+            prevDirection: number,
+            initSuite: number,
+            isFourthPlay: boolean
         }
     }
 
@@ -79,10 +81,35 @@ export const usePlaying =()=> {
         })
     }
 
+    interface Finish {
+
+    }
+
+    const onFinishRound =(callback: (data: any)=>void) => {
+        socket.on('finish-all-table', (data) => {
+            callback(data)
+        })
+    }
+
+    const onEnding =(callback: ()=>void)=> {
+        socket.on('playing', (data)=> {
+            if (data['status'] == 'ending') {
+                callback()
+            }
+        })
+    }
+
+    const leave =(tableId: String) => {
+        socket.emit('leave-table', tableId)
+    }
+
     return {
         playCard,
         onInitialTurn,
         onInitialPlaying,
-        onDefaultTurn
+        onDefaultTurn,
+        onFinishRound,
+        onEnding,
+        leave
     }
 }

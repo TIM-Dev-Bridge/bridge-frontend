@@ -11,6 +11,7 @@ import TextField from '../../../components/TextField/TextField';
 import { api } from '../../../Service/ApiService';
 import LandingPage from '../../LandingPage/LandingPage';
 import { Profile, useProfile } from '../../UserProfile/ProfileContext';
+import { LoadingAnimation, LoadingSpinner, LoadingState } from './useLoading';
 import { validator } from './Validate';
 
 interface LoginFormProps extends MotionProps {
@@ -23,6 +24,7 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
     const context = React.useContext(AuthenContext)
     const profile = useProfile()
     const navigateContext = React.useContext(NavigationContext)
+    const [loadingStatus, setLoadingStatus] = React.useState(LoadingState.IDLE)
     const [errorResponse, setErrorResponse] = React.useState({
         email: {
             isValid: true,
@@ -35,6 +37,7 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
     })
     const onLogin =(value: {})=> {
         // console.log("VLAUE: ", value)
+        setLoadingStatus(LoadingState.LOADING)
         api.login(value)
             .then( res => {
                 console.log("LOGIN RES",res)
@@ -53,7 +56,14 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
                 } 
             })
             .catch( error => {
-                console.log("Error ",error.response.status == 400)
+                setLoadingStatus(LoadingState.FAIL)
+                if (error == undefined) {
+                    return
+                }
+                let response = error.response
+                if (response == undefined) {
+                    return
+                }
                 if (error.response.status == 400) {
                     setErrorResponse({
                         email: {
@@ -94,6 +104,20 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
 
     const { isValid, handleSubmit } = useForm<typeof form>(form)
 
+    const loadable =(component: JSX.Element)=> {
+        console.log(LoadingState[loadingStatus])
+        switch (loadingStatus) {
+            case LoadingState.IDLE:
+                return component
+            case LoadingState.LOADING:
+                return LoadingAnimation.loading
+            case LoadingState.SUCCESS:
+                return LoadingAnimation.success
+            case LoadingState.FAIL:
+                return component
+        }
+    }
+
     return (
         <Container 
             visible={props.isDisplay ?? false}
@@ -121,7 +145,11 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
                         // navigate(navigateContext,'/bridgebase', {})
                     })
 
-                    }}>Continue</PrimaryButton>
+                    }}>
+                        {
+                            loadable(<>Continue</>)
+                        }
+                    </PrimaryButton>
                 <div className="flex flex-row items-center justify-between">
                     <LinkText small onClick={props.onRegisterClick}>Don't have and accout?</LinkText>
                     <LinkText small>Forgot password</LinkText>

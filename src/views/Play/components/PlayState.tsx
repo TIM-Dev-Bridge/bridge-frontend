@@ -11,6 +11,7 @@ import { usePlayState } from '../../PlayingContext/PlayingContext'
 import { AuthenContext, useAuthen } from '../../../Authen'
 import { PlayCardRequest, usePlaying } from '../../Bidding/UsePlaying'
 import DroppedCard from './DroppedCard'
+import { useGame } from './GameContext'
 
 interface PlayingPageProps {
     tableDetail?: ConnectTable
@@ -55,7 +56,7 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     const playContext = usePlayState()
     const authen = useAuthen()
-    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying} = usePlaying()
+    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onFinishRound, onEnding, leave} = usePlaying()
     const [playDirection, setPlayDirection] = React.useState(-1)
     const [turn, setTurn] = React.useState(-1)
     const turnRef = React.useRef(turn)
@@ -68,6 +69,13 @@ const PlayingPage = (props: PlayingPageProps) => {
     
     const [playingDirection, setPlayingDirection] = React.useState<PlayingDirection>()
     const playingDirectionRef = React.useRef(playingDirection)
+    const [shouldWaiting, setShouldWaiting] = React.useState(false)
+
+    const [currentSuite, setCurrentSuite] = React.useState<number|null>(null)
+
+    const [shouldAnimateCollapse, setShouldAnimateCollapse] = React.useState(false)
+
+    const game = useGame()
 
     // React.useEffect(() => {
     //     if (props.tableDetail != null || props.tableDetail != undefined) {
@@ -117,6 +125,7 @@ const PlayingPage = (props: PlayingPageProps) => {
             
             
             connect(playContext.playState.table, detail)
+            
         }
     }, [playContext.playState.table])
 
@@ -146,7 +155,10 @@ const PlayingPage = (props: PlayingPageProps) => {
                 table: playContext.playState.table,
                 direction: playContext.playState.direction,
                 status: 'initial_playing',
-                pairId: playContext.playState.pairId
+                pairId: playContext.playState.pairId,
+                currentRound: playContext.playState.currentRound,
+                tableCount: playContext.playState.tableCount,
+                data: playContext.playState.data
             })
         })
     }, [socket, declarer])
@@ -157,10 +169,11 @@ const PlayingPage = (props: PlayingPageProps) => {
             let direction = data.payload.leader
             setPlayDirection(direction)
             setTurn(data.payload.turn)
+            setCurrentSuite(null)
             // animateDirectionRef.current[direction](true)
             // animateDirection[direction](true)
         })
-    }, [socket, playDirection])
+    }, [socket, playDirection, currentSuite])
 
     React.useEffect(()=> {
         onDefaultTurn( data => {
@@ -172,12 +185,18 @@ const PlayingPage = (props: PlayingPageProps) => {
             if (prev != playContext.playState.direction) {
                 playingDirection?.[prev].dropCard(data.payload.card)
                 playingDirection?.[prev].animate(true)
+                setCurrentSuite(data.payload['initSuite'])
                 if (declarer == data.payload.nextDirection) {
 
                 }
             }
+
+            if (data.payload.isFourthPlay) {
+                console.log("ANIMATE COLLAPSE PLEASE")
+                setShouldAnimateCollapse(true)
+            }
         })
-    }, [socket, playDirection])
+    }, [socket, playDirection, currentSuite, shouldAnimateCollapse])
 
     React.useEffect(()=> {
         onInitialPlaying( data => {
@@ -189,12 +208,60 @@ const PlayingPage = (props: PlayingPageProps) => {
     }, [socket, playDirection])
 
     React.useEffect(()=> {
+        onFinishRound( data => {
+            if (data.length == playContext.playState.tableCount) {
+                console.log("FINISH", data)
+                const newRound = playContext.playState.currentRound + 1
+                const tableOfNewRound = playContext.playState.data[newRound - 1].tables
+                const table = tableOfNewRound.find( table => table.versus.includes(playContext.playState.pairId.toString()))
+                const tableId = table?.table_id
+                const detail: ConnectTable = {
+                    player_id: authen.authen.username,
+                    player_name: authen.authen.username,
+                    tour_name: playContext.playState.tourName,
+                    direction: table?.directions.find(player => player.id == authen.authen.username)?.direction,
+                    room: table?.table_id ?? "",
+                    round_num: newRound.toString(),
+                    table_id: table?.table_id ?? ""
+                }
+                leave(playContext.playState.table)
+
+                playContext.updatePlayState({
+                    ...playContext.playState,
+                    room: tableId ?? "",
+                    round: newRound.toString(),
+                    table: tableId ?? "",
+                    direction: table?.directions.find(player => player.id == authen.authen.username)?.direction,
+                    status: "",
+                    currentRound: newRound
+                })
+
+                
+                connect(tableId ?? "", detail)
+                game.reset()
+                setShouldWaiting(false)
+                
+            }
+        })
+    }, [socket])
+
+    React.useEffect(()=> {
+        onEnding( ()=> {
+            console.log("WAITING PLEASE")
+            setShouldWaiting(true)
+        })
+    }, [socket])
+
+
+    React.useEffect(()=> {
         turnRef.current = turn
     }, [turn])
     
     React.useEffect(()=> {
         playingDirectionRef.current = playingDirection
     }, [playingDirection])
+
+    
 
     const makePlayCardRequest =(card: number, turn: number)=> {
         let request : PlayCardRequest = {
@@ -217,11 +284,37 @@ const PlayingPage = (props: PlayingPageProps) => {
         return dropFunction
     }
 
+    const variants = {
+        collapse: {
+            scale: 0.8,
+            opacity: 0,
+            transition: {
+                delayChildren: 0.3,
+                staggerChildren: 0.2
+            }
+        },
+        normal: {
+            scale: 1,
+            opacity: 1
+        }
+    }
+
     return (
         <PlayingPageContainer>
             <InnerContainer isYourTurn={playDirection == playContext.playState.direction}>
                 
-                <Center>
+                <Center
+                    variants={variants}
+                    initial="normal"
+                    animate={shouldAnimateCollapse ? "collapse" : "normal"}
+                    onAnimationComplete={()=> {
+                        setTopDroppedCard(<></>)
+                        setLefttDroppedCard(<></>)
+                        setRightDroppedCard(<></>)
+                        setDroppedCard(<></>)
+                        setShouldAnimateCollapse(false)
+                    }}
+                >
                     <CenterTop>
                         <PlayedCard ref={topPlayedCardRef}>
                             {topDroppedCard}
@@ -259,6 +352,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                     initialCard={cards}
                     dropRef={southPlayedCardRef}
                     cardToFind={dropCardBottom}
+                    currentSuite={currentSuite}
                     onDrop={(item)=> {
                         setDroppedCard(<DroppedCard text={item} />)
                         makePlayCardRequest(item, turnRef.current)}} />
@@ -287,6 +381,9 @@ const PlayingPage = (props: PlayingPageProps) => {
             <PopupArea visible={playContext.playState.status == 'waiting_for_bid'}>
                 <BiddingPage />
             </PopupArea>
+            <WaitingPage visible={shouldWaiting}>
+                <>Wait for other table to complete</>
+            </WaitingPage>
         </PlayingPageContainer>
     )
 }
@@ -324,7 +421,7 @@ const InnerContainer = styled.div<{isYourTurn: boolean}>`
     grid-template-rows: 33% 33% 33%;
 `
 
-const Center = styled.div`
+const Center = styled(motion.div)`
     grid-row: 2;
     grid-column: 2;
     display: grid;
@@ -340,7 +437,7 @@ const CenterTop = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: green;
+    /* background-color: green; */
     width: 10vw;
     max-width: 10em;
     aspect-ratio: 1 / 1;
@@ -352,7 +449,7 @@ const CenterSouth = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: green;
+    /* background-color: green; */
     width: 10vw;
     max-width: 10em;
     aspect-ratio: 1 / 1;
@@ -364,7 +461,7 @@ const CenterRight = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: green;
+    /* background-color: green; */
     width: 10vw;
     max-width: 10em;
     aspect-ratio: 1 / 1;
@@ -376,7 +473,7 @@ const CenterLeft = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: green;
+    /* background-color: green; */
     width: 10vw;
     max-width: 10em;
     aspect-ratio: 1 / 1;
@@ -403,6 +500,20 @@ const PopupArea = styled.div<{visible: boolean}>`
     left: 0;
     width: 100%;
     height: 100%;
+    visibility: ${props=>props.visible ? "visible" : "hidden"};
+`
+
+const WaitingPage = styled.div<{visible: boolean}>`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
     visibility: ${props=>props.visible ? "visible" : "hidden"};
 `
 

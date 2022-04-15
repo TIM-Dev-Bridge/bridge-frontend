@@ -1,4 +1,5 @@
 import React from 'react'
+import { RoundData } from '../../Service/SocketService'
 
 export interface PlayState {
     tourName: string,
@@ -8,6 +9,9 @@ export interface PlayState {
     direction: number,
     status: string,
     pairId: number,
+    currentRound: number,
+    tableCount: number,
+    data: RoundData[]
 }
 
 // player_id: "",
@@ -32,7 +36,10 @@ export const PlayingContext = React.createContext<PlayStateContext>({
         table: "",
         direction: 0,
         status: '',
-        pairId: 0
+        pairId: 0,
+        currentRound: 0,
+        tableCount: 0,
+        data: []
     },
     updatePlayState: (playState: PlayState) => {}
 })
