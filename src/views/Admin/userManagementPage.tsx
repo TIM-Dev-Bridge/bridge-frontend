@@ -129,6 +129,14 @@ const UserManagement = () => {
       type: "user",
     },
   ]);
+  
+  // const { getAllUser } = useManage("123456789");
+
+  React.useEffect(() => {
+    console.log('fetching Data')
+
+    
+  });
 
   const columns = [
     {

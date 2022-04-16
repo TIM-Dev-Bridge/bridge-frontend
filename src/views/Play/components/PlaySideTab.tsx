@@ -88,7 +88,7 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
           <p style={{ fontSize: "2.5vh" }}> Round {props.round} / {props.totalRounds}</p>
         )}
         {props.boardsPlayed && (
-          <p style={{ fontSize: "1.5vh" }}>
+          <p style={{ fontSize: "1.5vh"}} >
             {" "}
             Board {props.boardsPlayed} / {props.boardsPerRound}{" "}
           </p>
@@ -192,7 +192,7 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
           <th>N/S</th>
           <th>E/W</th>
         </PanelTop>
-        <tbody style={{ fontSize: "5vmin" }}>
+        <tbody style={{ fontSize: "5vmin"}}>
           <td>{props.tricks ? props.tricks.nsTricks : "0"}</td>
           <td>{props.tricks ? props.tricks.ewTricks : "0"}</td>
         </tbody>
