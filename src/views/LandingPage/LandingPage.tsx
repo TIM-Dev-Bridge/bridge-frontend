@@ -51,7 +51,7 @@ const LandingPage: React.FC =()=> {
                 </MenuList>
             )
         }
-        if (profile.profile.access.toLowerCase() == 'td') {
+        else if (profile.profile.access.toLowerCase() == 'td') {
             return (
                 <MenuList>
                     <ModePreviewContainer 
@@ -79,7 +79,7 @@ const LandingPage: React.FC =()=> {
                 </MenuList>
             )
         }
-        if (profile.profile.access.toLowerCase() == 'td') {
+        else if (profile.profile.access.toLowerCase() == 'td') {
             return (
                 <MenuList>
                     <ModePreviewContainer title="Online Plays" to="/lobby" state={{}} key="online-plays"/>
@@ -96,6 +96,38 @@ const LandingPage: React.FC =()=> {
                 </MenuList>
             )
         }
+
+        else if (profile.profile.access.toLowerCase() == 'admin') {
+            return (
+                <MenuList>
+                    <ModePreviewContainer 
+                        title="Announcement" 
+                        description="Announce things, deliver important infomation to every user" 
+                        to="/board" 
+                        state={{}} 
+                        key="board"
+                        buttonTitle="Create"
+                        />
+                    <ModePreviewContainer 
+                        title="Users Management" 
+                        description="Manage users permission including Player, Tounament Director and Administrator permission." 
+                        to="/user-manage" 
+                        state={{}}
+                        key="user"
+                        buttonTitle="Manage"
+                        />
+                    <ModePreviewContainer 
+                        title="Tournaments Management" 
+                        description="Manage tournament for both ongoing tournaments and Finished tournaments." 
+                        to="/tour-manage" 
+                        state={{}} 
+                        key="tour"
+                        buttonTitle="Manage"
+                        />
+                </MenuList>
+            )
+        }
+
         return (
             <></>
         )

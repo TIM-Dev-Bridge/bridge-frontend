@@ -1,3 +1,4 @@
+import UserManagementPage from "../../views/Admin/userManagementPage"
 import AdminBoardEditor from "../../views/Board/AdminBoardEditor"
 import BoardPage from "../../views/Board/Board"
 import PostPage from "../../views/Board/PostPage"
@@ -15,6 +16,7 @@ export const RouterConfig: {[key: string]: ()=>JSX.Element} = {
     "/board": ()=> <BoardPage />,
     "/post": ()=> <PostPage />,
     "/admin-board": ()=> <AdminBoardEditor />,
-    "/edit-information" : ()=> <EditUserProfile />
+    "/edit-information" : ()=> <EditUserProfile />,
+    "/user-manage" : ()=> <UserManagementPage />
     // "/tour-room" : ()=> <TourRoomPage tourName={""} />
-}
+} 
