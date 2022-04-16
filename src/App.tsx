@@ -10,7 +10,7 @@ import PlayingPage from './views/Play/components/PlayState';
 import BiddingControl from './views/Bidding/BiddingCotrol';
 import BiddingTable from './views/Bidding/BiddingPage';
 import BiddingPage from './views/Bidding/BiddingPage';
-import AdminPageContainer from './views/Admin/AdminPage';
+import AdminPageContainer from './views/Admin/userManagementPage';
 import DefaultPage from './views/DefaultPage/DefaultPage';
 import Winner from './views/Summary/Winner';
 import DefaultPlace from './views/Summary/DefaultPlace';
