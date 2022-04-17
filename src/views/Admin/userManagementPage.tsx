@@ -1,180 +1,146 @@
 import React, { HTMLAttributes } from "react";
 import styled, { css } from "styled-components";
 import Switch from "../../components/Switch/Switch";
-import TextField from "../../components/TextField/TextField";
 import { motion } from "framer-motion";
 import BackButton from "../../components/Button/BackButton";
 import { TitleText } from "../../components/Text/Text";
 import OnlineFriends from "../../components/OnlineFriends/OnlineFriends";
 import Chat from "../../components/Chatbox/ChatBox";
-import { Table, Tag, Button, Popconfirm, Space } from "antd";
-import { FormInstance } from "antd/lib/form";
-import './adminTable.css';
+import { Table, Tag, Space, Popconfirm } from "antd";
+import { useAuthen } from "../../Authen";
+import { useManage } from "../../Service/SocketService";
+import { values } from "lodash";
+import { PrimaryButton } from "../../components/Button/Button";
+import "./adminTable.css";
 // import 'antd/dist/antd.css';
 
-const UserManagement = () => {
+const UserManagement: React.FC = () => {
   interface User {
     key: string;
+    access: string;
+    display_name: string;
     username: string;
-    displayname: string;
-    status: string;
-    type: string;
+    email: string;
   }
 
-  //   const [data, setData] = React.useState<User[]>([]);
-  const [data, setData] = React.useState<User[]>([
-    {
-      key: "1",
-      username: "Ice",
-      displayname: "CryoHerz",
-      status: "Active",
-      type: "admin",
-    },
-    {
-      key: "2",
-      username: "Mark",
-      displayname: "Blueberry",
-      status: "Active",
-      type: "td",
-    },
-    {
-      key: "3",
-      username: "Tae",
-      displayname: "TaeTae01",
-      status: "Ban",
-      type: "user",
-    },
-    {
-      key: "4",
-      username: "Ice",
-      displayname: "CryoHerz",
-      status: "Active",
-      type: "admin",
-    },
-    {
-      key: "5",
-      username: "Mark",
-      displayname: "Blueberry",
-      status: "Active",
-      type: "td",
-    },
-    {
-      key: "6",
-      username: "Tae",
-      displayname: "TaeTae01",
-      status: "Ban",
-      type: "user",
-    },
-    {
-      key: "7",
-      username: "Ice",
-      displayname: "CryoHerz",
-      status: "Active",
-      type: "admin",
-    },
-    {
-      key: "8",
-      username: "Mark",
-      displayname: "Blueberry",
-      status: "Active",
-      type: "td",
-    },
-    {
-      key: "9",
-      username: "Tae",
-      displayname: "TaeTae01",
-      status: "Ban",
-      type: "user",
-    },
-    {
-      key: "10",
-      username: "Ice",
-      displayname: "CryoHerz",
-      status: "Active",
-      type: "admin",
-    },
-    {
-      key: "11",
-      username: "Mark",
-      displayname: "Blueberry",
-      status: "Active",
-      type: "td",
-    },
-    {
-      key: "12",
-      username: "Tae",
-      displayname: "TaeTae01",
-      status: "Ban",
-      type: "user",
-    },
-    {
-      key: "13",
-      username: "Ice",
-      displayname: "CryoHerz",
-      status: "Active",
-      type: "admin",
-    },
-    {
-      key: "14",
-      username: "Mark",
-      displayname: "Blueberry",
-      status: "Active",
-      type: "td",
-    },
-    {
-      key: "15",
-      username: "Tae",
-      displayname: "TaeTae01",
-      status: "Ban",
-      type: "user",
-    },
-  ]);
-  
-  // const { getAllUser } = useManage("123456789");
+  const authContext = useAuthen();
+  const { getUserList, promoteToTD, demoteFromTD, banUser, enableUser } =
+    useManage(authContext.authen.username);
+
+  const [data, setData] = React.useState<User[]>([]);
+  const [filteredData, setFilteredData] = React.useState<User[]>(data);
+  const [nameSearch, setNameSearch] = React.useState<string>("");
 
   React.useEffect(() => {
-    console.log('fetching Data')
+    // let userList: User[] = []
+    // const fetchData = async () => {
+    //   await getUserList((users) => {userList = users})
+    // }
 
-    
-  });
+    // console.log("fetching Data");
+    // fetchData().then(()=>{
+    //   console.log(userList)
+    //   setData(userList);
+    //   setFilteredData(data)
+    // })
+    // .catch(console.error)
+
+    getUserList((userList) => {
+      setData(userList);
+      setFilteredData(userList);
+    });
+  }, []);
+
+  const tagColor: Record<string, string> = {
+    user: "#5283ec",
+    td: "#eea538",
+    admin: "#54c450",
+    ban: "#ff3b3b",
+    suspend: "#ff7b00",
+  };
+
+  const handleSearch = (nameSearch: string) => {
+    setFilteredData(data.filter((user) => user.username.includes(nameSearch)));
+  };
+
+  const handleKeyPress = (e: any) => {
+    if (e.key == "Enter") {
+      handleSearch(e.target.value);
+    }
+  };
+
+  const handleChange = (e: any) => {
+    setNameSearch(e.target.value);
+  };
+
+  const updateRole = (username:string, role:string) => {
+    const index = data.findIndex((e) => e.username === username)
+    data[index].access = role
+    setFilteredData([...data].filter((user) => user.username.includes(nameSearch)))
+  }
+
+  const handlePromote = (username: string) => {
+    promoteToTD(username);
+    updateRole(username,'td')
+  };
+
+  const handleDemote = (username: string) => {
+    demoteFromTD(username);
+    updateRole(username,'user')
+  };
+
+  const handleBan = (username: string) => {
+    banUser(username);
+    updateRole(username,'ban')
+  };
+
+  const handleEnable = (username: string) => {
+    enableUser(username);
+    updateRole(username,'user')
+  };
+  // const getColumnSearchProps = (dataIndex: keyof User) =>({
+  //   onFilter: (value:string, record:User) =>
+  //     record[dataIndex]
+  //       .toString()
+  //       .toLowerCase()
+  //       .includes(value.toLowerCase()),
+  // })
 
   const columns = [
     {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      width: "20%",
+      width: "15%",
+      render: (status: string) => <b>{status}</b>,
+      // ...getColumnSearchProps("username"),
+      // onFilter: (value: string | number | boolean, record: User) =>
+      //   record["username"]
+      //     .toString()
+      //     .toLowerCase()
+      //     .includes(value.toString().toLowerCase()),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "25%",
     },
     {
       title: "Display Name",
-      dataIndex: "displayname",
-      key: "displayname",
-      width: "20%",
+      dataIndex: "display_name",
+      key: "display_name",
+      width: "15%",
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "access",
+      key: "access",
       width: "15%",
-      render: (status: string) => <b>{status}</b>
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      width: "15%",
-      render: (type: string) => {
-        let color = "gray";
-        if (type === "user") {
-          color = "#5283ec";
-        } else if (type === "td") {
-          color = "#eea538";
-        } else if (type === "admin") {
-          color = "#54c450";
-        }
+      render: (access: string) => {
         return (
-          <Tag color={color} key={type}>
-            {type.toUpperCase()}
+          <Tag color={tagColor[access.toLowerCase()]} key={access}>
+            {access.toUpperCase()}
           </Tag>
         );
       },
@@ -183,29 +149,88 @@ const UserManagement = () => {
       title: "Action",
       key: "action",
       width: "30%",
-      render: (text: string, record: User) => (
-        <Space size="middle">
-          <a>Promote to TD</a>
-          <a>Suspend</a>
-          <a>Ban</a>
-        </Space>
-      ),
+      render: (text: string, record: User) => {
+        return (
+          <Space size="middle">
+            {record.access.toLowerCase() === "user" && (
+              <Popconfirm
+                title={`Promote ${record.username} to TD?`}
+                onConfirm={() => handlePromote(record.username)}
+              >
+                <a>Promote to TD</a>
+              </Popconfirm>
+            )}
+            {record.access.toLowerCase() === "td" && (
+              <Popconfirm
+                title={`Demote ${record.username} from TD?`}
+                onConfirm={() => handleDemote(record.username)}
+              >
+                <a>Demote from TD</a>
+              </Popconfirm>
+            )}
+            {/* {<a>Suspend</a>} */}
+            {(record.access.toLowerCase() === "user" ||
+              record.access.toLowerCase() === "td") && (
+              <Popconfirm
+                title={`Ban ${record.username}?`}
+                onConfirm={() => handleBan(record.username)}
+              >
+                <a>
+                  <b>Ban</b>
+                </a>
+              </Popconfirm>
+            )}
+            {record.access.toLowerCase() === "ban" && (
+              <Popconfirm
+                title={`Enable ${record.username}?`}
+                onConfirm={() => handleEnable(record.username)}
+              >
+                <a>
+                  <b>Enable this user</b>
+                </a>
+              </Popconfirm>
+            )}
+          </Space>
+        );
+      },
     },
   ];
 
   return (
     <CenterContainer>
-      <div style={{position:"absolute", top:"61px", left:"5px"}}>
+      <div style={{ position: "absolute", top: "61px", left: "5px" }}>
         <BackButton display={false} />
       </div>
       <GridContainer>
         <InnerContainer id="user-window">
-          <div style={{display:"flex", paddingTop:"20px"}}>
+          <div style={{ display: "flex", paddingTop: "20px" }}>
             <div className="self-start pt-4 pb-4 pl-8">
               <TitleText medium>User Management</TitleText>
             </div>
           </div>
-          <SearchBar />
+          <SearchBarContainer>
+            <div
+              style={{
+                display: "inlineFlex",
+                height: "32px",
+                verticalAlign: "middle",
+                lineHeight: "32px",
+              }}
+            >
+              Search
+            </div>
+            <Input
+              id="nameSearch"
+              onChange={handleChange}
+              onKeyPress={handleKeyPress}
+              pattern="[A-Za-z0-9]"
+              placeholder="Input Username"
+            />
+            <PrimaryButton onClick={() => handleSearch(nameSearch)}>
+              Search
+            </PrimaryButton>
+            {/* <Switch onCheck={(isCheck) => console.log(isCheck)} /> */}
+          </SearchBarContainer>
           {/* <table style={{ width: "100%" }}>
             <thead>
               <tr>
@@ -225,19 +250,19 @@ const UserManagement = () => {
               />
             </tbody>
           </table> */}
-            <Table 
-                columns={columns}
-                dataSource={data}
-                className="userManage"
-                pagination={{
-                    hideOnSinglePage: true,
-                    pageSize: 10,
-                }}
-                // scroll={{ y: "70vh", scrollToFirstRowOnChange: true }}
-                // scroll = {{x:"1200px"}}
-                locale={{ emptyText: <span> No Data </span> }}
-                // bordered 
-            />
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            className="userManage"
+            pagination={{
+              hideOnSinglePage: true,
+              pageSize: 10,
+            }}
+            // scroll={{ y: "70vh", scrollToFirstRowOnChange: true }}
+            // scroll = {{x:"1200px"}}
+            locale={{ emptyText: <span> No Data </span> }}
+            // bordered
+          />
           {/* <Stack></Stack> */}
         </InnerContainer>
         <RightSideBox>
@@ -249,44 +274,30 @@ const UserManagement = () => {
   );
 };
 
-const SearchBar = () => {
-  return (
-    <SearchBarContainer>
-      <div
-        style={{ display: "inlineFlex", height: "32px", verticalAlign: "middle", lineHeight:"32px"}}
-      >
-        Search
-      </div>
-      <TextField />
-      <Switch onCheck={(isCheck) => console.log(isCheck)} />
-    </SearchBarContainer>
-  );
-};
+// interface TableItemProps {
+//   img: string;
+//   username: string;
+//   status: string;
+//   usertype: string;
+// }
 
-interface TableItemProps {
-  img: string;
-  username: string;
-  status: string;
-  usertype: string;
-}
-
-const TableItem = (props: TableItemProps) => {
-  return (
-    <tr>
-      <td></td>
-      <td>{props.username}</td>
-      <td>{props.status}</td>
-      <td>{props.usertype}</td>
-      <td>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <div style={{ marginLeft: "16px", marginRight: "16px" }}>Add TD</div>
-          <div style={{ marginLeft: "16px", marginRight: "16px" }}>Suspend</div>
-          <div style={{ marginLeft: "16px", marginRight: "16px" }}>Ban</div>
-        </div>
-      </td>
-    </tr>
-  );
-};
+// const TableItem = (props: TableItemProps) => {
+//   return (
+//     <tr>
+//       <td></td>
+//       <td>{props.username}</td>
+//       <td>{props.status}</td>
+//       <td>{props.usertype}</td>
+//       <td>
+//         <div style={{ display: "flex", justifyContent: "center" }}>
+//           <div style={{ marginLeft: "16px", marginRight: "16px" }}>Add TD</div>
+//           <div style={{ marginLeft: "16px", marginRight: "16px" }}>Suspend</div>
+//           <div style={{ marginLeft: "16px", marginRight: "16px" }}>Ban</div>
+//         </div>
+//       </td>
+//     </tr>
+//   );
+// };
 
 const SearchBarContainer = styled.div`
   display: flex;
@@ -416,5 +427,19 @@ const LobbyVariants = {
   hide: { x: -50, opacity: 0 },
   show: { x: 0, opacity: 1 },
 };
+
+const Input = styled.input`
+  border-width: 2px;
+  border-color: "rgba(243, 244, 246, 1)";
+  min-height: 32px;
+  border-radius: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: rgba(243, 244, 246, 1);
+  /* margin-top: 4px; */
+  /* margin-bottom: 12px; */
+`;
 
 export default UserManagement;
