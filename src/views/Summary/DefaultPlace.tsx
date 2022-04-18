@@ -1,7 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const DefaultPlace =()=> {
+interface DefaultPlaceProps {
+    place: number
+    placeText: string
+    detail: ScoreDetailProps
+}
+
+interface ScoreDetailProps {
+    percent: string
+    point: string
+}
+
+const DefaultPlace =(props: DefaultPlaceProps)=> {
     return (
         <WinnerContainer>
             <TeamIcon>A</TeamIcon>

@@ -9,11 +9,19 @@ import { NormalText, TitleText } from '../../components/Text/Text'
 import TextField from '../../components/TextField/TextField'
 import { validator } from '../Login/components/Validate'
 import { useProfile } from './ProfileContext'
+import loadingAnimation  from '../../assets/Animate/loading_blue.json'
+import Lottie from 'lottie-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { LoadingState } from '../Login/components/useLoading'
+
 
 const EditUserProfile =()=> {
     const authen = useAuthen()
     const [defaultData, updateData] = React.useState<any>()
     const profile = useProfile()
+    const [loadingState, setLoadingState] = React.useState(LoadingState.LOADING)
+    
+
     React.useEffect(()=> {
         axios.get('https://bridge-api-tim.herokuapp.com/getUserData', {
             params: {
@@ -29,7 +37,9 @@ const EditUserProfile =()=> {
                 display_name: respone.data.display_name,
                 birth_date: respone.data.birth_date
             }
+            
             updateData(newData)
+            setLoadingState(LoadingState.SUCCESS)
         })
         // const newData = {
         //     username: profile.profile.display_name,
@@ -94,6 +104,22 @@ const EditUserProfile =()=> {
         // },
     }
     const form = useForm(formStruct)
+
+    const popup = {
+        hidden: {
+            opacity: 0,
+            transition: {
+                duration: 0.3
+            }
+        },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.3
+            }
+        }
+    }
+
     return (
         <Container>
             <InnerContainer>
@@ -152,6 +178,18 @@ const EditUserProfile =()=> {
                     </div>
                 </div>
             </InnerContainer>
+            <AnimatePresence>
+                {loadingState == LoadingState.LOADING && (
+                    <LoadingSpinner 
+                        initial={{opacity: 1}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}>
+                        <Lottie animationData={loadingAnimation} style={{width: "100vw", height: "100vh"}} loop/>
+                    </LoadingSpinner>)
+                }
+            
+            </AnimatePresence>
+            
         </Container>
     )
 }
@@ -179,6 +217,15 @@ const InnerContainer = styled.div`
     justify-content: start;
     align-content: flex-start;
     align-items: flex-start;
+`
+
+const LoadingSpinner = styled(motion.div)`
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.3);
 `
 
 export default EditUserProfile;

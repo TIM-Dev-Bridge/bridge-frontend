@@ -13,7 +13,8 @@ interface CardProps {
     index: number
     shouldCollapse: number,
     selfAnimate?: boolean,
-    available: boolean
+    available: boolean,
+    isTurn: boolean
 }
 
 type Position = {x: number, y: number}
@@ -178,6 +179,7 @@ const Card =(props: CardProps)=> {
 
     return (
         <CardContainer
+            isTurn={props.isTurn}
             background={CardImage(props.text)}
             highlight={props.available}
             visible={visible}
@@ -193,13 +195,13 @@ const Card =(props: CardProps)=> {
     )
 }
 
-const CardContainer = styled(motion.div)<{visible: boolean, background: string, highlight: boolean}>`
+const CardContainer = styled(motion.div)<{visible: boolean, background: string, highlight: boolean, isTurn: boolean}>`
     width: 5vw;
     max-width: 4em;
     /* height: 50%; */
+    /* overflow: visible; */
     border-radius: 3px;
     background-position: center; 
-    box-shadow: var(--app-shadow);
     background-color: white;
     aspect-ratio: 169/244;
     background-image: url(${props=>props.background});
@@ -207,6 +209,8 @@ const CardContainer = styled(motion.div)<{visible: boolean, background: string, 
     background-repeat: no-repeat;
     border: ${props=>props.highlight ? "4px solid green" : "4px solid transparent"};
     pointer-events: ${props=>props.highlight ? "auto" : "none"} ;
+    box-shadow: ${props=>props.isTurn ? "green 0px 0px 100px -10px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px" : "var(--app-shadow)"};
+    transition: box-shadow 0.3s;
 `
 
 export default Card;

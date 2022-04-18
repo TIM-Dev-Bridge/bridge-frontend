@@ -1,11 +1,12 @@
-import React from 'react'
+import { motion } from 'framer-motion'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import PlaceholderImg from '../../../../assets/images/placeholder.png'
 import { NavigationLink } from '../../../../components/Router/NavigationLink'
 import TextField from '../../../../components/TextField/TextField'
 import TextFieldNoWarning from '../../../../components/TextField/TextFieldNoWarning'
 
-interface ModePreviewContainerProps {
+interface ModePreviewContainerProps extends HTMLAttributes<HTMLDivElement> {
     img?: string
     title?: string
     description?: string
@@ -13,15 +14,16 @@ interface ModePreviewContainerProps {
     onClick?: ()=>void
     to?: string
     state: {}
+    layoutId?: string
 }
 
-export const ModePreviewContainer: React.FC<ModePreviewContainerProps> =(props: ModePreviewContainerProps)=> {
+export const ModePreviewContainer =(props: ModePreviewContainerProps)=> {
     return (
-        <Container>
+        <Container layoutId={props.layoutId} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
             
-            <div className="overflow-hidden h-full">
-                <img src={PlaceholderImg} className="object-contain"/>
-            </div>
+            {/* <div className="overflow-hidden h-full"> */}
+                {/* <img src={PlaceholderImg} className="object-contain"/> */}
+            {/* </div> */}
             <div className="relative px-10 py-4 h-full">
                 <div className="p-4 overflow-hidden">
                     <h2 className="font-extrabold text-lg">{props.title}</h2>
@@ -49,10 +51,10 @@ export const ModePreviewContainer: React.FC<ModePreviewContainerProps> =(props: 
 
 export const LocalModePreviewContainer: React.FC<ModePreviewContainerProps> =(props: ModePreviewContainerProps)=> {
     return (
-        <Container>
-            <div className="overflow-hidden h-full">
+        <Container layoutId={props.layoutId} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
+            {/* <div className="overflow-hidden h-full">
                 <img src={PlaceholderImg} className="object-cover"/>
-            </div>
+            </div> */}
             <div className="relative px-10 py-4 h-full">
                 <div className="p-4 overflow-hidden">
                     <h2 className="font-extrabold text-lg">{props.title}</h2>
@@ -73,7 +75,7 @@ export const LocalModePreviewContainer: React.FC<ModePreviewContainerProps> =(pr
     )
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     margin: 0 auto;
     width: 100%;
     height: 100%;

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { useAuthen } from '../../Authen';
@@ -10,11 +11,15 @@ import TextField from '../../components/TextField/TextField';
 import { useLobby } from '../../Service/SocketService';
 import { validator } from '../Login/components/Validate';
 import useEditTour from './useEditTour';
+import { v4 as uuidv4 } from 'uuid'
 
-interface DialogProps {
+interface DialogProps  {
     isVisible: boolean
     onDismiss: ()=>void
     tourName?: string
+    initial?: {}
+    animate?: {}
+    exit?: {}
 }
 
 const CreateTourPopup =(props: DialogProps)=> {
@@ -22,6 +27,17 @@ const CreateTourPopup =(props: DialogProps)=> {
     const [responseMessage, updateResponseMessage] = React.useState('')
     const { createTour } = useLobby()
     const authen = useAuthen()
+    const [key, setKey] = React.useState(uuidv4())
+
+    React.useEffect(()=> {
+        if (props.isVisible) {
+            document.body.style.overflow = 'hidden';
+        }
+        else {
+            document.body.style.overflow = 'unset';
+        }
+    }, [props.isVisible])
+
     const form = {
         title: (text: string, fieldName: string)=> {
             validator(text)
@@ -72,6 +88,23 @@ const CreateTourPopup =(props: DialogProps)=> {
         })
 
     const [scrollHeight, setScrollHeight] = React.useState(0)
+
+    const containerVariants = {
+        visible: {
+            opacity: 1,
+            scale: 1,
+            transition: {
+                duration: 0.1
+            }
+        },
+        hidden: {
+            opacity: 0,
+            scale: 0.95,
+            transition: {
+                duration: 0.1
+            }
+        }
+    }
     
     React.useEffect(()=> {
         if (!props.isVisible) {
@@ -91,14 +124,23 @@ const CreateTourPopup =(props: DialogProps)=> {
 
     return (
         <PopupContainer
+            key={key}
+            layoutId={'create-tour-popup'}
+            // initial={props.initial}
+            // animate={props.animate}
+            // exit={props.exit}
             id="popup-background-outside"
             isVisible={props.isVisible}
             onClick={(e)=> {
                 if ((e.target as HTMLElement).id == "popup-background-outside") {
                     props.onDismiss()
+                    setKey(uuidv4())
                 }
             }}>
-            <Container>
+            <Container
+                initial="hidden"
+                animate={props.isVisible ? "visible" : "hidden"}
+                variants={containerVariants}>
                 <div className="flex flex-col gap-4">
                     <Section title="Tournament Info">
                         <TextField 
@@ -271,19 +313,20 @@ const AltSection =(props: SectionProps)=> {
     )
 }
 
-const PopupContainer = styled.div<{isVisible: boolean}>`
+const PopupContainer = styled(motion.div)<{isVisible: boolean}>`
     display: flex;
     justify-content: center;
     align-items: center;
     align-content: center;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0,0,0,0.25);
+    /* background-color: rgba(0,0,0,0.25); */
     position: fixed;
     top: 0;
     left: 0;
     z-index: 111;
     visibility: ${props => props.isVisible ? "visible" : "hidden"};
+    /* visibility: visible; */
 `
 //flex justify-center items-center w-screen h-screen bg-opacity-25 bg-black fixed top-0 left-0 ${props.isVisible ? "visible" : "hidden"}
 
@@ -301,7 +344,7 @@ const BottomDiv = styled.div`
     width: 100%;
 `
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     display: flex;
     gap: 10px;
     /* display: grid; */
@@ -310,6 +353,7 @@ const Container = styled.div`
     box-sizing: border-box;
     padding: 20px;
     border-radius: 16px;
+    box-shadow: var(--app-popup-shadow);
 `
 
 export default CreateTourPopup;

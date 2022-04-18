@@ -19,7 +19,7 @@ const BiddingControl =()=> {
     const [bidableSuite, setSuiteToBid] = React.useState(initSuite)
     const [selectedSuite, setSelectedSuite] = React.useState(initSuite)
     // const [selectedLevel, setSelectedLevel] = React.useState(initLevel)
-    const [selectedLevel, setSelectedLevel] = React.useState(0)
+    const [selectedLevel, setSelectedLevel] = React.useState<number|null>(null)
     const [currentBid, setCurrentBid] = React.useState(0)
     const [bidable, setBidable] = React.useState(false)
 
@@ -40,7 +40,8 @@ const BiddingControl =()=> {
             setBidable(status['payload']['nextDirection'] == playState.playState.direction)
             if (status['payload'].hasOwnProperty('contract')) {
                 let currentBid = status['payload']['contract']
-                if (currentBid != -1) {
+                if (currentBid != -1 && currentBid != 99) {
+                    console.log("Current Bid", currentBid)
                     setCurrentBid(status['payload']['contract'])
                     console.log("Set current Bid")
                     setLvlToBid(lvlToBidFrom(status['payload']['contract']))
@@ -56,7 +57,10 @@ const BiddingControl =()=> {
         setLvlToBid(lvlToBid())
     }, [])
 
-    const makeBiddingRequest =(level: number, suit: string)=> {
+    const makeBiddingRequest =(level: number|null, suit: string)=> {
+        if (level == null) {
+            return
+        }
         let body: BiddingRequest = {
             player_id: authen.authen.username,
             room: playState.playState.room,
@@ -67,6 +71,8 @@ const BiddingControl =()=> {
             table_id: playState.playState.table
         }
         bid(body)
+        setSelectedLevel(null)
+        setSelectedSuite(initSuite)
     }
 
     const pass =()=> {
@@ -218,9 +224,14 @@ const BiddingControl =()=> {
                             style={{border: selectedLevel == num ? "1px solid blue" : ""}} 
                             enabled={bidableLvl[num - 1] && bidable}>{num}</Item> )
                 }
+                {currentBid != 99 ? 
                 <Double 
-                    enabled={bidable && currentBid != -1 && currentBid != 0}
-                    onClick={()=> double()}>Double</Double>
+                    enabled={bidable && currentBid != -1}
+                    onClick={()=> double()}>Double</Double> : 
+                <Double 
+                    enabled={bidable}
+                    onClick={()=> double()}>Re-Double</Double>}
+                
                 <TrumpContainer>
                     <Item 
                         enabled={bidableSuite['C'] && bidable} 

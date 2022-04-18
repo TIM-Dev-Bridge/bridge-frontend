@@ -86,7 +86,7 @@ const BiddingTable =()=> {
         if (contract == -1) {
             return "PASS"
         }
-        if (contract == -99) {
+        if (contract == 99) {
             return "DOUBLE"
         }
         return bidString

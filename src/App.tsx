@@ -14,7 +14,7 @@ import { NavigationContext } from './components/Router/Router';
 // import DefaultPage from './views/DefaultPage/DefaultPage';
 // import Winner from './views/Summary/Winner';
 // import DefaultPlace from './views/Summary/DefaultPlace';
-// import Summary from './views/Summary/Summary';
+import Summary from './views/Summary/Summary';
 
 function App() {
   const { navigationStack, updateStack } = React.useContext(NavigationContext)

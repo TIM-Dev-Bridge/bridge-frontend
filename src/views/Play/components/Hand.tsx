@@ -11,7 +11,8 @@ interface HandProps {
     placeCard?: boolean,
     enabled: boolean,
     cardToFind: number,
-    currentSuite?: number|null
+    currentSuite?: number|null,
+    isTurn: boolean
 }
 
 export enum HandPosition {
@@ -66,11 +67,13 @@ const Hand =(props: HandProps)=> {
 
     return (
         <HandContainer
+            isTurn={props.isTurn}
             enabled={props.enabled}
             position={props.position}>
             { cards.map((val, i)=> {
                 return (
                     <Card 
+                        isTurn={props.isTurn}
                         text={val}
                         shouldCollapse={3}
                         index={i}
@@ -79,9 +82,7 @@ const Hand =(props: HandProps)=> {
                         selfAnimate={animateCondition(val, i)}
                         available={isAvailable(val)}
                         onAnimationCompleted={()=>{
-                            
                             setCards(cards.filter(e=>cards.indexOf(e) != i))
-                            
                             }}/>)
             })}
         </HandContainer>
@@ -90,19 +91,20 @@ const Hand =(props: HandProps)=> {
 
 interface HandContainerProps extends HTMLAttributes<HTMLDivElement>{
     position: HandPosition,
-    enabled: boolean
+    enabled: boolean,
+    isTurn: boolean
 }
 
 const HandContainer =(props: HandContainerProps)=> {
     switch (props.position) {
-        case HandPosition.TOP : return <Top enabled={props.enabled}>{props.children}</Top>
-        case HandPosition.DOWN : return <Down enabled={props.enabled}>{props.children}</Down>
-        case HandPosition.LEFT : return <Left enabled={props.enabled}>{props.children}</Left>
-        case HandPosition.RIHGT : return <Right enabled={props.enabled}>{props.children}</Right>
+        case HandPosition.TOP : return <Top enabled={props.enabled} isTurn={props.isTurn}>{props.children}</Top>
+        case HandPosition.DOWN : return <Down enabled={props.enabled} isTurn={props.isTurn}>{props.children}</Down>
+        case HandPosition.LEFT : return <Left enabled={props.enabled} isTurn={props.isTurn}>{props.children}</Left>
+        case HandPosition.RIHGT : return <Right enabled={props.enabled} isTurn={props.isTurn}>{props.children}</Right>
     }
 }
 
-const Right = styled.div<{enabled: boolean}>`
+const Right = styled.div<{enabled: boolean, isTurn: boolean}>`
     grid-row: 2;
     grid-column: 3;
     display: flex;
@@ -112,7 +114,7 @@ const Right = styled.div<{enabled: boolean}>`
     pointer-events: ${props=>props.enabled ? "auto" : "none"} ;
 `
 
-const Left = styled.div<{enabled: boolean}>`
+const Left = styled.div<{enabled: boolean, isTurn: boolean}>`
     grid-row: 2;
     grid-column: 1;
     display: flex;
@@ -123,7 +125,7 @@ const Left = styled.div<{enabled: boolean}>`
 `
 
 
-const Down = styled.div<{enabled: boolean}>`
+const Down = styled.div<{enabled: boolean, isTurn: boolean}>`
     grid-row: 3;
     grid-column: 1 / span 3;
     display: flex;
@@ -132,7 +134,7 @@ const Down = styled.div<{enabled: boolean}>`
     pointer-events: ${props=>props.enabled ? "auto" : "none"} ;
 `
 
-const Top = styled.div<{enabled: boolean}>`
+const Top = styled.div<{enabled: boolean, isTurn: boolean}>`
     grid-row: 1;
     grid-column: 1 / span 3;
     display: flex;

@@ -38,7 +38,7 @@ const BoardPage: FunctionComponent<{max?: number}> =({max = 8})=> {
         // console.log("Profile", profile.profile)
         api.getAnnouncements(0, 8)
             .then( response => {
-                // console.log(response)
+                console.log(response)
                 updatePostsList(response.data)
             })
             .catch( error => {
@@ -49,7 +49,7 @@ const BoardPage: FunctionComponent<{max?: number}> =({max = 8})=> {
     return (
         <Container>
             { 
-                profile.profile.access.toLowerCase() == "admin" ? 
+                profile.profile.access.toLowerCase() == "td" ? 
                 <BoardToolBar>
                     <PrimarySqButton onClick={()=>{
                     navigate(navigateContext, '/admin-board', {})
@@ -85,6 +85,7 @@ const BoardToolBar = styled.div`
     padding: 10px;
     top: 0;
     margin-top: 15px;
+    top: 70px;
 `
 
 const InnerContainer = styled.div`

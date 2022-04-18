@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import React, { HTMLAttributes } from 'react';
 import CreateTourPopup from './CreateTourPopup';
 
@@ -16,15 +17,22 @@ export const PopupProvider =(props: HTMLAttributes<HTMLElement>)=> {
     const [tourName, setTourName] = React.useState('')
     return (
         <PopupContext.Provider value={{popup, setPopup,display, setDisplay, tourName, setTourName}}>
-            <CreateTourPopup 
-                data-testid="create-tour-popup"
-                isVisible={display} 
-                tourName={tourName}
-                onDismiss={
-                ()=> {
-                    setDisplay(false)
-                }}
-              />
+            {/* {display && ( */}
+                {/* <AnimatePresence> */}
+                    <CreateTourPopup 
+                        // initial={{opacity: 0}}
+                        // animate={{opacity: 1}}
+                        // exit={{opacity: 0}}
+                        data-testid="create-tour-popup"
+                        isVisible={display} 
+                        tourName={tourName}
+                        onDismiss={
+                        ()=> {
+                            setDisplay(false)
+                        }}
+                    />    
+                {/* </AnimatePresence> */}
+            {/* )} */}
             {props.children}
         </PopupContext.Provider>
     )

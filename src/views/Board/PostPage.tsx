@@ -23,7 +23,8 @@ const PostPage = () => {
     const mountedRef = React.useRef(false)
     var d = new Date(0);
 
-    const handleInitialize = React.useCallback(async (instance) => {
+    const handleInitialize = React.useCallback((instance) => {
+        console.log("INStANCE", instance)
         editorJS.current = instance
     }, [])
 
@@ -69,8 +70,9 @@ const PostPage = () => {
 
 
     React.useEffect(() => {
-        editorJS.current.isReady
-            .then(() => {
+        // console.log("TEST",editorJS.current)
+        // editorJS.current.isReady
+        //     .then(() => {
                 // editorJS.current.render(defaultDataRef.current)
                 const searchParams = new URLSearchParams(window.location.search);
                 const id = searchParams.get('id')
@@ -89,8 +91,8 @@ const PostPage = () => {
                         // }
                         // console.log("RESPONSE", response)
                         updateDefultData(response.data.data)
-                        editorJS.current.clear()
-                        editorJS.current.render(response.data.data)
+                        // editorJS.current.clear()
+                        // editorJS.current.render(response.data.data)
                         d = new Date(response.data.data.time)
                         setDate('date : ' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString())
                         setTitle(response.data.title)
@@ -100,8 +102,23 @@ const PostPage = () => {
                     .catch(response => {
 
                     })
-            })
+            // })
     }, [])
+
+    const defaultEditorValue =()=> {
+        console.log("DATA :", window.history.state)
+        if (window.history.state == undefined) {
+            return ""
+        }
+        if (window.history.state.state == undefined) {
+            return ""
+        }
+
+        if (window.history.state.state.post == undefined) {
+            return ""
+        }
+        return window.history.state.state.post.data 
+    }
 
     return (
         <EditorContainer>
@@ -124,7 +141,7 @@ const PostPage = () => {
             </div>
             <div style={{ borderRadius: "15px", marginBottom: "15px" }}>
                 <ReactEditorJS
-                    // defaultValue={window.history.state.state.post.data}
+                    defaultValue={defaultEditorValue()}
                     onInitialize={handleInitialize}
                     tools={EDITOR_JS_TOOLS}
                     readOnly={true}

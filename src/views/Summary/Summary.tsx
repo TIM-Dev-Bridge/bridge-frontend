@@ -6,12 +6,12 @@ import DefaultPlace from './DefaultPlace'
 const Summary =()=> {
     return (
         <SummaryContainer>
+            {/* <DefaultPlace place={0} placeText={''} detail={undefined} /> */}
+            {/* <DefaultPlace />
             <DefaultPlace />
             <DefaultPlace />
             <DefaultPlace />
-            <DefaultPlace />
-            <DefaultPlace />
-            <DefaultPlace />
+            <DefaultPlace /> */}
         </SummaryContainer>
     )
 }
