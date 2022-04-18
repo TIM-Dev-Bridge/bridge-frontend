@@ -2,9 +2,9 @@ import React from 'react'
 import { io } from 'socket.io-client'
 import { TourData } from '../views/Popup/TourRequest'
 // import { endpoint } from './ServiceConfig';
-const endpoint = "http://localhost:4000"
+// const endpoint = "http://localhost:4000"
 
-// const endpoint = "wss://bridge-api-tim.herokuapp.com/"
+const endpoint = "wss://bridge-api-tim.herokuapp.com/"
 export var socket = io(endpoint,{transports:['websocket']})
 //useLobby
 
