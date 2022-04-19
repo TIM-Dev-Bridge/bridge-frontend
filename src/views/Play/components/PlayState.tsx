@@ -81,6 +81,8 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [isLeftTurn, setLeftTurn] = React.useState(false)
     const [isRightTurn, setRightTurn] = React.useState(false)
     const [isBotTurn, setBotTurn] = React.useState(false)
+    const [isFourthPlay, setIsFourthPlay] = React.useState(false)
+    const [trump, setTrump] = React.useState<number | null>(null)
 
     const game = useGame()
 
@@ -207,7 +209,8 @@ const PlayingPage = (props: PlayingPageProps) => {
 
             if (data.payload.isFourthPlay) {
                 console.log("ANIMATE COLLAPSE PLEASE")
-                setShouldAnimateCollapse(true)
+                setIsFourthPlay(true)
+                // setShouldAnimateCollapse(true)
             }
         })
     }, [socket, playDirection, currentSuite, shouldAnimateCollapse])
@@ -335,6 +338,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                         setRightDroppedCard(<></>)
                         setDroppedCard(<></>)
                         setShouldAnimateCollapse(false)
+                        setIsFourthPlay(false)
                     }}
                 >
                     <CenterTop>
@@ -366,9 +370,15 @@ const PlayingPage = (props: PlayingPageProps) => {
                     placeCard={topPlaceCardAnimate}
                     cardToFind={dropCardTop}
                     isTurn={isTopTurn}
+                    trump={trump}
                     onDrop={() => {
                         dropCard(setTopPlaceCardAnimate, setTopDroppedCard)(<DroppedCard text={dropCardTop} />)
-                        }} />
+                        }} 
+                    onAnimatinoComplete={()=> {
+                        if (isFourthPlay) {
+                            setShouldAnimateCollapse(true)
+                        }
+                    }}/>
                 <Hand
                     enabled={playDirection == playContext.playState.direction}
                     position={HandPosition.DOWN}
@@ -377,9 +387,15 @@ const PlayingPage = (props: PlayingPageProps) => {
                     cardToFind={dropCardBottom}
                     currentSuite={currentSuite}
                     isTurn={isBotTurn}
+                    trump={trump}
                     onDrop={(item)=> {
                         setDroppedCard(<DroppedCard text={item} />)
-                        makePlayCardRequest(item, turnRef.current)}} />
+                        makePlayCardRequest(item, turnRef.current)}} 
+                    onAnimatinoComplete={()=> {
+                        if (isFourthPlay) {
+                            setShouldAnimateCollapse(true)
+                        }
+                    }}/>
                 <Hand
                     enabled={false}
                     position={HandPosition.LEFT}
@@ -387,10 +403,16 @@ const PlayingPage = (props: PlayingPageProps) => {
                     dropRef={leftPlayedCardRef}
                     cardToFind={dropCardLeft}
                     isTurn={isLeftTurn}
+                    trump={trump}
                     onDrop={() => {
                         dropCard(setLeftPlaceCardAnimate, setLefttDroppedCard)(<DroppedCard text={dropCardLeft} />)
                         }}
-                    placeCard={leftPlaceCardAnimate} />
+                    placeCard={leftPlaceCardAnimate}
+                    onAnimatinoComplete={()=> {
+                        if (isFourthPlay) {
+                            setShouldAnimateCollapse(true)
+                        }
+                    }} />
                 <Hand
                     enabled={false}
                     position={HandPosition.RIHGT}
@@ -399,9 +421,15 @@ const PlayingPage = (props: PlayingPageProps) => {
                     placeCard={rightPlaceCardAnimate}
                     cardToFind={dropCardRight}
                     isTurn={isRightTurn}
+                    trump={trump}
                     onDrop={() => {
                         dropCard(setRightPlaceCardAnimate, setRightDroppedCard)(<DroppedCard text={dropCardRight} />)
-                        }} />
+                        }} 
+                    onAnimatinoComplete={()=> {
+                        if (isFourthPlay) {
+                            setShouldAnimateCollapse(true)
+                        }
+                    }}/>
             </InnerContainer>
 
             <PopupArea visible={playContext.playState.status == 'waiting_for_bid'}>

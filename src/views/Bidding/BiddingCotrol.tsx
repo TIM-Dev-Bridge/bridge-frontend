@@ -22,6 +22,10 @@ const BiddingControl =()=> {
     const [selectedLevel, setSelectedLevel] = React.useState<number|null>(null)
     const [currentBid, setCurrentBid] = React.useState(0)
     const [bidable, setBidable] = React.useState(false)
+    const [doubleEnable, setDoubleEnable] = React.useState(false)
+    const [isInitial, setInitial] = React.useState(true)
+    const [bidCount, setBidCount] = React.useState(-1)
+    const [isDoubled, setIsDoubled] = React.useState(false)
 
     const {
         bid,
@@ -39,19 +43,37 @@ const BiddingControl =()=> {
             console.log("STATUS AND PAYLOAD", status, status['payload']['nextDirection'] == playState.playState.direction)
             setBidable(status['payload']['nextDirection'] == playState.playState.direction)
             if (status['payload'].hasOwnProperty('contract')) {
+                // console.log(isInitial)
+                // if (isInitial) {
+                //     setInitial(false)
+                // } else {
+                    
+                // }
+                setBidCount(prev => prev + 1)
+                console.log(bidCount)
+                if (bidCount >= 0) {
+                    setInitial(false)
+                }
+                setDoubleEnable(status['payload']['doubleEnable'])
                 let currentBid = status['payload']['contract']
                 if (currentBid != -1 && currentBid != 99) {
                     console.log("Current Bid", currentBid)
                     setCurrentBid(status['payload']['contract'])
-                    console.log("Set current Bid")
+                    
                     setLvlToBid(lvlToBidFrom(status['payload']['contract']))
+                } 
+                if (currentBid == 99) {
+                    setIsDoubled(true)
+                }
+                else {
+                    setIsDoubled(false)
                 }
             }
             else {
                 setLvlToBid(lvlToBid())
             }
         })
-    }, [socket])
+    }, [socket, bidCount, currentBid, isDoubled])
 
     React.useEffect(()=> {
         setLvlToBid(lvlToBid())
@@ -209,7 +231,7 @@ const BiddingControl =()=> {
         <Container>
             <RightColumn>
                 <Pass 
-                    enabled={bidable}
+                    enabled={bidable && !isInitial}
                     onClick={()=> {
                         pass()
                     }}>Pass</Pass>
@@ -224,13 +246,13 @@ const BiddingControl =()=> {
                             style={{border: selectedLevel == num ? "1px solid blue" : ""}} 
                             enabled={bidableLvl[num - 1] && bidable}>{num}</Item> )
                 }
-                {currentBid != 99 ? 
+                {!isDoubled ? 
                 <Double 
-                    enabled={bidable && currentBid != -1}
+                    enabled={bidable && currentBid != -1 && doubleEnable && !isInitial}
                     onClick={()=> double()}>Double</Double> : 
                 <Double 
-                    enabled={bidable}
-                    onClick={()=> double()}>Re-Double</Double>}
+                    enabled={bidable && doubleEnable && !isInitial}
+                    onClick={()=> double()}>{ isInitial ? "" : "Re-Double"}</Double>}
                 
                 <TrumpContainer>
                     <Item 

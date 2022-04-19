@@ -12,7 +12,9 @@ interface HandProps {
     enabled: boolean,
     cardToFind: number,
     currentSuite?: number|null,
-    isTurn: boolean
+    isTurn: boolean,
+    onAnimatinoComplete: ()=> void,
+    trump: number | null
 }
 
 export enum HandPosition {
@@ -49,6 +51,10 @@ const Hand =(props: HandProps)=> {
         if (props.currentSuite === Math.floor(Number(currentCard / 13))) {
             return true
         }
+
+        if (props.trump === Math.floor(Number(currentCard / 13))) {
+            return true
+        }
         return false
     }
 
@@ -83,6 +89,7 @@ const Hand =(props: HandProps)=> {
                         available={isAvailable(val)}
                         onAnimationCompleted={()=>{
                             setCards(cards.filter(e=>cards.indexOf(e) != i))
+                            props.onAnimatinoComplete()
                             }}/>)
             })}
         </HandContainer>

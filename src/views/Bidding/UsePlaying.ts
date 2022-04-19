@@ -35,7 +35,8 @@ export const usePlaying =()=> {
             nextDirection: number,
             prevDirection: number,
             initSuite: number,
-            isFourthPlay: boolean
+            isFourthPlay: boolean,
+            bidSuite: number
         }
     }
 
@@ -87,6 +88,7 @@ export const usePlaying =()=> {
 
     const onFinishRound =(callback: (data: any)=>void) => {
         socket.on('finish-all-table', (data) => {
+            console.log("FINISH ALL TABLE", data)
             callback(data)
         })
     }

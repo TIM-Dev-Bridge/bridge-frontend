@@ -2,9 +2,9 @@ import React from 'react'
 import { io } from 'socket.io-client'
 import { TourData } from '../views/Popup/TourRequest'
 // import { endpoint } from './ServiceConfig';
-// const endpoint = "http://localhost:4000"
+const endpoint = "http://localhost:4000"
 
-const endpoint = "wss://bridge-api-tim.herokuapp.com/"
+// const endpoint = "wss://bridge-api-tim.herokuapp.com/"
 export var socket = io(endpoint,{transports:['websocket']})
 //useLobby
 
@@ -285,9 +285,10 @@ export const useRoom =(roomID: string)=> {
     const waitForInvitation =(onInvited: (playerName: string)=>void)=> {
         //console.log("wating for invitation ...")
         socket.on('invite-by', (player_name: string)=> {
-            //console.log("got invite by", player_name)
+            console.log("got invite by", player_name, invitation)
+
+            updateInvitation( prevState => [...prevState, player_name])
             onInvited(player_name)
-            updateInvitation([...invitation, player_name])
         })
     }
 
