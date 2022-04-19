@@ -48,7 +48,6 @@ const BiddingTable =()=> {
                 const element = <>{component[0]}{component[1]}</>
                 newItems.push(<BidItem>{element}</BidItem>)
                 setBidItems(newItems)
-                console.log("Set current Bid")
             }
             else {
                 // setLvlToBid(lvlToBid())

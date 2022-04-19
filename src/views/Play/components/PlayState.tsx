@@ -202,6 +202,9 @@ const PlayingPage = (props: PlayingPageProps) => {
                 playingDirection?.[prev].animate(true)
                 playingDirection?.[prev].isTurn(false)
                 setCurrentSuite(data.payload['initSuite'])
+                if (trump != data.payload.bidSuite) {
+                    setTrump(data.payload.bidSuite)
+                }
                 if (declarer == data.payload.nextDirection) {
 
                 }
@@ -213,7 +216,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                 // setShouldAnimateCollapse(true)
             }
         })
-    }, [socket, playDirection, currentSuite, shouldAnimateCollapse])
+    }, [socket, playDirection, currentSuite, shouldAnimateCollapse, trump])
 
     React.useEffect(()=> {
         onInitialPlaying( data => {
