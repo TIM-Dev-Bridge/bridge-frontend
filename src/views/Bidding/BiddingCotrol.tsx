@@ -125,11 +125,11 @@ const BiddingControl =()=> {
 
     const convertContractToNum =(level: number, suit: string)=> {
         const dict: {[key:string]: number} = {
-            'C': 1,
-            'D': 2,
-            'H': 3,
-            'S': 4,
-            'NT': 5
+            'C': 0,
+            'D': 1,
+            'H': 2,
+            'S': 3,
+            'NT': 4
         }
         console.log(((level - 1) * 5) + dict[suit])
         return ((level - 1) * 5) + dict[suit]
@@ -137,11 +137,11 @@ const BiddingControl =()=> {
 
     const numToString =(contract: number)=> {
         const dict: {[key:number]: string} = {
-            1: 'C',
-            2: 'D',
-            3: 'H',
-            4: 'S',
-            5: 'NT'
+            0: 'C',
+            1: 'D',
+            2: 'H',
+            3: 'S',
+            4: 'NT'
         }
         const level = ((contract - 1) / 5) + 1
         const suite = contract % 5

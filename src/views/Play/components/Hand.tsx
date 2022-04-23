@@ -14,7 +14,8 @@ interface HandProps {
     currentSuite?: number|null,
     isTurn: boolean,
     onAnimatinoComplete: ()=> void,
-    trump: number | null
+    trump: number | null,
+    playerName: string
 }
 
 export enum HandPosition {
@@ -40,6 +41,7 @@ const Hand =(props: HandProps)=> {
     }
 
     const isCardAvailable =(currentCard: number)=> {
+        console.log("TRUMP :: ", props.trump)
         if (props.currentSuite === null) {
             return true
         }
@@ -52,7 +54,7 @@ const Hand =(props: HandProps)=> {
             return true
         }
 
-        if (props.trump === Math.floor(Number(currentCard / 13))) {
+        if (props.trump === Math.floor(Number(currentCard / 13) )) {
             return true
         }
         return false
@@ -69,6 +71,27 @@ const Hand =(props: HandProps)=> {
             return isCardAvailable(suite) && props.enabled
         }
         return props.enabled
+    }
+
+    const topPosition =()=> {
+        if (props.position == HandPosition.TOP) {
+            return "-10px"
+        }
+        if (props.position == HandPosition.LEFT || props.position == HandPosition.RIHGT) {
+            return "-50px"
+        }
+        if (props.position == HandPosition.DOWN) {
+            return ""
+        }
+    }
+
+    const bottomPosition =()=> {
+        if (props.position == HandPosition.DOWN) {
+            return "-10px"
+        }
+        else {
+            return ""
+        }
     }
 
     return (
@@ -92,6 +115,15 @@ const Hand =(props: HandProps)=> {
                             props.onAnimatinoComplete()
                             }}/>)
             })}
+            <div style={{
+                position: 'absolute', 
+                backgroundColor: "white",  
+                padding: "10px",
+                borderRadius: "8px", 
+                top: topPosition() ,
+                bottom: bottomPosition(),
+                boxShadow: props.isTurn ? "green 0px 0px 10px 0px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px" : "",
+                }}>{props.playerName}</div>
         </HandContainer>
     )
 }
@@ -118,6 +150,7 @@ const Right = styled.div<{enabled: boolean, isTurn: boolean}>`
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: flex-end;
+    position: relative;
     pointer-events: ${props=>props.enabled ? "auto" : "none"} ;
 `
 
@@ -128,6 +161,7 @@ const Left = styled.div<{enabled: boolean, isTurn: boolean}>`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-end;
+    position: relative;
     pointer-events: ${props=>props.enabled ? "auto" : "none"} ;
 `
 
@@ -147,6 +181,7 @@ const Top = styled.div<{enabled: boolean, isTurn: boolean}>`
     display: flex;
     justify-content: center;
     align-items: flex-start;   
+    position: relative;
     pointer-events: ${props=>props.enabled ? "auto" : "none"} ;
 `
 

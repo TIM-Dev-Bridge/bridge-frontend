@@ -22,7 +22,8 @@ interface PlayingDirectionFn {
     updateCard: React.Dispatch<React.SetStateAction<number[]>>,
     animate: React.Dispatch<React.SetStateAction<boolean>>,
     dropCard: React.Dispatch<React.SetStateAction<number>>,
-    isTurn: React.Dispatch<React.SetStateAction<boolean>>
+    isTurn: React.Dispatch<React.SetStateAction<boolean>>,
+    title: React.Dispatch<React.SetStateAction<string>>
 }
 
 type PlayingDirection = {
@@ -84,6 +85,11 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [isFourthPlay, setIsFourthPlay] = React.useState(false)
     const [trump, setTrump] = React.useState<number | null>(null)
 
+    const [topName, setTopName] = React.useState("")
+    const [leftName, setLeftName] = React.useState("")
+    const [rightName, setRightName] = React.useState("")
+    const [bottomName, setBottomName] = React.useState("")
+
     const game = useGame()
 
     // React.useEffect(() => {
@@ -110,32 +116,48 @@ const PlayingPage = (props: PlayingPageProps) => {
                     updateCard: ()=>{},
                     animate: ()=>{},
                     dropCard: ()=>{},
-                    isTurn: setBotTurn
+                    isTurn: setBotTurn,
+                    title: setBottomName
                 },
                 [(playContext.playState.direction + 1) % 4] : {
                     direction: HandPosition.LEFT,
                     updateCard: setLeftCards,
                     animate: setLeftPlaceCardAnimate,
                     dropCard: setDropCardLeft,
-                    isTurn: setLeftTurn
+                    isTurn: setLeftTurn,
+                    title: setLeftName
                 },
                 [(playContext.playState.direction + 3) % 4] : {
                     direction: HandPosition.RIHGT,
                     updateCard: setRightCards,
                     animate: setRightPlaceCardAnimate,
                     dropCard: setDropCardRight,
-                    isTurn: setRightTurn
+                    isTurn: setRightTurn,
+                    title: setRightName
                 },
                 [(playContext.playState.direction + 2) % 4] : {
                     direction: HandPosition.TOP,
                     updateCard: setTopCards,
                     animate: setTopPlaceCardAnimate,
                     dropCard: setDropCardTop,
-                    isTurn: setTopTurn
+                    isTurn: setTopTurn,
+                    title: setTopName
                 }
             }
             setPlayingDirection(newState)
-            
+            console.log("CURRENT ROUNT",playContext.playState.data, playContext.playState.currentRound)
+            let currentdata = playContext.playState.data[playContext.playState.currentRound - 1]
+            let currentTable = currentdata.tables.find(table => table.table_id == playContext.playState.table)
+
+            let bottom = playContext.playState.direction
+            let left = (playContext.playState.direction + 1) % 4
+            let top = (playContext.playState.direction + 2) % 4
+            let right =  (playContext.playState.direction + 3) % 4
+
+            newState[bottom].title(currentTable?.directions.find(dir => dir.direction == bottom)?.id)
+            newState[left].title(currentTable?.directions.find(dir => dir.direction == left)?.id)
+            newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id)
+            newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id)
             
             connect(playContext.playState.table, detail)
             
@@ -374,6 +396,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                     cardToFind={dropCardTop}
                     isTurn={isTopTurn}
                     trump={trump}
+                    playerName={topName}
                     onDrop={() => {
                         dropCard(setTopPlaceCardAnimate, setTopDroppedCard)(<DroppedCard text={dropCardTop} />)
                         }} 
@@ -391,6 +414,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                     currentSuite={currentSuite}
                     isTurn={isBotTurn}
                     trump={trump}
+                    playerName={bottomName}
                     onDrop={(item)=> {
                         setDroppedCard(<DroppedCard text={item} />)
                         makePlayCardRequest(item, turnRef.current)}} 
@@ -407,6 +431,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                     cardToFind={dropCardLeft}
                     isTurn={isLeftTurn}
                     trump={trump}
+                    playerName={leftName}
                     onDrop={() => {
                         dropCard(setLeftPlaceCardAnimate, setLefttDroppedCard)(<DroppedCard text={dropCardLeft} />)
                         }}
@@ -425,6 +450,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                     cardToFind={dropCardRight}
                     isTurn={isRightTurn}
                     trump={trump}
+                    playerName={rightName}
                     onDrop={() => {
                         dropCard(setRightPlaceCardAnimate, setRightDroppedCard)(<DroppedCard text={dropCardRight} />)
                         }} 
@@ -457,6 +483,7 @@ const PlayingPageContainer = styled.div`
     /* padding-bottom: 75%; */
     width: 100%;
     position: relative;
+    overflow: hidden;
 `
 
 const RatioContainer = styled.div`

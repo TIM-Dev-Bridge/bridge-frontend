@@ -209,7 +209,8 @@ const CardContainer = styled(motion.div)<{visible: boolean, background: string, 
     background-repeat: no-repeat;
     border: ${props=>props.highlight ? "4px solid green" : "4px solid transparent"};
     pointer-events: ${props=>props.highlight ? "auto" : "none"} ;
-    box-shadow: ${props=>props.isTurn ? "green 0px 0px 100px -10px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px" : "var(--app-shadow)"};
+    box-shadow: var(--app-shadow);
+    /* box-shadow: ${props=>props.isTurn ? "green 0px 0px 100px -10px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px" : "var(--app-shadow)"}; */
     transition: box-shadow 0.3s;
 `
 

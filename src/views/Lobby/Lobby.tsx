@@ -144,6 +144,118 @@ const Lobby: React.FunctionComponent<LobbyProps> = (props: LobbyProps) => {
     const { tourList, createTour, joinTour, getTourList, connect } = useLobby()
     const authContext = useAuthen()
     const navContext = useNavigator()
+
+    // const mockTours: LobbyListProps[] = [
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     },
+    //     {
+    //         host: "string",
+    //         title: "string",
+    //         type: "string",
+    //         players: "string",
+    //     }
+    // ]
+
     return (
         <LobbyList>
             <table className="w-full">
@@ -254,6 +366,8 @@ const LobbyList = styled.div`
     /* grid-column: 1; */
     height: 100%;
     width: 100%;
+    overflow: auto;
+    padding-bottom: 30px;
 `
 
 

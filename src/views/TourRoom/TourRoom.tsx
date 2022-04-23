@@ -282,12 +282,211 @@ const PlayerList = (props: PlayerListProps) => {
 
     // }, [playerPair])
 
+    // const mockPair = [
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    //     [
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         },
+    //         {
+    //             id: "string",
+    //             name: "string",
+    //             status: "string",
+    //             pair_id: "number"
+    //         }
+    //     ],
+    // ]
     
 
     return (
         <div style={PlayerListCss}>
             <PlayerListScroll>
                 {
+                    // mockPair.map(pair => <PlayerListCell player_name1={pair[0] ? pair[0].name : ""} player_name2={pair[1] ? pair[1].name : ""} pair_name={''} />)
                     playerPair.map(pair => <PlayerListCell player_name1={pair[0] ? pair[0].name : ""} player_name2={pair[1] ? pair[1].name : ""} pair_name={''} />)
                 }
             </PlayerListScroll>
@@ -369,6 +568,9 @@ const PlayerListScroll = styled.div`
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
+    padding-bottom: 15px;
+    overflow: auto;
+    min-height: min-content;
 `
 
 
@@ -399,6 +601,7 @@ const PlayerListCellContainer = styled.div`
     box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
     border-radius: 15px;
     height: 48px;
+    min-height: 48px;
     justify-content: center;
     align-items: center;
     align-content: center;

@@ -42,7 +42,7 @@ const BiddingTable =()=> {
 
             if (status['payload'].hasOwnProperty('contract')) {
                 // setCurrentBid(status['payload']['contract'])
-                if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItemsRef.current.length == 0) { return }
+                if ((status['payload']['contract'] == -1 ) && bidItemsRef.current.length == 0) { return }
                 const newItems = bidItemsRef.current.map(item => item)
                 const component = stringToComponent(numToString(status['payload']['contract']))
                 const element = <>{component[0]}{component[1]}</>
@@ -59,7 +59,7 @@ const BiddingTable =()=> {
         if (status['status'] == 'initial_playing') {
             if (status['payload'].hasOwnProperty('contract')) {
                 // setCurrentBid(status['payload']['contract'])
-                if ((status['payload']['contract'] == -1 || status['payload']['contract'] == 0) && bidItemsRef.current.length == 0) { return }
+                if ((status['payload']['contract'] == -1) && bidItemsRef.current.length == 0) { return }
                 const newItems = [...bidItemsRef.current]
                 newItems.push(<BidItem>{status['payload']['contract']}</BidItem>)
                 setBidItems(newItems)
@@ -73,13 +73,13 @@ const BiddingTable =()=> {
 
     const numToString =(contract: number)=> {
         const dict: {[key:number]: string} = {
-            1: 'C',
-            2: 'D',
-            3: 'H',
-            4: 'S',
-            0: 'NT'
+            0: 'C',
+            1: 'D',
+            2: 'H',
+            3: 'S',
+            4: 'NT'
         }
-        const level: Number = Math.floor(((contract - 1) / 5) + 1)
+        const level: Number = Math.floor(((contract) / 5) + 1)
         const suite = contract % 5
         var bidString = level.toString() + "_" + dict[suite]
         if (contract == -1) {
