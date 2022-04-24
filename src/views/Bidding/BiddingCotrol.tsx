@@ -20,7 +20,7 @@ const BiddingControl =()=> {
     const [selectedSuite, setSelectedSuite] = React.useState(initSuite)
     // const [selectedLevel, setSelectedLevel] = React.useState(initLevel)
     const [selectedLevel, setSelectedLevel] = React.useState<number|null>(null)
-    const [currentBid, setCurrentBid] = React.useState(0)
+    const [currentBid, setCurrentBid] = React.useState(-1)
     const [bidable, setBidable] = React.useState(false)
     const [doubleEnable, setDoubleEnable] = React.useState(false)
     const [isInitial, setInitial] = React.useState(true)
@@ -49,19 +49,20 @@ const BiddingControl =()=> {
                 // } else {
                     
                 // }
-                setBidCount(prev => prev + 1)
-                console.log(bidCount)
-                if (bidCount >= 0) {
-                    setInitial(false)
-                }
+                
                 setDoubleEnable(status['payload']['doubleEnable'])
                 let currentBid = status['payload']['contract']
                 if (currentBid != -1 && currentBid != 99) {
                     console.log("Current Bid", currentBid)
                     setCurrentBid(status['payload']['contract'])
-                    
                     setLvlToBid(lvlToBidFrom(status['payload']['contract']))
                 } 
+                setBidCount(prev => prev + 1)
+                console.log(bidCount)
+                if (bidCount >= 0) {
+                    setInitial(false)
+                }
+
                 if (currentBid == 99) {
                     setIsDoubled(true)
                 }
@@ -78,6 +79,20 @@ const BiddingControl =()=> {
     React.useEffect(()=> {
         setLvlToBid(lvlToBid())
     }, [])
+
+    const calculateAvailableLevelBidding =(level: number, contract: number)=> {
+        if (((level - 1) * 5) + 4 <= contract) {
+            return false
+        }
+        return true
+    }
+
+    const calculateAvailableSuiteBidding =(level: number, suite: number, contract: number)=> {
+        if (((level - 1) * 5) + suite <= contract) {
+            return false
+        }
+        return true
+    }
 
     const makeBiddingRequest =(level: number|null, suit: string)=> {
         if (level == null) {
@@ -244,7 +259,9 @@ const BiddingControl =()=> {
                                 setSuiteToBid(suiteToBid(currentBid, num))
                             }}
                             style={{border: selectedLevel == num ? "1px solid blue" : ""}} 
-                            enabled={bidableLvl[num - 1] && bidable}>{num}</Item> )
+                            // enabled={bidableLvl[num - 1] && bidable}>{num}</Item> 
+                            enabled={calculateAvailableLevelBidding(num, currentBid) && bidable}>{num}</Item> 
+                            )
                 }
                 {!isDoubled ? 
                 <Double 
@@ -256,31 +273,36 @@ const BiddingControl =()=> {
                 
                 <TrumpContainer>
                     <Item 
-                        enabled={bidableSuite['C'] && bidable} 
+                        // enabled={bidableSuite['C'] && bidable} 
+                        enabled={calculateAvailableSuiteBidding(selectedLevel ?? -99, 0, currentBid) && bidable} 
                         onClick={()=> {
                             makeBiddingRequest(selectedLevel, 'C')
                             setSelectedSuite(selectSuite('C'))}} 
                         style={{border: selectedSuite['C'] ? "1px solid blue" : ""}}><BsSuitClubFill /></Item>
                     <Item 
-                        enabled={bidableSuite['D'] && bidable} 
+                        // enabled={bidableSuite['D'] && bidable} 
+                        enabled={calculateAvailableSuiteBidding(selectedLevel ?? -99, 1, currentBid) && bidable} 
                         onClick={()=> {
                             makeBiddingRequest(selectedLevel, 'D')
                             setSelectedSuite(selectSuite('D'))}} 
                         style={{border: selectedSuite['D'] ? "1px solid blue" : ""}}><BsSuitDiamondFill style={{color: bidableSuite['D'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
                     <Item 
-                        enabled={bidableSuite['H'] && bidable} 
+                        // enabled={bidableSuite['H'] && bidable} 
+                        enabled={calculateAvailableSuiteBidding(selectedLevel ?? -99, 2, currentBid) && bidable} 
                         onClick={()=> {
                             makeBiddingRequest(selectedLevel, 'H')
                             setSelectedSuite(selectSuite('H'))}} 
                         style={{border: selectedSuite['H'] ? "1px solid blue" : ""}}><BsSuitHeartFill style={{color: bidableSuite['H'] ? "red" :  "rgba(255, 0, 0, 0.3)" }}/></Item>
                     <Item 
-                        enabled={bidableSuite['S'] && bidable} 
+                        // enabled={bidableSuite['S'] && bidable} 
+                        enabled={calculateAvailableSuiteBidding(selectedLevel ?? -99, 3, currentBid) && bidable} 
                         onClick={()=> {
                             makeBiddingRequest(selectedLevel, 'S')
                             setSelectedSuite(selectSuite('S'))}} 
                         style={{border: selectedSuite['S'] ? "1px solid blue" : ""}}><BsSuitSpadeFill /></Item>
                     <NoTrump 
-                        enabled={bidableSuite['NT'] && bidable} 
+                        // enabled={bidableSuite['NT'] && bidable} 
+                        enabled={calculateAvailableSuiteBidding(selectedLevel ?? -99, 4, currentBid) && bidable} 
                         onClick={()=> {
                             makeBiddingRequest(selectedLevel, 'NT')
                             setSelectedSuite(selectSuite('NT'))}} 

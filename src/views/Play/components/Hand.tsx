@@ -41,7 +41,6 @@ const Hand =(props: HandProps)=> {
     }
 
     const isCardAvailable =(currentCard: number)=> {
-        console.log("TRUMP :: ", props.trump)
         if (props.currentSuite === null) {
             return true
         }

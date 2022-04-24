@@ -12,6 +12,14 @@ export interface PlayCardRequest {
     table_id: string
 }
 
+export interface SummaryRank {
+    pair_id: number, 
+    name1: string, 
+    name2: string, 
+    totalMP: number, 
+    rankPercent: number
+}
+
 
 export const usePlaying =()=> {
     const playCard =(body: PlayCardRequest)=> {
@@ -105,6 +113,12 @@ export const usePlaying =()=> {
         socket.emit('leave-table', tableId)
     }
 
+    const onSummaryRank =(callback: (data: SummaryRank[])=>void)=> {
+        socket.on('rank-with-name', (data) => {
+            callback(data)
+        })
+    }
+
     return {
         playCard,
         onInitialTurn,
@@ -112,6 +126,7 @@ export const usePlaying =()=> {
         onDefaultTurn,
         onFinishRound,
         onEnding,
-        leave
+        leave,
+        onSummaryRank
     }
 }

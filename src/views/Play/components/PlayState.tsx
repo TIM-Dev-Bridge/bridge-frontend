@@ -9,9 +9,11 @@ import { socket } from '../../../Service/SocketService'
 import BiddingPage from '../../Bidding/BiddingPage'
 import { usePlayState } from '../../PlayingContext/PlayingContext'
 import { AuthenContext, useAuthen } from '../../../Authen'
-import { PlayCardRequest, usePlaying } from '../../Bidding/UsePlaying'
+import { PlayCardRequest, SummaryRank, usePlaying } from '../../Bidding/UsePlaying'
+import { useBidding } from '../../Bidding/UseBidding'
 import DroppedCard from './DroppedCard'
 import { useGame } from './GameContext'
+import Summary from '../../Summary/Summary'
 
 interface PlayingPageProps {
     tableDetail?: ConnectTable
@@ -58,7 +60,8 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     const playContext = usePlayState()
     const authen = useAuthen()
-    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onFinishRound, onEnding, leave} = usePlaying()
+    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onFinishRound, onEnding, leave, onSummaryRank} = usePlaying()
+    const { subscribePlayingStatus } = useBidding()
     const [playDirection, setPlayDirection] = React.useState(-1)
     const [turn, setTurn] = React.useState(-1)
     const turnRef = React.useRef(turn)
@@ -89,6 +92,8 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [leftName, setLeftName] = React.useState("")
     const [rightName, setRightName] = React.useState("")
     const [bottomName, setBottomName] = React.useState("")
+
+    const [summaryRank, setSummaryRank] = React.useState<SummaryRank[]>([])
 
     const game = useGame()
 
@@ -154,15 +159,30 @@ const PlayingPage = (props: PlayingPageProps) => {
             let top = (playContext.playState.direction + 2) % 4
             let right =  (playContext.playState.direction + 3) % 4
 
-            newState[bottom].title(currentTable?.directions.find(dir => dir.direction == bottom)?.id)
-            newState[left].title(currentTable?.directions.find(dir => dir.direction == left)?.id)
-            newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id)
-            newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id)
+            newState[bottom].title(currentTable?.directions.find(dir => dir.direction == bottom)?.id + " ( " + directionFromnum(bottom) + " ) " )
+            newState[left].title(currentTable?.directions.find(dir => dir.direction == left)?.id + " ( " + directionFromnum(left) + " ) " )
+            newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id + " ( " + directionFromnum(top) + " ) " )
+            newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id + " ( " + directionFromnum(right) + " ) " )
             
             connect(playContext.playState.table, detail)
             
         }
     }, [playContext.playState.table])
+
+    const directionFromnum =(direction: number)=> {
+        if (direction == 0) {
+            return "N"
+        }
+        if (direction == 1) {
+            return "E"
+        }
+        if (direction == 2) {
+            return "S"
+        }
+        if (direction == 3) {
+            return "W"
+        }
+    }
 
     React.useEffect(() => {
         updateCard((cards) => {
@@ -227,12 +247,12 @@ const PlayingPage = (props: PlayingPageProps) => {
                 playingDirection?.[prev].animate(true)
                 playingDirection?.[prev].isTurn(false)
                 setCurrentSuite(data.payload['initSuite'])
-                if (trump != data.payload.bidSuite) {
-                    setTrump(data.payload.bidSuite)
-                }
-                if (declarer == data.payload.nextDirection) {
+                // if (trump != data.payload.bidSuite) {
+                //     setTrump(data.payload.bidSuite)
+                // }
+                // if (declarer == data.payload.nextDirection) {
 
-                }
+                // }
             }
 
             if (data.payload.isFourthPlay) {
@@ -249,8 +269,13 @@ const PlayingPage = (props: PlayingPageProps) => {
             let direction = data.payload.leader
             setPlayDirection(direction)
             setTurn(data.payload.turn)
+            setTrump(data.payload.bidSuite)
+            playingDirection?.[direction].isTurn(true)
+            playingDirection?.[(direction + 1) % 4].isTurn(false)
+            playingDirection?.[(direction + 2) % 4].isTurn(false)
+            playingDirection?.[(direction + 3) % 4].isTurn(false)
         })
-    }, [socket, playDirection])
+    }, [socket, playDirection, playingDirection])
 
     React.useEffect(()=> {
         onFinishRound( data => {
@@ -314,7 +339,33 @@ const PlayingPage = (props: PlayingPageProps) => {
         playingDirectionRef.current = playingDirection
     }, [playingDirection])
 
+    React.useEffect(()=> {
+        onSummaryRank( rank => {
+            console.log("RANK ::", rank)
+            setSummaryRank(rank)
+        })
+    }, [socket, summaryRank])
+
+    React.useEffect(()=> {
+        subscribePlayingStatus(status => {
+            if (status['status'] == 'waiting_for_bid') {
     
+                if (status['payload'].hasOwnProperty('nextDirection')) {
+                    console.log("BIDDING STATUS", status['payload']['nextDirection'])
+                    let direction = status['payload']['nextDirection']
+                    playingDirection?.[direction].isTurn(true)
+                    playingDirection?.[(direction + 1) % 4].isTurn(false)
+                    playingDirection?.[(direction + 2) % 4].isTurn(false)
+                    playingDirection?.[(direction + 3) % 4].isTurn(false)
+
+                    console.log("UPDATE", playingDirection)
+                }
+                else {
+                    // setLvlToBid(lvlToBid())
+                }
+            }
+        })
+    }, [socket, playingDirection])
 
     const makePlayCardRequest =(card: number, turn: number)=> {
         let request : PlayCardRequest = {
@@ -471,7 +522,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                 <>Wait for other table to complete</>
             </WaitingPage>
             <WaitingPage visible={shouldFinished}>
-                <>Finished</>
+                {/* <>Finished</> */}
+                <Summary summaryRank={summaryRank} />
             </WaitingPage>
         </PlayingPageContainer>
     )

@@ -15,9 +15,169 @@ import { NavigationContext } from './components/Router/Router';
 // import Winner from './views/Summary/Winner';
 // import DefaultPlace from './views/Summary/DefaultPlace';
 import Summary from './views/Summary/Summary';
+import styled from 'styled-components';
+import { SummaryRank } from './views/Bidding/UsePlaying';
 
 function App() {
   const { navigationStack, updateStack } = React.useContext(NavigationContext)
+
+  const mockRank: SummaryRank[] = [
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    },
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    },
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    },
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    },
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    },
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+    ,
+    {
+        pair_id: 4, 
+        name1: "string", 
+        name2: "string", 
+        totalMP: 4, 
+        rankPercent: 4
+    }
+]
+
   React.useEffect(()=> {
     // console.log(navigationStack[navigationStack.length - 1])
     // console.log("INIT LOCATION", window.location.pathname)
@@ -30,6 +190,10 @@ function App() {
 
       {/* <Summary /> */}
       {navigationStack[navigationStack.length - 1]}
+
+      {/* <WaitingPage>
+          <Summary summaryRank={mockRank} />
+      </WaitingPage> */}
 
 
       {/* <DefaultPage leftSideContainer={<AdminPageContainer />} displayTourRoom={false} title='User Management' /> */}
@@ -52,5 +216,21 @@ function App() {
     // </div>
   );
 }
+
+const WaitingPage = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    visibility: visible;
+`
+
+
 
 export default App;
