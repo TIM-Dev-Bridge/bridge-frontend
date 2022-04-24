@@ -61,6 +61,7 @@ export const usePlaying =()=> {
         payload: {
             leader: number,
             turn: number
+            tricks: number[],
         }
     }
 
@@ -78,7 +79,8 @@ export const usePlaying =()=> {
             leader: number,
             board: number,
             bidSuite: number,
-            turn: number
+            turn: number,
+            maxContract: number,
         }
     }
 
@@ -88,6 +90,28 @@ export const usePlaying =()=> {
                 callback(data)
             }
         })
+    }
+
+    interface boardTypeOBJ {
+        board_number: number,
+      dealer: number,
+      vulnerable: number,
+    }
+
+    interface InitialBidding {
+        status : string,
+        payload: {
+            contract: number,
+            nextDirection: number,
+            board: number,
+            turn: number,
+            cards: any,
+            doubleEnable: boolean,
+            cur_round: number,
+            total_round: number,
+            board_per_round: number,
+            boardType: [],
+          },
     }
 
     interface Finish {

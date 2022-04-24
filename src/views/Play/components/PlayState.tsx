@@ -5,7 +5,7 @@ import Card from './Card'
 import { indexOf, remove } from 'lodash'
 import Hand, { HandPosition } from './Hand'
 import { ConnectTable, useTable } from '../../TourRoom/UseTable'
-import { socket } from '../../../Service/SocketService'
+import { socket, useScore } from '../../../Service/SocketService'
 import BiddingPage from '../../Bidding/BiddingPage'
 import { usePlayState } from '../../PlayingContext/PlayingContext'
 import { AuthenContext, useAuthen } from '../../../Authen'
@@ -14,9 +14,11 @@ import { useBidding } from '../../Bidding/UseBidding'
 import DroppedCard from './DroppedCard'
 import { useGame } from './GameContext'
 import Summary from '../../Summary/Summary'
+import TablePopup from "./TablePopup";
+import PlaySideTab, { IPlaySideTabProps } from "./PlaySideTab";
 
 interface PlayingPageProps {
-    tableDetail?: ConnectTable
+  tableDetail?: ConnectTable;
 }
 
 interface PlayingDirectionFn {
@@ -29,8 +31,8 @@ interface PlayingDirectionFn {
 }
 
 type PlayingDirection = {
-    [key : number]: PlayingDirectionFn
-}
+  [key: number]: PlayingDirectionFn;
+};
 
 const PlayingPage = (props: PlayingPageProps) => {
     enum PlayState {
@@ -96,6 +98,44 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [summaryRank, setSummaryRank] = React.useState<SummaryRank[]>([])
 
     const game = useGame()
+
+    const [selectedPopup, setSelectedPopup] = React.useState<string | null>(null);
+    const switchSelectedPopup = (str: string) => {
+      selectedPopup == str ? setSelectedPopup(null) : setSelectedPopup(str);
+    };
+    const score = useScore(
+      authen.authen.username,
+      playContext.playState.tourName
+    );
+    const [sideTabInfo, setSideTabInfo] = React.useState<IPlaySideTabProps>({
+      round: 1,
+      permission: "player",
+      boardsPerRound: 1,
+      boardsPlayed: 1,
+      totalRounds: 1,
+      boardType: undefined,
+      auction: undefined,
+      tricks: {
+        nsTricks: 0,
+        ewTricks: 0,
+      },
+      setSelectedPopup: switchSelectedPopup,
+    }); 
+
+    const directions: Record<number, "North" | "East" | "South" | "West"> = {
+      0: "North",
+      1: "East",
+      2: "South",
+      3: "West",
+    };
+  
+    const suit: Record<number, string> = {
+      0: "NT",
+      1: "C",
+      2: "D",
+      3: "H",
+      4: "S",
+    };
 
     // React.useEffect(() => {
     //     if (props.tableDetail != null || props.tableDetail != undefined) {
@@ -163,6 +203,32 @@ const PlayingPage = (props: PlayingPageProps) => {
             newState[left].title(currentTable?.directions.find(dir => dir.direction == left)?.id + " ( " + directionFromnum(left) + " ) " )
             newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id + " ( " + directionFromnum(top) + " ) " )
             newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id + " ( " + directionFromnum(right) + " ) " )
+
+            score.getCurrentMatchInfo(
+              playContext.playState.currentRound,
+              playContext.playState.table,
+              (currentMatchInfo) => {
+                score.getBoardType(currentMatchInfo.board_num, (boardType) => {
+                  setSideTabInfo({
+                    ...sideTabInfo,
+                    boardType: {
+                      boardNo: boardType.board_number,
+                      dealer: boardType.dealer,
+                      vulnerable: boardType.vulnerable,
+                    },
+                    auction: undefined,
+                    tricks: {
+                      ewTricks: 0,
+                      nsTricks: 0,
+                    },
+                    boardsPerRound: currentMatchInfo.boardSequence,
+                    boardsPlayed: currentMatchInfo.board_num - (Math.floor((currentMatchInfo.board_num-1)/currentMatchInfo.boardSequence)),
+                    round: playContext.playState.currentRound,
+                    totalRounds: currentMatchInfo.total_round,
+                  });
+                });
+              }
+            );
             
             connect(playContext.playState.table, detail)
             
@@ -274,8 +340,20 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirection?.[(direction + 1) % 4].isTurn(false)
             playingDirection?.[(direction + 2) % 4].isTurn(false)
             playingDirection?.[(direction + 3) % 4].isTurn(false)
+
+            setSideTabInfo({
+              ...sideTabInfo,
+              auction: {
+                declarer: directions[data.payload.leader],
+                contract:
+                  Math.ceil(data.payload.maxContract / 5).toString() +
+                  "_" +
+                  suit[data.payload.maxContract % 5].toString(),
+              },
+            });
         })
     }, [socket, playDirection, playingDirection])
+
 
     React.useEffect(()=> {
         onFinishRound( data => {
@@ -378,32 +456,64 @@ const PlayingPage = (props: PlayingPageProps) => {
             round_num: playContext.playState.round,
             table_id: playContext.playState.table
         }
-
         playCard(request)
     }
 
-    const dropCard = (animateAnimation: React.Dispatch<React.SetStateAction<boolean>>, dropFunction: React.Dispatch<React.SetStateAction<JSX.Element>>) => {
-        animateAnimation(false)
-        
-        return dropFunction
-    }
-
-    const variants = {
-        collapse: {
-            scale: 0.8,
-            opacity: 0,
-            transition: {
-                delayChildren: 0.3,
-                staggerChildren: 0.2
-            }
+  React.useEffect(() => {
+    onInitialTurn((data) => {
+      console.log("DATA : ", data);
+      let direction = data.payload.leader;
+      setPlayDirection(direction);
+      setTurn(data.payload.turn);
+      setCurrentSuite(null);
+      setSideTabInfo({
+        ...sideTabInfo,
+        tricks: {
+          ewTricks: data.payload.tricks[1],
+          nsTricks: data.payload.tricks[0],
         },
-        normal: {
-            scale: 1,
-            opacity: 1
-        }
-    }
+      });
+      // animateDirectionRef.current[direction](true)
+      // animateDirection[direction](true)
+    });
+  }, [socket, playDirection, currentSuite]);
+
+  const dropCard = (
+    animateAnimation: React.Dispatch<React.SetStateAction<boolean>>,
+    dropFunction: React.Dispatch<React.SetStateAction<JSX.Element>>
+  ) => {
+    animateAnimation(false);
+
+    return dropFunction;
+  };
+
+  const variants = {
+    collapse: {
+      scale: 0.8,
+      opacity: 0,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2,
+      },
+    },
+    normal: {
+      scale: 1,
+      opacity: 1,
+    },
+  };
+
 
     return (
+      <Container>
+        <PlaySideTab {...sideTabInfo} />
+      {/* <div style={{ width: "85%", height: "100%" }}> */}
+      <TablePopupContainer>
+        <TablePopup
+          selectedPopup={selectedPopup}
+          setSelectedPopup={setSelectedPopup}
+        />
+      </TablePopupContainer>
+      
         <PlayingPageContainer>
             <InnerContainer isYourTurn={playDirection == playContext.playState.direction}>
                 
@@ -526,138 +636,169 @@ const PlayingPage = (props: PlayingPageProps) => {
                 <Summary summaryRank={summaryRank} />
             </WaitingPage>
         </PlayingPageContainer>
+        </Container>
     )
 }
 
 
+// const PlayingPageContainer = styled.div`
+//     /* width: 70vw; */
+//     width: 100%;
+//     /* height: 0; */
+//     zoom: 1;
+//     /* padding-bottom: 75%; */
+//     width: 100%;
+//     position: relative;
+//     overflow: hidden;
+// `
+
 const PlayingPageContainer = styled.div`
-    /* width: 70vw; */
-    width: 100%;
-    /* height: 0; */
-    zoom: 1;
-    /* padding-bottom: 75%; */
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-`
+  /* width: 70vw; */
+  width: 85%;
+  /* height: 0; */
+  zoom: 1;
+  /* padding-bottom: 75%; */
+  /* width: 100%; */
+  position: relative;
+`;
+
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  width: 100vw;
+`;
+
+const TablePopupContainer = styled.div`
+  width: 85vw;
+  height: 100vh;
+  display: flex;
+  position: absolute;
+  left: 15%;
+  justify-content: center;
+  align-items: center;
+  background-color: #0c6b3f;
+  text-align: center;
+`;
 
 const RatioContainer = styled.div`
-    background-color: green;
-    width: 100%;
-    height: 100vh;
-    position: relative;
-`
+  background-color: green;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+`;
 
-const InnerContainer = styled.div<{isYourTurn: boolean}>`
-    background-color: white;
-    display: grid;
-    /* position: absolute; 
+const InnerContainer = styled.div<{ isYourTurn: boolean }>`
+  background-color: white;
+  display: grid;
+  /* position: absolute; 
     top: 0;
     left: 0; */
-    /* margin: 0 auto; */
-    width: 100%;
-    height: 100%;
-    border: ${props=>props.isYourTurn ? "5px solid green" : "5px solid white"};
-    /* aspect-ratio: 16 / 10; */
-    grid-template-columns: 33% 33% 33%;
-    grid-template-rows: 33% 33% 33%;
-`
+  /* margin: 0 auto; */
+  width: 100%;
+  height: 100%;
+  border: ${(props) =>
+    props.isYourTurn ? "5px solid green" : "5px solid white"};
+  /* aspect-ratio: 16 / 10; */
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 33% 33% 33%;
+`;
 
 const Center = styled(motion.div)`
-    grid-row: 2;
-    grid-column: 2;
-    display: grid;
-    grid-template-columns: 33% 33% 33%;
-    grid-template-rows: 33% 33% 33%;
-    /* box-shadow: var(--app-shadow); */
-    border-radius: 16px;
-`
+  grid-row: 2;
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 33% 33% 33%;
+  /* box-shadow: var(--app-shadow); */
+  border-radius: 16px;
+`;
 
 const CenterTop = styled.div`
-    grid-row: 1;
-    grid-column: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* background-color: green; */
-    width: 10vw;
-    max-width: 10em;
-    aspect-ratio: 1 / 1;
-`
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: green; */
+  width: 10vw;
+  max-width: 10em;
+  aspect-ratio: 1 / 1;
+`;
 
 const CenterSouth = styled.div`
-    grid-row: 3;
-    grid-column: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* background-color: green; */
-    width: 10vw;
-    max-width: 10em;
-    aspect-ratio: 1 / 1;
-`
+  grid-row: 3;
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: green; */
+  width: 10vw;
+  max-width: 10em;
+  aspect-ratio: 1 / 1;
+`;
 
 const CenterRight = styled.div`
-    grid-row: 2;
-    grid-column: 3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* background-color: green; */
-    width: 10vw;
-    max-width: 10em;
-    aspect-ratio: 1 / 1;
-`
+  grid-row: 2;
+  grid-column: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: green; */
+  width: 10vw;
+  max-width: 10em;
+  aspect-ratio: 1 / 1;
+`;
 
 const CenterLeft = styled.div`
-    grid-row: 2;
-    grid-column: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* background-color: green; */
-    width: 10vw;
-    max-width: 10em;
-    aspect-ratio: 1 / 1;
-`
+  grid-row: 2;
+  grid-column: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: green; */
+  width: 10vw;
+  max-width: 10em;
+  aspect-ratio: 1 / 1;
+`;
 
 const PlayedCard = styled.div`
-    width: 5vw;
-    max-width: 4em;
-    aspect-ratio: 169 / 244;
-    /* background-color: red; */
-    /* box-shadow: var(--app-shadow); */
-`
+  width: 5vw;
+  max-width: 4em;
+  aspect-ratio: 169 / 244;
+  /* background-color: red; */
+  /* box-shadow: var(--app-shadow); */
+`;
 
 const Iframe = styled.iframe`
-    display: block; 
-    border: 0px;
-    margin: 0px auto;
-    padding:0px;
-`
+  display: block;
+  border: 0px;
+  margin: 0px auto;
+  padding: 0px;
+`;
 
-const PopupArea = styled.div<{visible: boolean}>`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    visibility: ${props=>props.visible ? "visible" : "hidden"};
-`
+const PopupArea = styled.div<{ visible: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: ${(props) => (props.visible ? "visible" : "hidden")};
+`;
 
-const WaitingPage = styled.div<{visible: boolean}>`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    visibility: ${props=>props.visible ? "visible" : "hidden"};
-`
+const WaitingPage = styled.div<{ visible: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  visibility: ${(props) => (props.visible ? "visible" : "hidden")};
+`;
 
-
-export default PlayingPage
+export default PlayingPage;
