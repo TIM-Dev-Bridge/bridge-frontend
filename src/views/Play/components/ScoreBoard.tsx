@@ -57,7 +57,7 @@ const ScoreBoard: React.FC = () => {
 
 
   React.useEffect(() => {
-    // console.log('fetching Data')
+    console.log('fetching Scoreboard Data')
 
     score.getScoreboard((scoreboard)=>{
       // console.log("scoreboard", scoreboard)

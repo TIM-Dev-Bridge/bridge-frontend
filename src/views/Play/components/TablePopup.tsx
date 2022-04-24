@@ -18,58 +18,57 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
 
   const authenContext = useAuthen()
   const playContext = usePlayState();
-  const score = useScore(authenContext.authen.username ,playContext.playState.tourName)
 
-  const [scoreBoardData, setScoreBoardData] = React.useState<IScoreBoardProps>({
-    scoreData: [
-      [
-        {
-          key: "00",
-          position: "ns",
-          opponent: ["Team B"],
-          contractor: "ew",
-          nsScore: 250,
-          ewScore: 0,
-          mps: 8,
-          totalMps: 8,
-        },
-        {
-          key: "01",
-          position: "ew",
-          opponent: ["Team C"],
-          contractor: "ns",
-        },
-        {
-          key: "02",
-          position: "ns",
-          opponent: ["Team D"],
-        },
-      ],
-      [
-        {
-          key: "10",
-          position: "ew",
-          opponent: ["Team X"],
-          contractor: "ew",
-          nsScore: 250,
-          ewScore: 0,
-          mps: 8,
-          totalMps: 8,
-        },
-        {
-          key: "11",
-          position: "ew",
-          opponent: ["Team Y"],
-          contractor: "ns",
-        },
-        {
-          key: "12",
-          position: "ns",
-          opponent: ["Team Z"],
-        },
-      ],
-    ],
-  });
+  // const [scoreBoardData, setScoreBoardData] = React.useState<IScoreBoardProps>({
+  //   scoreData: [
+  //     [
+  //       {
+  //         key: "00",
+  //         position: "ns",
+  //         opponent: ["Team B"],
+  //         contractor: "ew",
+  //         nsScore: 250,
+  //         ewScore: 0,
+  //         mps: 8,
+  //         totalMps: 8,
+  //       },
+  //       {
+  //         key: "01",
+  //         position: "ew",
+  //         opponent: ["Team C"],
+  //         contractor: "ns",
+  //       },
+  //       {
+  //         key: "02",
+  //         position: "ns",
+  //         opponent: ["Team D"],
+  //       },
+  //     ],
+  //     [
+  //       {
+  //         key: "10",
+  //         position: "ew",
+  //         opponent: ["Team X"],
+  //         contractor: "ew",
+  //         nsScore: 250,
+  //         ewScore: 0,
+  //         mps: 8,
+  //         totalMps: 8,
+  //       },
+  //       {
+  //         key: "11",
+  //         position: "ew",
+  //         opponent: ["Team Y"],
+  //         contractor: "ns",
+  //       },
+  //       {
+  //         key: "12",
+  //         position: "ns",
+  //         opponent: ["Team Z"],
+  //       },
+  //     ],
+  //   ],
+  // });
 
   const [leaderBoardData, setLeaderBoardData] =
     React.useState<ILeaderBoardProps>({
@@ -308,99 +307,99 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
   //   ],
   // });
 
-  const recordContractor = (
-    round: number,
-    index: number,
-    position: "ns" | "ew"
-  ) => {
-    scoreBoardData.scoreData[round][index] = {
-      ...scoreBoardData.scoreData[round][index],
-      contractor: position,
-    };
+  // const recordContractor = (
+  //   round: number,
+  //   index: number,
+  //   position: "ns" | "ew"
+  // ) => {
+  //   scoreBoardData.scoreData[round][index] = {
+  //     ...scoreBoardData.scoreData[round][index],
+  //     contractor: position,
+  //   };
 
-    setScoreBoardData({
-      scoreData: [...scoreBoardData.scoreData],
-    });
-  };
+  //   setScoreBoardData({
+  //     scoreData: [...scoreBoardData.scoreData],
+  //   });
+  // };
 
-  const recordScore = (
-    round: number,
-    index: number,
-    nsScore: number,
-    ewScore: number,
-    mps: number,
-    totalMps: number
-  ) => {
-    scoreBoardData.scoreData[round][index] = {
-      ...scoreBoardData.scoreData[round][index],
-      nsScore: nsScore,
-      ewScore: ewScore,
-      mps: mps,
-      totalMps: totalMps,
-    };
+  // const recordScore = (
+  //   round: number,
+  //   index: number,
+  //   nsScore: number,
+  //   ewScore: number,
+  //   mps: number,
+  //   totalMps: number
+  // ) => {
+  //   scoreBoardData.scoreData[round][index] = {
+  //     ...scoreBoardData.scoreData[round][index],
+  //     nsScore: nsScore,
+  //     ewScore: ewScore,
+  //     mps: mps,
+  //     totalMps: totalMps,
+  //   };
 
-    setScoreBoardData({
-      scoreData: [...scoreBoardData.scoreData],
-    });
-  };
+  //   setScoreBoardData({
+  //     scoreData: [...scoreBoardData.scoreData],
+  //   });
+  // };
 
-  const recordTeamPosition = (
-    round: number,
-    index: number,
-    position: "ns" | "ew",
-    opponent: string[]
-  ) => {
-    scoreBoardData.scoreData[round][index] = {
-      ...scoreBoardData.scoreData[round][index],
-      key: index.toString(),
-      position: position,
-      opponent: opponent,
-    };
+  // const recordTeamPosition = (
+  //   round: number,
+  //   index: number,
+  //   position: "ns" | "ew",
+  //   opponent: string[]
+  // ) => {
+  //   scoreBoardData.scoreData[round][index] = {
+  //     ...scoreBoardData.scoreData[round][index],
+  //     key: index.toString(),
+  //     position: position,
+  //     opponent: opponent,
+  //   };
 
-    setScoreBoardData({
-      scoreData: [...scoreBoardData.scoreData],
-    });
-  };
+  //   setScoreBoardData({
+  //     scoreData: [...scoreBoardData.scoreData],
+  //   });
+  // };
 
-  const updateNsLeaderBoard = (
-    nsTeam: string,
-    nsMps: number,
-    nsPercentage: number
-  ) => {
-    const index = leaderBoardData.nsLeader.findIndex(
-      (object) => object.nsTeam === nsTeam
-    );
-    leaderBoardData.nsLeader[index] = {
-      ...leaderBoardData.nsLeader[index],
-      nsMps: nsMps,
-      nsPercentage: nsPercentage,
-    };
+  // const updateNsLeaderBoard = (
+  //   nsTeam: string,
+  //   nsMps: number,
+  //   nsPercentage: number
+  // ) => {
+  //   const index = leaderBoardData.nsLeader.findIndex(
+  //     (object) => object.nsTeam === nsTeam
+  //   );
+  //   leaderBoardData.nsLeader[index] = {
+  //     ...leaderBoardData.nsLeader[index],
+  //     nsMps: nsMps,
+  //     nsPercentage: nsPercentage,
+  //   };
 
-    setLeaderBoardData({
-      ...leaderBoardData,
-      nsLeader: [...leaderBoardData.nsLeader],
-    });
-  };
+  //   setLeaderBoardData({
+  //     ...leaderBoardData,
+  //     nsLeader: [...leaderBoardData.nsLeader],
+  //   });
+  // };
 
-  const updateEwLeaderBoard = (
-    ewTeam: string,
-    ewMps: number,
-    ewPercentage: number
-  ) => {
-    const index = leaderBoardData.ewLeader.findIndex(
-      (object) => object.ewTeam === ewTeam
-    );
-    leaderBoardData.ewLeader[index] = {
-      ...leaderBoardData.ewLeader[index],
-      ewMps: ewMps,
-      ewPercentage: ewPercentage,
-    };
+  // const updateEwLeaderBoard = (
+  //   ewTeam: string,
+  //   ewMps: number,
+  //   ewPercentage: number
+  // ) => {
+  //   const index = leaderBoardData.ewLeader.findIndex(
+  //     (object) => object.ewTeam === ewTeam
+  //   );
+  //   leaderBoardData.ewLeader[index] = {
+  //     ...leaderBoardData.ewLeader[index],
+  //     ewMps: ewMps,
+  //     ewPercentage: ewPercentage,
+  //   };
 
-    setLeaderBoardData({
-      ...leaderBoardData,
-      ewLeader: [...leaderBoardData.ewLeader],
-    });
-  };
+  //   setLeaderBoardData({
+  //     ...leaderBoardData,
+  //     ewLeader: [...leaderBoardData.ewLeader],
+  //   });
+  // };
 
   const popups = {
     null : {},
