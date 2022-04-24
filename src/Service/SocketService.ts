@@ -389,7 +389,7 @@ export const useRoom =(roomID: string)=> {
     }
 }
 
-export const useScore = (tourId: string) => {
+export const useScore = (userId: string, tourId: string) => {
 
     interface RoundScore {
         score: number[]
@@ -401,9 +401,25 @@ export const useScore = (tourId: string) => {
     }
     // const [allScore, updateAllScore] = React.useState<RecapScore[]>([])
 
+    const getCurrentMatchInfo = (roundnum: number, tableId: string, callback: (currentMatchesInfo: any) => void) => {
+        console.log('test', tourId,roundnum,tableId)
+        socket.emit('getCurrentMatchInfo', tourId, roundnum, tableId)
+        socket.on('getCurrentMatchInfo', (matchesInfo)=>{
+            // console.log('matchesInfo', matchesInfo)
+            callback(matchesInfo)
+        })
+    }
+
+    const getBoardType = (boardNumber: number, callback: (boardType:any) => void) => {
+        socket.emit('getBoardType', boardNumber)
+        socket.on('getBoardType', (boardType) => {
+            callback(boardType)
+        })
+    }
+
     const getAllScore = (callback: (recapScore: RecapScoreOBJ[])=>void) => {
         socket.emit('get-all-score', tourId)
-        socket.on('score', (recapScore: RecapScoreOBJ[]) => {
+        socket.on('score', (recapScore) => {
             // updateAllScore(recapScore)
             callback(recapScore)
         })
@@ -414,9 +430,37 @@ export const useScore = (tourId: string) => {
     //         callback(message)
     //     })
     // }
+
     
+    interface seat {
+        id : string,
+        direction: number,
+    }
+
+    interface tableScoreBoard {
+        declarer: number,
+        directions: seat[],
+        table_id: string,
+        EWScore: number,
+        NSScore: number,
+        MP: number,
+        totalMP: number,
+    }
+
+    interface ScoreBoardOBJ {
+        round: number,
+        tables: tableScoreBoard[]
+    }
+
+    const getScoreboard = (callback: (scoreBoard: ScoreBoardOBJ[]) => void) => {
+        socket.emit('getMyPastMatch',tourId, userId)
+        socket.on('getMyPastMatch', (scoreBoard) => {
+            console.log('scoreBoard', scoreBoard)
+            callback(scoreBoard)
+        })
+    }
 
     return {
-        getAllScore,
+        getAllScore, getScoreboard, getCurrentMatchInfo, getBoardType
     }
 }

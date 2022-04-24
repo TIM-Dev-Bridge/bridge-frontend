@@ -9,11 +9,12 @@ export interface IPlaySideTabProps {
   permission: "player" | "td" | "spectator";
   boardsPerRound: number;
   boardsPlayed: number;
+  totalRounds: number;
   // Vulnerable { 0: notVul, 1: NS, 2: EW, 3: NSEW}
   boardType?: {
     boardNo: number;
-    dealer: "North" | "South" | "East" | "West";
-    vulnerable: 0 | 1 | 2 | 3;
+    dealer: "N" | "S" | "E" | "W";
+    vulnerable: "None" | "N-S" | "E-W" | "All";
   };
   auction?: {
     declarer: "North" | "South" | "East" | "West";
@@ -60,10 +61,10 @@ const buttonDatas = [
 
 const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
   const DealerPortion = {
-    North: "0 80% 0 0",
-    East: "0 0 0 80%",
-    South: "80% 0 0 0",
-    West: "0 0 80% 0",
+    N: "0 0 80% 0",
+    E: "0 0 0 80%",
+    S: "80% 0 0 0",
+    W: "0 80% 0 0",
   };
 
   const PermissionColor = {
@@ -84,7 +85,7 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
     <Container style={{ backgroundColor: PermissionColor[props.permission] }}>
       <div>
         {props.round && (
-          <p style={{ fontSize: "2.5vh" }}> Round {props.round} </p>
+          <p style={{ fontSize: "2.5vh" }}> Round {props.round} / {props.totalRounds}</p>
         )}
         {props.boardsPlayed && (
           <p style={{ fontSize: "1.5vh" }}>
@@ -98,9 +99,9 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
         <BoardFormatN_S
           fill={
             props.boardType
-              ? props.boardType.vulnerable % 2 == 0
-                ? "black"
-                : "#ED1C24"
+              ? (props.boardType.vulnerable === "N-S" || props.boardType.vulnerable === "All")
+                ? "#ED1C24"
+                : "black"
               : "grey"
           }
           width="100%"
@@ -109,9 +110,9 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
         <BoardFormatE_W
           fill={
             props.boardType
-              ? props.boardType.vulnerable < 2
-                ? "black"
-                : "#ED1C24"
+              ? (props.boardType.vulnerable === "E-W" || props.boardType.vulnerable === "All")
+              ? "#ED1C24"
+              : "black"
               : "grey"
           }
           width="100%"
@@ -169,7 +170,7 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
                 />
               )
             ) : (
-              {}
+              ""
             )}
           </CenteredText>
         </tbody>
@@ -251,6 +252,7 @@ const Container = styled.div`
   font-family: Montserrat;
   font-style: normal;
   font-weight: bold;
+  text-align: center;
 `;
 
 const Dealer = styled.img`

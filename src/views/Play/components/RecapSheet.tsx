@@ -6,6 +6,8 @@ import "./Table.css";
 import { Type } from "typescript";
 import { forEach } from "lodash";
 import { useScore } from "../../../Service/SocketService";
+import { usePlayState } from "../../PlayingContext/PlayingContext";
+import { useAuthen } from "../../../Authen";
 // import 'antd/dist/antd.css'
 
 interface BoardScore {
@@ -34,12 +36,15 @@ export interface IRecapSheetProps {
 // const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
 const RecapSheet: React.FC<IRecapSheetProps> = (props: IRecapSheetProps) => {
   // const data = props.scoreData;
-  const { getAllScore } = useScore("123456789");
+  
+  const authenContext = useAuthen();
+  const playContext = usePlayState();
+  const score = useScore(authenContext.authen.username ,playContext.playState.tourName)
 
   React.useEffect(() => {
     console.log('fetching Data')
 
-    getAllScore((recapscores)=>{
+    score.getAllScore((recapscores)=>{
       const fetchedData: RoundScore[][] = recapscores.map((roundScores) => {
         return roundScores.tables.map((tableScores, index_1) => {
           return {

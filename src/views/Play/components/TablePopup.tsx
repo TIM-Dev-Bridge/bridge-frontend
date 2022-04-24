@@ -5,6 +5,9 @@ import LeaderBoard, { ILeaderBoardProps } from "./LeaderBoard";
 import Spectate, { ISpectateProps } from "./Spectate";
 import TdChatSelect, { ITdChatSelectProps } from "./TdChatSelect";
 import RecapSheet, { IRecapSheetProps } from "./RecapSheet";
+import { useScore } from "../../../Service/SocketService";
+import { usePlayState } from "../../PlayingContext/PlayingContext";
+import { useAuthen } from "../../../Authen";
 
 interface ITablePopupProps {
     selectedPopup : string | null,
@@ -13,13 +16,17 @@ interface ITablePopupProps {
 
 const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
 
+  const authenContext = useAuthen()
+  const playContext = usePlayState();
+  const score = useScore(authenContext.authen.username ,playContext.playState.tourName)
+
   const [scoreBoardData, setScoreBoardData] = React.useState<IScoreBoardProps>({
     scoreData: [
       [
         {
           key: "00",
           position: "ns",
-          opponent: "Team B",
+          opponent: ["Team B"],
           contractor: "ew",
           nsScore: 250,
           ewScore: 0,
@@ -29,20 +36,20 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
         {
           key: "01",
           position: "ew",
-          opponent: "Team C",
+          opponent: ["Team C"],
           contractor: "ns",
         },
         {
           key: "02",
           position: "ns",
-          opponent: "Team D",
+          opponent: ["Team D"],
         },
       ],
       [
         {
           key: "10",
           position: "ew",
-          opponent: "Team X",
+          opponent: ["Team X"],
           contractor: "ew",
           nsScore: 250,
           ewScore: 0,
@@ -52,13 +59,13 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
         {
           key: "11",
           position: "ew",
-          opponent: "Team Y",
+          opponent: ["Team Y"],
           contractor: "ns",
         },
         {
           key: "12",
           position: "ns",
-          opponent: "Team Z",
+          opponent: ["Team Z"],
         },
       ],
     ],
@@ -341,7 +348,7 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
     round: number,
     index: number,
     position: "ns" | "ew",
-    opponent: string
+    opponent: string[]
   ) => {
     scoreBoardData.scoreData[round][index] = {
       ...scoreBoardData.scoreData[round][index],
@@ -398,7 +405,7 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
   const popups = {
     null : {},
     RecapSheet: <RecapSheet />,
-    ScoreBoard: <ScoreBoard {...scoreBoardData}/>,
+    ScoreBoard: <ScoreBoard />,
     LeaderBoard: <LeaderBoard {...leaderBoardData}/>,
     Spectate: <Spectate {...spectateData}/>,
     Chat: <TdChatSelect {...tablePlayersData}/>,
@@ -446,6 +453,7 @@ const BlackOverlay = styled.div`
   left: 0;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(20px);
+  z-index:1;
 `;
 
 const IconButton = styled.img`
