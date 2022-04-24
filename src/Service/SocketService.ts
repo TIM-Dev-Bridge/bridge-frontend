@@ -1,8 +1,6 @@
-import React from 'react'
-import { io } from 'socket.io-client'
-import { callbackify } from 'util'
-import LeaderBoard from '../views/Play/components/LeaderBoard'
-import { TourData } from '../views/Popup/TourRequest'
+import React from "react";
+import { io } from "socket.io-client";
+import { TourData } from "../views/Popup/TourRequest";
 // import { endpoint } from './ServiceConfig';
 const endpoint = "http://localhost:4000";
 
@@ -10,25 +8,22 @@ const endpoint = "http://localhost:4000";
 export var socket = io(endpoint, { transports: ["websocket"] });
 //useLobby
 
-
-
-
 interface Direction {
-    id: any,
-    direction: any
+  id: any;
+  direction: any;
 }
 
 interface Table {
-    table_id: string,
-    versus: string,
-    boards: number[],
-    currentBoard: number,
-    directions: Direction[]
+  table_id: string;
+  versus: string;
+  boards: number[];
+  currentBoard: number;
+  directions: Direction[];
 }
 
 export interface RoundData {
-    roundNum: string,
-    tables: [Table]
+  roundNum: string;
+  tables: [Table];
 }
 
 interface TourItem {
@@ -311,16 +306,16 @@ export const useRoom = (roomID: string) => {
     return pair;
   };
 
-    const waitForInvitation =(onInvited: (playerName: string)=>void)=> {
-        //console.log("wating for invitation ...")
-        socket.on('invite-by', (player_name: string)=> {
-            console.log("got invite by", player_name, invitation)
+  const waitForInvitation = (onInvited: (playerName: string) => void) => {
+    //console.log("wating for invitation ...")
+    socket.on("invite-by", (player_name: string) => {
+      console.log("got invite by", player_name, invitation);
 
-            updateInvitation( prevState => [...prevState, player_name])
-            onInvited(player_name)
-        })
-    }
-    
+      updateInvitation((prevState) => [...prevState, player_name]);
+      onInvited(player_name);
+    });
+  };
+
   const invitePlayer = (invite_player_name: string, player_name: string) => {
     socket.emit(
       "invite-player",
@@ -462,109 +457,120 @@ export const useRoom = (roomID: string) => {
 };
 
 export const useScore = (userId: string, tourId: string) => {
-
   interface RoundScore {
-      score: number[]
+    score: number[];
   }
 
   interface RecapScoreOBJ {
-      round_num: string
-      tables : RoundScore[]
+    round_num: string;
+    tables: RoundScore[];
   }
   // const [allScore, updateAllScore] = React.useState<RecapScore[]>([])
 
-  const getCurrentMatchInfo = (roundnum: number, tableId: string, callback: (currentMatchesInfo: any) => void) => {
-      console.log('test', tourId,roundnum,tableId)
-      socket.emit('getCurrentMatchInfo', tourId, roundnum, tableId)
-      socket.on('getCurrentMatchInfo', (matchesInfo)=>{
-          // console.log('matchesInfo', matchesInfo)
-          callback(matchesInfo)
-      })
-  }
+  const getCurrentMatchInfo = (
+    roundnum: number,
+    tableId: string,
+    callback: (currentMatchesInfo: any) => void
+  ) => {
+    console.log("test", tourId, roundnum, tableId);
+    socket.emit("getCurrentMatchInfo", tourId, roundnum, tableId);
+    socket.on("getCurrentMatchInfo", (matchesInfo) => {
+      // console.log('matchesInfo', matchesInfo)
+      callback(matchesInfo);
+    });
+  };
 
-  const getBoardType = (boardNumber: number, callback: (boardType:any) => void) => {
-      socket.emit('getBoardType', boardNumber)
-      socket.on('getBoardType', (boardType) => {
-          callback(boardType)
-      })
-  }
+  const getBoardType = (
+    boardNumber: number,
+    callback: (boardType: any) => void
+  ) => {
+    socket.emit("getBoardType", boardNumber);
+    socket.on("getBoardType", (boardType) => {
+      callback(boardType);
+    });
+  };
 
-  const getAllScore = (callback: (recapScore: RecapScoreOBJ[])=>void) => {
-      socket.emit('get-all-score', tourId)
-      socket.on('score', (recapScore) => {
-          // updateAllScore(recapScore)
-          callback(recapScore)
-      })
-  }
+  const getAllScore = (callback: (recapScore: RecapScoreOBJ[]) => void) => {
+    socket.emit("get-all-score", tourId);
+    socket.on("score", (recapScore) => {
+      // updateAllScore(recapScore)
+      callback(recapScore);
+    });
+  };
   // const updateTourChat =(callback: (message: ChatObj)=>void)=> {
   //     socket.on('update-tour-chat', (message: ChatObj)=> {
   //         //console.log("Get message from ", message)
   //         callback(message)
   //     })
   // }
-  
+
   interface seat {
-      id : string,
-      direction: number,
+    id: string;
+    direction: number;
   }
 
   interface tableScoreBoard {
-      declarer: number,
-      directions: seat[],
-      table_id: string,
-      EWScore: number,
-      NSScore: number,
-      MP: number,
-      totalMP: number,
+    declarer: number;
+    directions: seat[];
+    table_id: string;
+    EWScore: number;
+    NSScore: number;
+    MP: number;
+    totalMP: number;
   }
 
   interface ScoreBoardOBJ {
-      round: number,
-      tables: tableScoreBoard[]
+    round: number;
+    tables: tableScoreBoard[];
   }
 
   const getScoreboard = (callback: (scoreBoard: ScoreBoardOBJ[]) => void) => {
-      socket.emit('getMyPastMatch',tourId, userId)
-      socket.on('getMyPastMatch', (scoreBoard) => {
-          console.log('scoreBoard', scoreBoard)
-          callback(scoreBoard)
-      })
+    socket.emit("getMyPastMatch", tourId, userId);
+    socket.on("getMyPastMatch", (scoreBoard) => {
+      console.log("scoreBoard", scoreBoard);
+      callback(scoreBoard);
+    });
+  };
+
+  interface Leaderboard {
+    direction: number;
+    imp: number;
+    pair_id: string;
+    percent: number;
+    score: number;
   }
 
-  // interface NSRanking {
-  //     board_num: number,
-  //     pairs: 
-  // }
-
-  // interface LeaderBoardOBJ {
-  //     board: number;
-  // }
+  interface Ranking {
+    board_num: number;
+    pairs: Leaderboard[];
+  }
 
   interface LeaderBoardOBJ {
-      nsRanking: [],
-      ewRanking: [],
+    nsRanking: Ranking[];
+    ewRanking: Ranking[];
   }
 
-  const getLeaderboard = (callback: (leaderBoard: LeaderBoardOBJ[]) => void) => {
-      socket.emit('getNsRankings', tourId)
-      socket.on('getNsRankings', (nsRanking) => {
-          socket.emit('getEwRankings', tourId)
-          socket.on('getEwRankings', (ewRanking) => {
-              console.log('nsRanking', nsRanking)
-              console.log('ewRanking', ewRanking)
-              // callback({
-              //     nsRanking,
-              //     ewRanking,
-              // })
-          }) 
-      })
-      
-  }
+  const getLeaderboard = (callback: (leaderBoard: LeaderBoardOBJ) => void) => {
+    socket.emit("getNsRankings", tourId);
+    socket.on("getNsRankings", (nsRanking: Ranking[]) => {
+      socket.emit("getEwRankings", tourId);
+      socket.on("getEwRankings", (ewRanking: Ranking[]) => {
+        callback({
+          nsRanking,
+          ewRanking,
+        });
+      });
+    });
+  };
 
   return {
-      getAllScore, getScoreboard, getCurrentMatchInfo, getBoardType, getLeaderboard
-  }
-}
+    getAllScore,
+    getScoreboard,
+    getCurrentMatchInfo,
+    getBoardType,
+    getLeaderboard,
+  };
+};
 
 export const useManage = (admin: string) => {
   interface User {
