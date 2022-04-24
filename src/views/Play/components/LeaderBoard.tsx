@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { Table, Input, InputNumber, Popconfirm, Form, Typography } from "antd";
 import "./Table.css";
 import _ from "lodash";
+import { useAuthen } from "../../../Authen";
+import { usePlayState } from "../../PlayingContext/PlayingContext";
+import { useScore } from "../../../Service/SocketService";
 // import 'antd/dist/antd.css'
 
 interface LeaderRow {
@@ -33,6 +36,20 @@ export interface ILeaderBoardProps {
 }
 
 const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
+
+  const authenContext = useAuthen();
+  const playContext = usePlayState();
+  const score = useScore(authenContext.authen.username ,playContext.playState.tourName);
+
+  React.useEffect(() => {
+    console.log('fetching Leaderboard Data')
+
+    score.getLeaderboard((leaderBoard)=>{
+
+    })
+
+  },[])
+
   const rawDataSource = _.zipWith(
     props.nsLeader,
     props.ewLeader,

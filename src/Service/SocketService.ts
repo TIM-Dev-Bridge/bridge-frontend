@@ -1,5 +1,7 @@
 import React from 'react'
 import { io } from 'socket.io-client'
+import { callbackify } from 'util'
+import LeaderBoard from '../views/Play/components/LeaderBoard'
 import { TourData } from '../views/Popup/TourRequest'
 // import { endpoint } from './ServiceConfig';
 const endpoint = "http://localhost:4000"
@@ -431,7 +433,6 @@ export const useScore = (userId: string, tourId: string) => {
     //         callback(message)
     //     })
     // }
-
     
     interface seat {
         id : string,
@@ -461,7 +462,37 @@ export const useScore = (userId: string, tourId: string) => {
         })
     }
 
+    // interface NSRanking {
+    //     board_num: number,
+    //     pairs: 
+    // }
+
+    // interface LeaderBoardOBJ {
+    //     board: number;
+    // }
+
+    interface LeaderBoardOBJ {
+        nsRanking: [],
+        ewRanking: [],
+    }
+
+    const getLeaderboard = (callback: (leaderBoard: LeaderBoardOBJ[]) => void) => {
+        socket.emit('getNsRankings', tourId)
+        socket.on('getNsRankings', (nsRanking) => {
+            socket.emit('getEwRankings', tourId)
+            socket.on('getEwRankings', (ewRanking) => {
+                console.log('nsRanking', nsRanking)
+                console.log('ewRanking', ewRanking)
+                // callback({
+                //     nsRanking,
+                //     ewRanking,
+                // })
+            }) 
+        })
+        
+    }
+
     return {
-        getAllScore, getScoreboard, getCurrentMatchInfo, getBoardType
+        getAllScore, getScoreboard, getCurrentMatchInfo, getBoardType, getLeaderboard
     }
 }
