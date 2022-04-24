@@ -204,31 +204,31 @@ const PlayingPage = (props: PlayingPageProps) => {
             newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id + " ( " + directionFromnum(top) + " ) " )
             newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id + " ( " + directionFromnum(right) + " ) " )
 
-            score.getCurrentMatchInfo(
-              playContext.playState.currentRound,
-              playContext.playState.table,
-              (currentMatchInfo) => {
-                score.getBoardType(currentMatchInfo.board_num, (boardType) => {
-                  setSideTabInfo({
-                    ...sideTabInfo,
-                    boardType: {
-                      boardNo: boardType.board_number,
-                      dealer: boardType.dealer,
-                      vulnerable: boardType.vulnerable,
-                    },
-                    auction: undefined,
-                    tricks: {
-                      ewTricks: 0,
-                      nsTricks: 0,
-                    },
-                    boardsPerRound: currentMatchInfo.boardSequence,
-                    boardsPlayed: currentMatchInfo.board_num - (Math.floor((currentMatchInfo.board_num-1)/currentMatchInfo.boardSequence)),
-                    round: playContext.playState.currentRound,
-                    totalRounds: currentMatchInfo.total_round,
-                  });
-                });
-              }
-            );
+            // score.getCurrentMatchInfo(
+            //   playContext.playState.currentRound,
+            //   playContext.playState.table,
+            //   (currentMatchInfo) => {
+            //     score.getBoardType(currentMatchInfo.board_num, (boardType) => {
+            //       setSideTabInfo({
+            //         ...sideTabInfo,
+            //         boardType: {
+            //           boardNo: boardType.board_number,
+            //           dealer: boardType.dealer,
+            //           vulnerable: boardType.vulnerable,
+            //         },
+            //         auction: undefined,
+            //         tricks: {
+            //           ewTricks: 0,
+            //           nsTricks: 0,
+            //         },
+            //         boardsPerRound: currentMatchInfo.boardSequence,
+            //         boardsPlayed: currentMatchInfo.board_num - (Math.floor((currentMatchInfo.board_num-1)/currentMatchInfo.boardSequence)),
+            //         round: playContext.playState.currentRound,
+            //         totalRounds: currentMatchInfo.total_round,
+            //       });
+            //     });
+            //   }
+            // );
             
             connect(playContext.playState.table, detail)
             
@@ -297,6 +297,15 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirection?.[(direction + 3) % 4].isTurn(false)
             // animateDirectionRef.current[direction](true)
             // animateDirection[direction](true)
+
+            // setSideTabInfo({
+            //   ...sideTabInfo,
+            //   tricks: {
+            //     ewTricks: data.payload.tricks[1],
+            //     nsTricks: data.payload.tricks[0],
+            //   },
+            // });
+
         })
     }, [socket, playDirection, currentSuite])
 
@@ -341,16 +350,16 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirection?.[(direction + 2) % 4].isTurn(false)
             playingDirection?.[(direction + 3) % 4].isTurn(false)
 
-            setSideTabInfo({
-              ...sideTabInfo,
-              auction: {
-                declarer: directions[data.payload.leader],
-                contract:
-                  Math.ceil(data.payload.maxContract / 5).toString() +
-                  "_" +
-                  suit[data.payload.maxContract % 5].toString(),
-              },
-            });
+            // setSideTabInfo({
+            //   ...sideTabInfo,
+            //   auction: {
+            //     declarer: directions[data.payload.leader],
+            //     contract:
+            //       Math.ceil(data.payload.maxContract / 5).toString() +
+            //       "_" +
+            //       suit[data.payload.maxContract % 5].toString(),
+            //   },
+            // });
         })
     }, [socket, playDirection, playingDirection])
 

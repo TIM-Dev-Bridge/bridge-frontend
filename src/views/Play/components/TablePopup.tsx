@@ -412,7 +412,7 @@ const TablePopup: React.FC<ITablePopupProps> = (props: ITablePopupProps) => {
 
   
   return ((!!props.selectedPopup) ?
-      <PopupContainer>
+      <PopupContainer id="tablepopup">
         <BlackOverlay />
         <FloatingButton
           style={{ position: "absolute", left: "5px", top: "5px" ,cursor: "pointer", zIndex:101}}
