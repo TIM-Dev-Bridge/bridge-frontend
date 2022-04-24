@@ -39,16 +39,16 @@ const buttonDatas = [
   {
     id: 3,
     src: {
-      player: require("./../../../assets/images/PlaySideTab/Spectate.png")
+      player: require("./../../../assets/images/PlaySideTab/TournamentDirector.png")
         .default,
-      td: require("./../../../assets/images/PlaySideTab/TournamentDirector.png")
+      td: require("./../../../assets/images/PlaySideTab/Spectate.png")
         .default,
       spectator: require("./../../../assets/images/PlaySideTab/Spectate.png")
       .default,
     },
     name: {
-      player: 'Spectate',
-      td: 'TournamentDirector',
+      player: 'TournamentDirector',
+      td: 'Spectate',
       spectator: 'Spectate',
     },
   },
