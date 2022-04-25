@@ -149,6 +149,18 @@ export const usePlaying =()=> {
         })
     }
 
+    interface FinishTable {
+        tricks: number[],
+        scores: number[],
+    }
+
+    const onFinishTable = (callback: (data: FinishTable)=>void) =>{
+        socket.on('board-summary', (tricks, scores) => {
+            console.log('BOARD SUMMARY',tricks,scores)
+            callback({tricks: tricks, scores:scores,})
+        })
+    }
+
     return {
         playCard,
         onInitialTurn,
@@ -158,6 +170,7 @@ export const usePlaying =()=> {
         onFinishRound,
         onEnding,
         leave,
-        onSummaryRank
+        onSummaryRank,
+        onFinishTable
     }
 }

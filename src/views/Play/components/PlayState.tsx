@@ -62,7 +62,7 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     const playContext = usePlayState()
     const authen = useAuthen()
-    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onInitialBidding, onFinishRound, onEnding, leave, onSummaryRank} = usePlaying()
+    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onInitialBidding, onFinishRound, onEnding, leave, onSummaryRank, onFinishTable} = usePlaying()
     const { subscribePlayingStatus } = useBidding()
     const [playDirection, setPlayDirection] = React.useState(-1)
     const [turn, setTurn] = React.useState(-1)
@@ -96,6 +96,8 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [bottomName, setBottomName] = React.useState("")
 
     const [summaryRank, setSummaryRank] = React.useState<SummaryRank[]>([])
+    const [finishScore, setFinishScore] = React.useState<number[]>([])
+    const [finishTricks, setFinishTricks] = React.useState<number[]>([])
 
     const game = useGame()
 
@@ -103,10 +105,7 @@ const PlayingPage = (props: PlayingPageProps) => {
     const switchSelectedPopup = (str: string) => {
       selectedPopup == str ? setSelectedPopup(null) : setSelectedPopup(str);
     };
-    const score = useScore(
-      authen.authen.username,
-      playContext.playState.tourName
-    );
+
     const [sideTabInfo, setSideTabInfo] = React.useState<IPlaySideTabProps>({
       round: 1,
       permission: "player",
@@ -135,6 +134,14 @@ const PlayingPage = (props: PlayingPageProps) => {
       2: "H",
       3: "S",
       4: "NT",
+    };
+
+    const CardSuite = {
+      S: "Spade",
+      H: "Heart",
+      D: "Diamond",
+      C: "Club",
+      NT: "NoThrump",
     };
 
     // React.useEffect(() => {
@@ -420,6 +427,14 @@ const PlayingPage = (props: PlayingPageProps) => {
         })
     }, [socket, playDirection, playingDirection])
 
+    React.useEffect(()=>{
+      onFinishTable((finishTable) =>{
+        console.log('FINISH TABLE',finishTable)
+        setFinishTricks(finishTable.tricks)
+        setFinishScore(finishTable.scores)
+      })
+    },[socket, finishScore, finishTricks])
+
 
     React.useEffect(()=> {
         onFinishRound( data => {
@@ -695,7 +710,82 @@ const PlayingPage = (props: PlayingPageProps) => {
                 <BiddingPage />
             </PopupArea>
             <WaitingPage visible={shouldWaiting}>
-                <>Wait for other table to complete</>
+                {/* <>Wait for other table to complete</> */}
+                <TitleText> 
+                  {
+                  ((game.connectDetail?.direction as number + 2) % 4 == declarer || (game.connectDetail?.direction as number) == declarer)
+                    ? (declarer % 2 == 0
+                      ? (sideTabInfo.tricks?.nsTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Contract Successful" : "Contract Failed")
+                      : (sideTabInfo.tricks?.ewTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Contract Successful" : "Contract Failed")
+                      )
+                    : (declarer % 2 == 0
+                      ? (sideTabInfo.tricks?.nsTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Defend Failed" : "Defend Successful")
+                      : (sideTabInfo.tricks?.ewTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Defend Failed" : "Defend Successful")
+                      )
+                  }
+                </TitleText>
+                <Panel>
+                <PanelTop>
+                  <CenteredText style={{ position: "relative", fontSize: "2vmin" }}>
+                    <b>Contract</b>
+                  </CenteredText>
+                </PanelTop>
+                  <tbody>
+                    <CenteredText style={{ position: "relative", fontSize: "5vmin" }}>
+                    <b>{sideTabInfo.auction ? sideTabInfo.auction.contract.split("_")[0] : "N/A"}</b>
+                    {sideTabInfo.auction ? (
+                      sideTabInfo.auction.contract.split("_")[1] == "NT" ? (
+                        "NT"
+                      ) : (
+                        <img
+                          src={
+                            require(`./../../../assets/images/CardSuite/${
+                              CardSuite[
+                                sideTabInfo.auction.contract.split(
+                                  "_"
+                                )[1] as keyof typeof CardSuite
+                              ]
+                            }.svg`).default
+                          }
+                          height="auto"
+                          width="30vw"
+                          style={{ display: "inline-block", verticalAlign: "baseline" }}
+                        />
+                      )
+                    ) : (
+                      ""
+                    )}
+                              
+                    </CenteredText>
+                  </tbody>
+                </Panel>
+                <BottomWaitContainer>
+                  <Panel>
+                    <PanelTop>
+                      <CenteredText style={{ position: "relative", fontSize: "2vmin" }}>
+                        <b>Tricks earn</b>
+                      </CenteredText>
+                    </PanelTop>
+                    <tbody>
+                      <CenteredText style={{ position: "relative", fontSize: "5vmin" }}>
+                        <b>{(game.connectDetail?.direction as number) % 2 == 0 ? sideTabInfo.tricks?.nsTricks : sideTabInfo.tricks?.ewTricks}</b>
+                      </CenteredText>
+                    </tbody>
+                  </Panel>
+                  <Panel>
+                    <PanelTop>
+                      <CenteredText style={{ position: "relative", fontSize: "2vmin" }}>
+                        <b>Scores</b>
+                      </CenteredText>
+                    </PanelTop>
+                    <tbody>
+                    <CenteredText style={{ position: "relative", fontSize: "5vmin" }}>
+                        <b>{(game.connectDetail?.direction as number) % 2 == 0 ? finishScore[0] : finishScore[1]}</b>
+                      </CenteredText>
+                    </tbody>
+                    </Panel>
+                </BottomWaitContainer>
+                <CenteredText> <b>Please wait for other competitor to finish current board</b> </CenteredText>
             </WaitingPage>
             <WaitingPage visible={shouldFinished}>
                 {/* <>Finished</> */}
@@ -844,6 +934,14 @@ const Iframe = styled.iframe`
   padding: 0px;
 `;
 
+const TitleText = styled.p`
+  font-size: 5vh;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  width: 80%;
+`
+
 const PopupArea = styled.div<{ visible: boolean }>`
   position: absolute;
   top: 0;
@@ -859,12 +957,48 @@ const WaitingPage = styled.div<{ visible: boolean }>`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: #007346;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  row-gap: 5vh;
   align-items: center;
   align-content: center;
   visibility: ${(props) => (props.visible ? "visible" : "hidden")};
 `;
+
+const Panel = styled.div`
+  position: relative;
+  display: table;
+  align-items: center;
+  width: 20vw;
+  height: 15vh;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 4px 4px 22px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  overflow: hidden;
+`;
+
+const PanelTop = styled.thead`
+  background-color: White;
+  height: 33.3333%;
+  width: 100%;
+`;
+
+const CenteredText = styled.p`
+  text-align: center;
+  width: 100%;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+`;
+
+const BottomWaitContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  column-gap: 5vw;
+`
 
 export default PlayingPage;
