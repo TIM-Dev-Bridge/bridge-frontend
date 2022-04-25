@@ -62,7 +62,7 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     const playContext = usePlayState()
     const authen = useAuthen()
-    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onFinishRound, onEnding, leave, onSummaryRank} = usePlaying()
+    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onInitialBidding, onFinishRound, onEnding, leave, onSummaryRank} = usePlaying()
     const { subscribePlayingStatus } = useBidding()
     const [playDirection, setPlayDirection] = React.useState(-1)
     const [turn, setTurn] = React.useState(-1)
@@ -130,11 +130,11 @@ const PlayingPage = (props: PlayingPageProps) => {
     };
   
     const suit: Record<number, string> = {
-      0: "NT",
-      1: "C",
-      2: "D",
-      3: "H",
-      4: "S",
+      0: "C",
+      1: "D",
+      2: "H",
+      3: "S",
+      4: "NT",
     };
 
     // React.useEffect(() => {
@@ -204,31 +204,31 @@ const PlayingPage = (props: PlayingPageProps) => {
             newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id + " ( " + directionFromnum(top) + " ) " )
             newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id + " ( " + directionFromnum(right) + " ) " )
 
-            score.getCurrentMatchInfo(
-              playContext.playState.currentRound,
-              playContext.playState.table,
-              (currentMatchInfo) => {
-                score.getBoardType(currentMatchInfo.board_num, (boardType) => {
-                  setSideTabInfo({
-                    ...sideTabInfo,
-                    boardType: {
-                      boardNo: boardType.board_number,
-                      dealer: boardType.dealer,
-                      vulnerable: boardType.vulnerable,
-                    },
-                    auction: undefined,
-                    tricks: {
-                      ewTricks: 0,
-                      nsTricks: 0,
-                    },
-                    boardsPerRound: currentMatchInfo.boardSequence,
-                    boardsPlayed: currentMatchInfo.board_num - (Math.floor((currentMatchInfo.board_num-1)/currentMatchInfo.boardSequence)),
-                    round: playContext.playState.currentRound,
-                    totalRounds: currentMatchInfo.total_round,
-                  });
-                });
-              }
-            );
+            // score.getCurrentMatchInfo(
+            //   playContext.playState.currentRound,
+            //   playContext.playState.table,
+            //   (currentMatchInfo) => {
+            //     score.getBoardType(currentMatchInfo.board_num, (boardType) => {
+            //       setSideTabInfo({
+            //         ...sideTabInfo,
+            //         boardType: {
+            //           boardNo: boardType.board_number,
+            //           dealer: boardType.dealer,
+            //           vulnerable: boardType.vulnerable,
+            //         },
+            //         auction: undefined,
+            //         tricks: {
+            //           ewTricks: 0,
+            //           nsTricks: 0,
+            //         },
+            //         boardsPerRound: currentMatchInfo.boardSequence,
+            //         boardsPlayed: currentMatchInfo.board_num - (Math.floor((currentMatchInfo.board_num-1)/currentMatchInfo.boardSequence)),
+            //         round: playContext.playState.currentRound,
+            //         totalRounds: currentMatchInfo.total_round,
+            //       });
+            //     });
+            //   }
+            // );
             
             connect(playContext.playState.table, detail)
             
@@ -297,8 +297,74 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirection?.[(direction + 3) % 4].isTurn(false)
             // animateDirectionRef.current[direction](true)
             // animateDirection[direction](true)
+
+            // setSideTabInfo({
+            //   ...sideTabInfo,
+            //   tricks: {
+            //     ewTricks: data.payload.tricks[1],
+            //     nsTricks: data.payload.tricks[0],
+            //   },
+            // });
+
         })
     }, [socket, playDirection, currentSuite])
+
+    React.useEffect(()=> {
+        onInitialBidding( data => {
+          setSideTabInfo({
+            ...sideTabInfo,
+            boardType: {
+              boardNo: data.payload.board_type.board_number,
+              dealer: data.payload.board_type.dealer,
+              vulnerable: data.payload.board_type.vulnerable,
+            },
+            auction: undefined,
+            tricks: {
+              ewTricks: 0,
+              nsTricks: 0,
+            },
+            boardsPerRound: data.payload.board_per_round,
+            boardsPlayed: data.payload.cur_board - (Math.floor((data.payload.cur_board-1)/data.payload.board_per_round)),
+            round: data.payload.cur_round,
+            totalRounds: data.payload.total_round,
+          });
+        })
+
+        onInitialPlaying( data => {
+          setSideTabInfo({
+              ...sideTabInfo,
+              auction: {
+                declarer: directions[data.payload.leader],
+                contract:
+                  Math.ceil(data.payload.maxContract / 5).toString() +
+                  "_" +
+                  suit[data.payload.maxContract % 5].toString(),
+              },
+            });
+        })
+
+        onInitialTurn( data => {
+          setSideTabInfo({
+            ...sideTabInfo,
+            tricks: {
+              ewTricks: data.payload.tricks[1],
+              nsTricks: data.payload.tricks[0],
+            },
+          });
+        })
+
+        onEnding( data => {
+          data &&
+          setSideTabInfo({
+            ...sideTabInfo,
+            tricks: {
+              ewTricks: data.payload.tricks[1],
+              nsTricks: data.payload.tricks[0],
+            },
+          });
+        })
+
+    },[socket,sideTabInfo])
 
     React.useEffect(()=> {
         onDefaultTurn( data => {
@@ -341,16 +407,16 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirection?.[(direction + 2) % 4].isTurn(false)
             playingDirection?.[(direction + 3) % 4].isTurn(false)
 
-            setSideTabInfo({
-              ...sideTabInfo,
-              auction: {
-                declarer: directions[data.payload.leader],
-                contract:
-                  Math.ceil(data.payload.maxContract / 5).toString() +
-                  "_" +
-                  suit[data.payload.maxContract % 5].toString(),
-              },
-            });
+            // setSideTabInfo({
+            //   ...sideTabInfo,
+            //   auction: {
+            //     declarer: directions[data.payload.leader],
+            //     contract:
+            //       Math.ceil(data.payload.maxContract / 5).toString() +
+            //       "_" +
+            //       suit[data.payload.maxContract % 5].toString(),
+            //   },
+            // });
         })
     }, [socket, playDirection, playingDirection])
 

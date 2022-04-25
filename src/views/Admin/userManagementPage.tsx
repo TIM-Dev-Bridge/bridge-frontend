@@ -197,7 +197,7 @@ const UserManagement: React.FC = () => {
   ];
 
   return (
-    <CenterContainer>
+    <CenterContainer className="admintable" id="admintable">
       <div style={{ position: "absolute", top: "61px", left: "5px" }}>
         <BackButton display={false} />
       </div>
@@ -250,7 +250,7 @@ const UserManagement: React.FC = () => {
               />
             </tbody>
           </table> */}
-          <Table
+          <Table 
             columns={columns}
             dataSource={filteredData}
             className="userManage"

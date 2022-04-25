@@ -41,11 +41,47 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
   const playContext = usePlayState();
   const score = useScore(authenContext.authen.username ,playContext.playState.tourName);
 
+  
+  const [form] = Form.useForm();
+  const [currentData, setCurrentData] = React.useState<LeaderRow[]>([]);
+  const [editingKey, setEditingKey] = React.useState("");
+
   React.useEffect(() => {
     console.log('fetching Leaderboard Data')
 
     score.getLeaderboard((leaderBoard)=>{
+      const nsLeader: NSLeaderBoard[] = leaderBoard.nsRanking.map((nsRank)=> {
+        return {
+          nsTeam: nsRank.pair_id.toString(),
+          nsMps: nsRank.totalMP,
+          nsPercentage: nsRank.rankPercent,
+        }
+      })
+      const ewLeader: EWLeaderBoard[] = leaderBoard.ewRanking.map((ewRank)=> {
+        return {
+          ewTeam: ewRank.pair_id.toString(),
+          ewMps: ewRank.totalMP,
+          ewPercentage: ewRank.rankPercent,
+        }
+      })
+      const fetchedData = _.zipWith(
+        nsLeader.sort((a,b)=> b.nsPercentage-a.nsPercentage),
+        ewLeader.sort((a,b)=> b.ewPercentage-a.ewPercentage),
+        (nsObject, ewObject) => {
+          return { ...nsObject, ...ewObject}
+        }
+      )
 
+      const fetchedDataSource: LeaderRow[] = fetchedData.map((element,index) => {
+        return { key: index.toString(), ...element };
+      })
+
+      while (fetchedDataSource.length % 8 != 0)
+      fetchedDataSource.push({
+          key: fetchedDataSource.length.toString(),
+      });
+
+      setCurrentData(fetchedDataSource)
     })
 
   },[])
@@ -62,14 +98,12 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
     return { key: index.toString(), ...element };
   });
 
+
   while (dataSource.length % 8 != 0)
     dataSource.push({
       key: dataSource.length.toString(),
     });
 
-  const [form] = Form.useForm();
-  const [currentData, setCurrentData] = React.useState(dataSource);
-  const [editingKey, setEditingKey] = React.useState("");
 
   const isEditing = (record: LeaderRow) => record.key === editingKey;
 
@@ -188,7 +222,7 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
       key: "nsPercentage",
       width: "15%",
       editable: false,
-      render: (percent: number) => percent && percent + "%",
+      render: (percent: number) => percent !== undefined ? percent + "%" : {},
     },
     {
       title: "E/W Team",
@@ -210,7 +244,7 @@ const LeaderBoard: React.FC<ILeaderBoardProps> = (props: ILeaderBoardProps) => {
       key: "ewPercentage",
       width: "15%",
       editable: false,
-      render: (percent: number) => percent && percent + "%",
+      render: (percent: number) => percent !== undefined ? percent + "%" : {},
     },
   ];
 
