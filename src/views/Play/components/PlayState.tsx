@@ -354,6 +354,7 @@ const PlayingPage = (props: PlayingPageProps) => {
         })
 
         onEnding( data => {
+          data &&
           setSideTabInfo({
             ...sideTabInfo,
             tricks: {

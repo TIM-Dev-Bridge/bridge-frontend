@@ -532,17 +532,11 @@ export const useScore = (userId: string, tourId: string) => {
     });
   };
 
-  interface Leaderboard {
-    direction: number;
-    imp: number;
-    pair_id: string;
-    percent: number;
-    score: number;
-  }
 
   interface Ranking {
-    board_num: number;
-    pairs: Leaderboard[];
+    pair_id: number
+    rankPercent: number
+    totalMP: number
   }
 
   interface LeaderBoardOBJ {
@@ -552,9 +546,11 @@ export const useScore = (userId: string, tourId: string) => {
 
   const getLeaderboard = (callback: (leaderBoard: LeaderBoardOBJ) => void) => {
     socket.emit("getNsRankings", tourId);
-    socket.on("getNsRankings", (nsRanking: Ranking[]) => {
+    socket.on("getNsRankings", (nsRanking) => {
       socket.emit("getEwRankings", tourId);
-      socket.on("getEwRankings", (ewRanking: Ranking[]) => {
+      socket.on("getEwRankings", (ewRanking) => {
+        // console.log('nsRanking', nsRanking)
+        // console.log('ewRanking', ewRanking)
         callback({
           nsRanking,
           ewRanking,
