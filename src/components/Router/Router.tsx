@@ -29,13 +29,14 @@ export const NavigationView =(props: NavigationViewAttr)=> {
             }
         } else {
             const path = window.location.pathname
-            if (path == "/") {
-                if (authen.authen.token !== "") {
-                    const stack = [...navigationStack, RouterConfig['/bridgebase']()]
-                    updateStack(stack)
-                    return
-                } 
-            }
+            // if (path == "/") {
+            //     if (authen.authen.token !== "") {
+            //         const stack = [...navigationStack, RouterConfig['/bridgebase']()]
+            //         updateStack(stack)
+            //         window.history.pushState(null,"",'/bridgebase')
+            //         return
+            //     } 
+            // }
             // console.log(path)
             const stack = [...navigationStack, RouterConfig[path]()]
             updateStack(stack)

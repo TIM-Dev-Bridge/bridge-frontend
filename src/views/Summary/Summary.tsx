@@ -181,9 +181,9 @@ const Summary =(props: SummaryProps)=> {
     ]
 
     return (
-        <SummaryContainer teamSize={mockRank.length} rowPerColumn={4}>
+        <SummaryContainer teamSize={props.summaryRank.length} rowPerColumn={4}>
             <ScrollContent>
-            {mockRank.sort((a,b)=> {
+            {props.summaryRank.sort((a,b)=> {
                 if (a.totalMP > b.totalMP) { return 1}
                 return -1
             })
@@ -221,6 +221,7 @@ const SummaryContainer = styled.div<{teamSize: number, rowPerColumn: number}>`
     width: 100%;
     height: 100%;
     overflow: scroll;
+    background-color: white;
     /* position: relative; */
     /* flex-direction: column; */
     /* flex-wrap: wrap; */

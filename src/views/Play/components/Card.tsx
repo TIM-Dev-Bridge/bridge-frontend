@@ -15,6 +15,7 @@ interface CardProps {
     selfAnimate?: boolean,
     available: boolean,
     isTurn: boolean
+    onClick: ()=>void
 }
 
 type Position = {x: number, y: number}
@@ -187,6 +188,7 @@ const Card =(props: CardProps)=> {
             animate={makeAnimation(movingState)}
             transition={{duration: shouldHaveAnimationDuration(movingState)}}
             onMouseDown={onMouseDown}
+            onClick={props.onClick}
             onDrag={e => onDragDetect(e as MouseEvent)}
             onAnimationComplete={onAnimationComplete}
             ref={cardRef}>
@@ -208,7 +210,7 @@ const CardContainer = styled(motion.div)<{visible: boolean, background: string, 
     background-size: cover;
     background-repeat: no-repeat;
     border: ${props=>props.highlight ? "4px solid green" : "4px solid transparent"};
-    pointer-events: ${props=>props.highlight ? "auto" : "none"} ;
+    pointer-events: ${props=>props.highlight && props.isTurn ? "auto" : "none"} ;
     box-shadow: var(--app-shadow);
     /* box-shadow: ${props=>props.isTurn ? "green 0px 0px 100px -10px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px" : "var(--app-shadow)"}; */
     transition: box-shadow 0.3s;

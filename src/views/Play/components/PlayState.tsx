@@ -106,6 +106,11 @@ const PlayingPage = (props: PlayingPageProps) => {
       selectedPopup == str ? setSelectedPopup(null) : setSelectedPopup(str);
     };
 
+    const [shouldPlay, setShouldPlay] = React.useState(false)
+
+    const [willWait, setWillWait] = React.useState(false)
+    const [willFinished, setWillFinished] = React.useState(false)
+
     const [sideTabInfo, setSideTabInfo] = React.useState<IPlaySideTabProps>({
       round: 1,
       permission: "player",
@@ -414,6 +419,7 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirection?.[(direction + 2) % 4].isTurn(false)
             playingDirection?.[(direction + 3) % 4].isTurn(false)
 
+            setShouldPlay(true)
             // setSideTabInfo({
             //   ...sideTabInfo,
             //   auction: {
@@ -442,12 +448,14 @@ const PlayingPage = (props: PlayingPageProps) => {
                 console.log("FINISH", data)
                 const newRound = playContext.playState.currentRound + 1
                 if (playContext.playState.data[newRound - 1] == undefined) {
-                    setShouldFinished(true)
+                    setWillFinished(true)
+                    // setShouldFinished(true)
                     return 
                 }
                 const tableOfNewRound = playContext.playState.data[newRound - 1].tables
                 if (tableOfNewRound == null) {
-                    setShouldFinished(true)
+                    setWillFinished(true)
+                    // setShouldFinished(true)
                     return 
                 }
                 const table = tableOfNewRound.find( table => table.versus.includes(playContext.playState.pairId.toString()))
@@ -485,7 +493,7 @@ const PlayingPage = (props: PlayingPageProps) => {
     React.useEffect(()=> {
         onEnding( ()=> {
             console.log("WAITING PLEASE")
-            setShouldWaiting(true)
+            setWillWait(true)
         })
     }, [socket])
 
@@ -649,9 +657,19 @@ const PlayingPage = (props: PlayingPageProps) => {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
                         }
+                        if (playDirection == playContext.playState.direction) {
+                          setShouldPlay(true)
+                        }
+
+                        if (willWait) {
+                          setShouldWaiting(true)
+                        }
+                        if (willFinished) {
+                          setShouldFinished(true)
+                        }
                     }}/>
                 <Hand
-                    enabled={playDirection == playContext.playState.direction}
+                    enabled={playDirection == playContext.playState.direction && shouldPlay}
                     position={HandPosition.DOWN}
                     initialCard={cards}
                     dropRef={southPlayedCardRef}
@@ -666,6 +684,15 @@ const PlayingPage = (props: PlayingPageProps) => {
                     onAnimatinoComplete={()=> {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
+                        }
+                        if (playDirection == playContext.playState.direction) {
+                          setShouldPlay(true)
+                        }
+                        if (willWait) {
+                          setShouldWaiting(true)
+                        }
+                        if (willFinished) {
+                          setShouldFinished(true)
                         }
                     }}/>
                 <Hand
@@ -685,6 +712,15 @@ const PlayingPage = (props: PlayingPageProps) => {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
                         }
+                        if (playDirection == playContext.playState.direction) {
+                          setShouldPlay(true)
+                        }
+                        if (willWait) {
+                          setShouldWaiting(true)
+                        }
+                        if (willFinished) {
+                          setShouldFinished(true)
+                        }
                     }} />
                 <Hand
                     enabled={false}
@@ -702,6 +738,15 @@ const PlayingPage = (props: PlayingPageProps) => {
                     onAnimatinoComplete={()=> {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
+                        }
+                        if (playDirection == playContext.playState.direction) {
+                          setShouldPlay(true)
+                        }
+                        if (willWait) {
+                          setShouldWaiting(true)
+                        }
+                        if (willFinished) {
+                          setShouldFinished(true)
                         }
                     }}/>
             </InnerContainer>

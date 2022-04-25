@@ -68,7 +68,7 @@ const gridTemplate =(place: number, rowPerColumn: number)=> {
 
 const WinnerContainer = styled.div<{place: number}>`
     display: flex;
-    width: 60%;
+    width: 80%;
     /* grid-column-start: ${props=>gridTemplate(props.place, 4).col_start};
     grid-column-end: ${props=>gridTemplate(props.place, 4).col_end};
     grid-row-start: ${props=>gridTemplate(props.place, 4).row_start};
@@ -159,6 +159,7 @@ const PlayerContainer = styled.div`
 const PlaceText = styled.div`
     font-size: 20px;
     font-weight: bold;
+    margin-left: 100px;
 `
 
 interface SummaryPlayerProps {

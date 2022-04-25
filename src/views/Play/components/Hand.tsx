@@ -28,10 +28,15 @@ export enum HandPosition {
 
 const Hand =(props: HandProps)=> {
     const [cards, setCards] = React.useState<number[]>(props.initialCard)
+    const [isTurn, setTurn] = React.useState<boolean>(props.isTurn)
 
     React.useEffect(()=> {
         setCards(props.initialCard)
     }, [props.initialCard])
+
+    React.useEffect(()=> {
+        setTurn(props.isTurn)
+    }, [props.isTurn])
 
     const animateCondition =(val: number, index: number)=> {
         if (val > 0) {
@@ -101,7 +106,7 @@ const Hand =(props: HandProps)=> {
             { cards.map((val, i)=> {
                 return (
                     <Card 
-                        isTurn={props.isTurn}
+                        isTurn={isTurn}
                         text={val}
                         shouldCollapse={3}
                         index={i}
@@ -109,6 +114,7 @@ const Hand =(props: HandProps)=> {
                         onDrop={props.onDrop}
                         selfAnimate={animateCondition(val, i)}
                         available={isAvailable(val)}
+                        onClick={()=> {setTurn(false)}}
                         onAnimationCompleted={()=>{
                             setCards(cards.filter(e=>cards.indexOf(e) != i))
                             props.onAnimatinoComplete()
