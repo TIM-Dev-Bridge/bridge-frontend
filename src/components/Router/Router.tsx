@@ -1,4 +1,5 @@
 import React from 'react'
+import { useAuthen } from '../../Authen'
 import LoginPage from '../../views/Login/Login'
 import { RouterConfig } from './RouterConfig'
 
@@ -18,6 +19,7 @@ interface NavigationViewAttr {
 export const NavigationView =(props: NavigationViewAttr)=> {
     const [navigationStack, updateStack] = React.useState([<LoginPage />])
     const stackRef = React.useRef(navigationStack)
+    const authen = useAuthen()
 
     React.useEffect(()=> {
         if (window.history.state != null) {
@@ -27,6 +29,13 @@ export const NavigationView =(props: NavigationViewAttr)=> {
             }
         } else {
             const path = window.location.pathname
+            if (path == "/") {
+                if (authen.authen.token !== "") {
+                    const stack = [...navigationStack, RouterConfig['/bridgebase']()]
+                    updateStack(stack)
+                    return
+                } 
+            }
             // console.log(path)
             const stack = [...navigationStack, RouterConfig[path]()]
             updateStack(stack)
