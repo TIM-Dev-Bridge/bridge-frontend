@@ -62,11 +62,13 @@ const OnlineFriends =(props: OnlineFriendsProps)=> {
                 watingPlayers.includes(authContext.authen.username) ? <FriendBlock name={authContext.authen.username} displayMode="none" isWaiting={watingPlayers.includes(authContext.authen.username)}/> : <></>
             }
             {
-                watingPlayers.filter(player=>player!=authContext.authen.username).map((player) => {
+                watingPlayers.filter(player=>player!=authContext.authen.username).map((player, index) => {
+                    console.log("invitation : ", invitation, player)
                     const displayMode = invitation.includes(player) ? "accept-invite" : "invite"
                     const isWaiting = watingPlayers.includes(authContext.authen.username)
                     return (
                         <FriendBlock 
+                            key={index}
                             name={player} 
                             onInvite={()=> {
                                 // console.log(authContext.authen.username,"invite", player)
@@ -95,11 +97,15 @@ interface FriendProps {
 
 const FriendBlock =(props: FriendProps)=> {
     const authContext = useAuthen()
+    const [invited, setInvited] = React.useState(false)
 
     const displayMode =(mode: string)=> {
         switch (mode) {
             case "invite":
-                return <InviteButton onClick={props.onInvite}>Invite</InviteButton>
+                return <InviteButton 
+                    onClick={()=>{
+                        setInvited(true)
+                        props.onInvite?.()}}>Invite</InviteButton>
             case "accept-invite":
                 return <AcceptButton onClick={props.onAccept}>Accept</AcceptButton>
         }
@@ -112,12 +118,22 @@ const FriendBlock =(props: FriendProps)=> {
         return displayMode(props.displayMode)  
     }
 
+    const trailingButton =()=> {
+        if (invited) {
+            return <>Pending</>
+        }
+        if (props.name == authContext.authen.username) {
+            return <></>
+        }
+        return displayButton()
+    }
+
     return (
         <div className="flex justify-between" data-testid="friends">
             {/* <img src={props.img} alt={props.name} /> */}
             <NormalText>{props.name}</NormalText>
             {
-                props.name == authContext.authen.username ? <></> : displayButton()
+                trailingButton()
             }
             
         </div>
