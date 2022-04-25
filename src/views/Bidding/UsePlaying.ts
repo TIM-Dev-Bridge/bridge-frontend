@@ -1,3 +1,4 @@
+import { StringIterator } from "lodash"
 import { callbackify } from "util"
 import { socket } from "../../Service/SocketService"
 
@@ -92,30 +93,35 @@ export const usePlaying =()=> {
         })
     }
 
-    interface boardTypeOBJ {
-        board_number: number,
-      dealer: number,
-      vulnerable: number,
-    }
-
     interface InitialBidding {
         status : string,
         payload: {
-            contract: number,
-            nextDirection: number,
-            board: number,
-            turn: number,
-            cards: any,
-            doubleEnable: boolean,
+            board_type: {
+                board_number: number,
+                dealer: "N" | "S" | "E" | "W",
+                vulnerable: "None" | "N-S" | "E-W" | "All",
+            },
+            cur_board: number,
+            board_per_round: number,
             cur_round: number,
             total_round: number,
-            board_per_round: number,
-            boardType: [],
-          },
+        },
     }
 
-    interface Finish {
+    const onInitialBidding =(callback: (data: InitialBidding)=>void) => {
+        socket.on('playing', (data) => {
+            if (data['status'] == 'initial_bidding') {
+                callback(data)
+            }
+        })
+    }
 
+
+    interface Ending {
+        status: string,
+        payload: {
+            tricks: number[]
+        }
     }
 
     const onFinishRound =(callback: (data: any)=>void) => {
@@ -125,10 +131,10 @@ export const usePlaying =()=> {
         })
     }
 
-    const onEnding =(callback: ()=>void)=> {
+    const onEnding =(callback: (data: Ending)=>void)=> {
         socket.on('playing', (data)=> {
             if (data['status'] == 'ending') {
-                callback()
+                callback(data)
             }
         })
     }
@@ -147,6 +153,7 @@ export const usePlaying =()=> {
         playCard,
         onInitialTurn,
         onInitialPlaying,
+        onInitialBidding,
         onDefaultTurn,
         onFinishRound,
         onEnding,
