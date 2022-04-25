@@ -341,7 +341,7 @@ const PlayingPage = (props: PlayingPageProps) => {
           setSideTabInfo({
               ...sideTabInfo,
               auction: {
-                declarer: directions[data.payload.leader],
+                declarer: directions[(data.payload.leader+3)%4],
                 contract:
                   Math.ceil(data.payload.maxContract / 5).toString() +
                   "_" +
