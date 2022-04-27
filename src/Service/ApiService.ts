@@ -2,6 +2,7 @@ import axios from "axios"
 
 // const baseURL = 'https://bridge-api-tim.herokuapp.com'
 const baseURL = 'http://localhost:4000'
+// const baseURL = 'http://124.121.99.99:4000'
 
 enum Endpoint {
     login,

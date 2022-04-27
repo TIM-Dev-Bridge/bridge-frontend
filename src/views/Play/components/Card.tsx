@@ -106,7 +106,7 @@ const Card =(props: CardProps)=> {
     }
 
     const makeAnimation =(state: State)=> {
-        console.log(State[state])
+        // console.log(State[state])
         if (state == State.MOVE_TO_POSITION) {
             return animation;
         }

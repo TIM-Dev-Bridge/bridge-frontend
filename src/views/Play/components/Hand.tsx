@@ -58,9 +58,9 @@ const Hand =(props: HandProps)=> {
             return true
         }
 
-        if (props.trump === Math.floor(Number(currentCard / 13) )) {
-            return true
-        }
+        // if (props.trump === Math.floor(Number(currentCard / 13) )) {
+        //     return true
+        // }
         return false
     }
 

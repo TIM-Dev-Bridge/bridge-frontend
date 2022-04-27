@@ -274,7 +274,7 @@ const BoardFormat = styled.div`
   max-height: 200px;
 `;
 
-const Panel = styled.div`
+const Panel = styled.table`
   position: relative;
   display: table;
   align-items: center;

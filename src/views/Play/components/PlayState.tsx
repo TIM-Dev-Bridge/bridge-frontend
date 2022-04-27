@@ -322,7 +322,9 @@ const PlayingPage = (props: PlayingPageProps) => {
     }, [socket, playDirection, currentSuite])
 
     React.useEffect(()=> {
+      console.log('===================================== SOCKET CALL AGAIN =====================================')
         onInitialBidding( data => {
+          console.log('onInitialBidding')
           setSideTabInfo({
             ...sideTabInfo,
             boardType: {
@@ -343,6 +345,7 @@ const PlayingPage = (props: PlayingPageProps) => {
         })
 
         onInitialPlaying( data => {
+          console.log('onInitialPlaying')
           setSideTabInfo({
               ...sideTabInfo,
               auction: {
@@ -356,6 +359,7 @@ const PlayingPage = (props: PlayingPageProps) => {
         })
 
         onInitialTurn( data => {
+          console.log('onInitialTurn')
           setSideTabInfo({
             ...sideTabInfo,
             tricks: {
@@ -366,6 +370,7 @@ const PlayingPage = (props: PlayingPageProps) => {
         })
 
         onEnding( data => {
+          console.log('onEnding')
           data &&
           setSideTabInfo({
             ...sideTabInfo,
@@ -555,13 +560,13 @@ const PlayingPage = (props: PlayingPageProps) => {
       setPlayDirection(direction);
       setTurn(data.payload.turn);
       setCurrentSuite(null);
-      setSideTabInfo({
-        ...sideTabInfo,
-        tricks: {
-          ewTricks: data.payload.tricks[1],
-          nsTricks: data.payload.tricks[0],
-        },
-      });
+      // setSideTabInfo({
+      //   ...sideTabInfo,
+      //   tricks: {
+      //     ewTricks: data.payload.tricks[1],
+      //     nsTricks: data.payload.tricks[0],
+      //   },
+      // });
       // animateDirectionRef.current[direction](true)
       // animateDirection[direction](true)
     });
