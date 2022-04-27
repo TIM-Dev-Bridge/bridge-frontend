@@ -110,6 +110,8 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     const [willWait, setWillWait] = React.useState(false)
     const [willFinished, setWillFinished] = React.useState(false)
+    const [tempCard, setTempCard] = React.useState<number[]>([])
+    const cardsRef = React.useRef(cards)
 
     const [sideTabInfo, setSideTabInfo] = React.useState<IPlaySideTabProps>({
       round: 1,
@@ -267,8 +269,13 @@ const PlayingPage = (props: PlayingPageProps) => {
             let cardString = cards.map(num => num.toString())
             console.log("cards update", cards, cardString)
             setCards(cards)
+            cardsRef.current = cards
         })
     }, [socket])
+
+    React.useEffect(()=> {
+      setCards(cardsRef.current)
+    }, [cardsRef.current])
 
     React.useEffect(() => {
         updateCardOpposite((newcards, direction) => {
@@ -280,6 +287,7 @@ const PlayingPage = (props: PlayingPageProps) => {
             playingDirectionRef.current?.[(direction + 1) % 4].updateCard(cardEmpty)
             playingDirectionRef.current?.[(direction + 2) % 4].updateCard(cardEmpty)
             playingDirectionRef.current?.[(direction + 3) % 4].updateCard(cardEmpty)
+            playingDirectionRef.current?.[playContext.playState.direction].updateCard(cardsRef.current)
             setDeclarer(direction)
             playContext.updatePlayState({
                 tourName: playContext.playState.tourName,
@@ -294,7 +302,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                 data: playContext.playState.data
             })
         })
-    }, [socket, declarer])
+    }, [socket, declarer, cards])
 
     React.useEffect(()=> {
         onInitialTurn( data => {
