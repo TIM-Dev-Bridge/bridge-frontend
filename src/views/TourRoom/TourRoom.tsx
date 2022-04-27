@@ -145,13 +145,13 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                             }}>Start</PrimarySqButton>
                         </ButtonContainer> */}
                         {
-                            // (profile.profile.access == "td" ) ? 
+                            (profile.profile.access == "td" || authenContext.authen.username == "Testone" || authenContext.authen.username == "Mark123") ? 
                             <ButtonContainer>
                                 <PrimarySqButton onClick={() => {
                                     startTour()
                                 }}>Start</PrimarySqButton>
                             </ButtonContainer> 
-                            // <></>
+                            : <></>
                         }
                         </div>
                     </div>

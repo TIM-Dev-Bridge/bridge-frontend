@@ -105,7 +105,7 @@ export const LobbyPage: React.FunctionComponent = () => {
                             }}>Join</SecondaryButton>
 
                             {
-                                profile.profile.access == "user" ?
+                                (profile.profile.access == "td" || authenContext.authen.username == "Testone" || authenContext.authen.username == "Mark123") ?
                                     <>
                                         <SecondaryButton twstyle="h-8"
                                             onClick={() => {

@@ -61,10 +61,11 @@ export const LocalModePreviewContainer: React.FC<ModePreviewContainerProps> =(pr
                     <p className="font-light text-sm">Join an offline tournament to prove your skills. play face to face on real location for real experience </p>
                 </div>
                 <BottomContainer>
-                    <TextFieldNoWarning placeholder="Room ID"/>
+                    <TextFieldNoWarning placeholder="Room ID" disabled/>
                     <div className="w-4"></div>
                     <SecondaryButton
                         onClick={props.onClick}
+                        
                     >
                     {props.buttonTitle == undefined ? "Play" : props.buttonTitle}
                     </SecondaryButton>
@@ -116,19 +117,14 @@ const PrimaryButton = styled.div`
 
 const SecondaryButton = styled.div`
     background-color: white;
-    color: var(--main-color-blue);
+    color: gray;
     padding-left: 32px;
     padding-right: 32px;
     padding-top: 8px;
     padding-bottom: 8px;
     border-radius: 5px;
-    border: 1px solid var(--main-color-blue);
+    border: 1px solid gray;
     transition: background-color 0.1s;
-    &:hover {
-        background-color: var(--main-color-blue);
-        transition: background-color 0.1s;
-        color: white
-    }
 `
 
 const BottomContainer = styled.div`

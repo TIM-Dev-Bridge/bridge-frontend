@@ -111,8 +111,8 @@ const BiddingTable =()=> {
         <Container>
             <HeaderItem>North</HeaderItem>
             <HeaderItem>East</HeaderItem>
-            <HeaderItem>West</HeaderItem>
             <HeaderItem>South</HeaderItem>
+            <HeaderItem>West</HeaderItem>
             {
                 bidItems
             }
