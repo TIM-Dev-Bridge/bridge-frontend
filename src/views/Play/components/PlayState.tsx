@@ -18,7 +18,7 @@ import TablePopup from "./TablePopup";
 import PlaySideTab, { IPlaySideTabProps } from "./PlaySideTab";
 
 interface PlayingPageProps {
-  tableDetail?: ConnectTable;
+    tableDetail?: ConnectTable;
 }
 
 interface PlayingDirectionFn {
@@ -35,35 +35,38 @@ type PlayingDirection = {
 };
 
 const PlayingPage = (props: PlayingPageProps) => {
-    enum PlayState {
-        Bidding,
-        Playing
-    }
+    // enum PlayState {
+    //     Bidding,
+    //     Playing
+    // }
 
     const { connect, updateCard, updateCardOpposite } = useTable()
+    const game = useGame()
+    const playContext = usePlayState()
+    const authen = useAuthen()
+    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onInitialBidding, onFinishRound, onEnding, leave, onSummaryRank, onFinishTable} = usePlaying()
+    const { subscribePlayingStatus } = useBidding()
+
+    
     const [cards, setCards] = React.useState<number[]>([])
     const [leftCards, setLeftCards] = React.useState<number[]>([])
     const [rightCards, setRightCards] = React.useState<number[]>([])
     const [topCards, setTopCards] = React.useState<number[]>([])
+
     const southPlayedCardRef = React.useRef<HTMLDivElement>(null)
     const rightPlayedCardRef = React.useRef<HTMLDivElement>(null)
     const leftPlayedCardRef = React.useRef<HTMLDivElement>(null)
     const topPlayedCardRef = React.useRef<HTMLDivElement>(null)
+
     const [droppedCard, setDroppedCard] = React.useState(<></>)
-    const [rightDroppedCard, setRightDroppedCard] = React.useState(<></>)
     const [leftDroppedCard, setLefttDroppedCard] = React.useState(<></>)
+    const [rightDroppedCard, setRightDroppedCard] = React.useState(<></>)
     const [topDroppedCard, setTopDroppedCard] = React.useState(<></>)
 
     const [leftPlaceCardAnimate, setLeftPlaceCardAnimate] = React.useState(false)
     const [rightPlaceCardAnimate, setRightPlaceCardAnimate] = React.useState(false)
     const [topPlaceCardAnimate, setTopPlaceCardAnimate] = React.useState(false)
-    // const [leftPlaceCardAnimate, setLeftPlaceCardAnimate] = React.useState(true)
 
-
-    const playContext = usePlayState()
-    const authen = useAuthen()
-    const {playCard, onInitialTurn, onDefaultTurn, onInitialPlaying, onInitialBidding, onFinishRound, onEnding, leave, onSummaryRank, onFinishTable} = usePlaying()
-    const { subscribePlayingStatus } = useBidding()
     const [playDirection, setPlayDirection] = React.useState(-1)
     const [turn, setTurn] = React.useState(-1)
     const turnRef = React.useRef(turn)
@@ -99,12 +102,9 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [finishScore, setFinishScore] = React.useState<number[]>([])
     const [finishTricks, setFinishTricks] = React.useState<number[]>([])
 
-    const game = useGame()
 
     const [selectedPopup, setSelectedPopup] = React.useState<string | null>(null);
-    const switchSelectedPopup = (str: string) => {
-      selectedPopup == str ? setSelectedPopup(null) : setSelectedPopup(str);
-    };
+    const switchSelectedPopup = (str: string) => { selectedPopup == str ? setSelectedPopup(null) : setSelectedPopup(str); };
 
     const [shouldPlay, setShouldPlay] = React.useState(false)
 
