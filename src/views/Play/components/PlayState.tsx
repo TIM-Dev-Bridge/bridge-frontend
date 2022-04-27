@@ -620,6 +620,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                         setLefttDroppedCard(<></>)
                         setRightDroppedCard(<></>)
                         setDroppedCard(<></>)
+                        setShouldPlay(true)
                         setShouldAnimateCollapse(false)
                         setIsFourthPlay(false)
                     }}

@@ -36,7 +36,12 @@ const Hand =(props: HandProps)=> {
 
     React.useEffect(()=> {
         setTurn(props.isTurn)
+        console.log("IS TURN NA", props.isTurn)
     }, [props.isTurn])
+
+    React.useEffect(()=> {
+        setTurn(true)
+    }, [props.enabled])
 
     const animateCondition =(val: number, index: number)=> {
         if (val > 0) {
