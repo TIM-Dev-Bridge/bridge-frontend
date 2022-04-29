@@ -111,7 +111,7 @@ const UserManagement: React.FC = () => {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      width: "15%",
+      width: "20%",
       render: (status: string) => <b>{status}</b>,
       // ...getColumnSearchProps("username"),
       // onFilter: (value: string | number | boolean, record: User) =>
@@ -124,19 +124,19 @@ const UserManagement: React.FC = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      width: "25%",
+      width: "30%",
     },
-    {
-      title: "Display Name",
-      dataIndex: "display_name",
-      key: "display_name",
-      width: "15%",
-    },
+    // {
+    //   title: "Display Name",
+    //   dataIndex: "display_name",
+    //   key: "display_name",
+    //   width: "15%",
+    // },
     {
       title: "Status",
       dataIndex: "access",
       key: "access",
-      width: "15%",
+      width: "20",
       render: (access: string) => {
         return (
           <Tag color={tagColor[access.toLowerCase()]} key={access}>
