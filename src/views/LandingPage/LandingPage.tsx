@@ -9,12 +9,14 @@ import { device } from '../../Device'
 import BoardPage from '../Board/Board'
 import { usePopup } from '../Popup/PopupContext'
 import { useProfile } from '../UserProfile/ProfileContext'
+import { navigate, useNavigator } from '../../components/Router/Router'
 
 const LandingPage: React.FC =()=> {
     const context = React.useContext(AuthenContext)
     const popup = usePopup()
     const profile = useProfile()
     const [modes, setModes] = React.useState<string[]>([])
+    const navigateContent = useNavigator()
     const [titleToDisplay, setTitleToDisplay] = React.useState<number | null>(null)
     React.useEffect(()=> {
         console.log(context.authen.token)
@@ -38,9 +40,9 @@ const LandingPage: React.FC =()=> {
                         onMouseLeave={()=> setTitleToDisplay(null)}
                         to="/lobby" 
                         state={{}} 
-                        // onClick={()=> {
-                        // popup.setTourName('tour-f1')
-                        // popup.setDisplay(true)}} 
+                        onClick={()=> {
+                            navigate(navigateContent, '/lobby', {})
+                        }} 
                         title="Local Plays"
                         key="local-plays"
                         />
@@ -73,6 +75,21 @@ const LandingPage: React.FC =()=> {
                         buttonTitle="Create"
                         onClick={()=> {
                             popup.setTourName('')
+                            popup.setMode("online")
+                            popup.setDisplay(true)
+                        }} 
+                        />
+                    <ModePreviewContainer 
+                        layoutId='create-tour-popup'
+                        title="Local" 
+                        description="Manage tournament for  both ongoing tournaments and Finished tournaments." 
+                        // to="/lobby" 
+                        state={{}} 
+                        key="tour"
+                        buttonTitle="Create"
+                        onClick={()=> {
+                            popup.setTourName('')
+                            popup.setMode("local")
                             popup.setDisplay(true)
                         }} 
                         />

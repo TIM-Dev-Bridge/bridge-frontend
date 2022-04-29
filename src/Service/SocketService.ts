@@ -32,6 +32,16 @@ interface TourItem {
   title: string;
   type: string;
   players: string;
+  mode: string,
+  status: string
+}
+
+export interface PlayingTable {
+  table_id: string;
+  versus: string;
+  boards: number[];
+  currentBoard: number;
+  directions: Direction[];
 }
 
 export const useLobby = () => {
@@ -48,6 +58,7 @@ export const useLobby = () => {
   const createTour = (
     username: string,
     data: any,
+    mode: string = "online",
     callback: (success: boolean, reason: string) => void
   ) => {
     // var userName = "td1"
@@ -67,6 +78,8 @@ export const useLobby = () => {
     //     barometer: true,
     //     createBy: userName,
     // }
+
+    console.log("DATATATA", data)
 
     const formatDate =
       data.date.split("-")[1] +
@@ -100,13 +113,14 @@ export const useLobby = () => {
       players: [],
       time_start: formatDateTime,
       status: "Pending",
-      board_to_play: Number(data.boardToPlay),
-      minute_board: Number(data.minuteBoard),
-      board_per_round: Number(data.boardRound),
+      board_to_play: Number(data.board_to_play),
+      minute_board: Number(data.minute_board),
+      board_per_round: Number(data.board_per_round),
       movement: data.movement,
       scoring: data.scoring,
       barometer: true,
       createBy: username,
+      mode: mode
     };
     console.log(tourdata);
     socket.emit("create-tour", tourdata, (isValid: boolean, reason: string) => {

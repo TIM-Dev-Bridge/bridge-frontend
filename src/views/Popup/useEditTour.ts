@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React from 'react'
 import { useAuthen } from '../../Authen';
-import { useLobby } from '../../Service/SocketService';
+import { socket, useLobby } from '../../Service/SocketService';
 import { TourData } from './TourRequest'
 
-const useEditTour =(tourName: string, onCreate: (success : boolean, reason: string)=> void)=> {
+const useEditTour =(tourName: string, open:Boolean,onCreate: (success : boolean, reason: string)=> void)=> {
     const [tourData, updateTourData] = React.useState<TourData>();
     const [viewModel, updateViewModel] = React.useState<any>();
     const lobby = useLobby()
@@ -14,17 +14,24 @@ const useEditTour =(tourName: string, onCreate: (success : boolean, reason: stri
     React.useEffect(()=> {
         //get tour data
         //bridge-api-tim.herokuapp.com/
-        if (tourName === '')  return 
-        axios.get('https://bridge-api-tim.herokuapp.com/getTournamentData', {
-            params: {
-                tour_name: tourName
-            }
-        }).then( response =>{
-            // console.log(response)
-            formatViewModel(response.data)
-            updateTourData(response.data)
+
+        // if (tourName === '')  return 
+        // axios.get('https://bridge-api-tim.herokuapp.com/getTournamentData', {
+        //     params: {
+        //         tour_name: tourName
+        //     }
+        // }).then( response =>{
+        //     // console.log(response)
+        //     formatViewModel(response.data)
+        //     updateTourData(response.data)
+        // })
+
+        socket.emit('get-tour-data', tourName, (tour_data: TourData)=> {
+            console.log("tour data to edit ", tour_data)
+            formatViewModel(tour_data)
+            updateTourData(tour_data)
         })
-    }, [tourName])
+    }, [tourName, open])
 
     const formatViewModel =(data: any)=> {
         if (data == null || data ==undefined || data == '') return 
@@ -44,17 +51,18 @@ const useEditTour =(tourName: string, onCreate: (success : boolean, reason: stri
             max_player: data.max_player,
             type: data.type,
             password: data.password ?? "",
-            player_name: data.player_name,
+            players: data.players,
             date_start: formatedStartDate,
             time_start: time,
             status: data?.status ?? "",
             board_to_play: data?.board_to_play ?? 1,
             minute_board: data.minute_board,
-            board_round: data.board_round,
+            board_per_round: data.board_per_round,
             movement: data.movement,
             scoring: data.scoring,
             barometer: data?.barometer ?? true,
-            createBy: data?.createBy ?? ""
+            createBy: data?.createBy ?? "",
+            mode: data?.mode ?? ""
         }
         // console.log(newData)
         updateViewModel(newData)
@@ -83,7 +91,8 @@ const useEditTour =(tourName: string, onCreate: (success : boolean, reason: stri
             movement: data.movement,
             scoring: data.scoring,
             barometer: tourData?.barometer ?? true,
-            createBy: tourData?.createBy ?? ""
+            createBy: tourData?.createBy ?? "",
+            mode: tourData?.mode ?? ""
         }
         // console.log("After update", newData)
         updateTourData(newData)

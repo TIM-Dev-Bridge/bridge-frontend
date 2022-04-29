@@ -37,6 +37,18 @@ export const LobbyPage: React.FunctionComponent = () => {
 
     React.useEffect(() => {
         getTourList()
+        // let tourName = window.history.state.
+        console.log("QUERY", window.location.search)
+
+        if (window.location.search.includes('?')) {
+            let tourName = window.location.search.replace("?","")
+            console.log("TOURNAME", tourName)
+            joinTour(authenContext.authen.username, tourName, (success) => {
+                setTourName(tourName)
+                setDisplayTourRoom(true)
+            })
+            
+        }
     }, [])
 
     // React.useEffect(() => {
@@ -144,6 +156,10 @@ const Lobby: React.FunctionComponent<LobbyProps> = (props: LobbyProps) => {
     const { tourList, createTour, joinTour, getTourList, connect } = useLobby()
     const authContext = useAuthen()
     const navContext = useNavigator()
+
+    React.useEffect(()=> {
+        console.log("FIRST ", props.tours[0])
+    }, [])
 
     // const mockTours: LobbyListProps[] = [
     //     {
@@ -265,16 +281,31 @@ const Lobby: React.FunctionComponent<LobbyProps> = (props: LobbyProps) => {
                         <th>Title</th>
                         <th>Type</th>
                         <th>Players</th>
+                        <th>status</th>
                         <th>Host</th>
                     </tr>
                 </thead>
                 {
-                    props.tours.map((tour, i) => <LobbyListTr key={i} {...tour} onClick={() => {
-                        console.log("JOIN", tour.title)
-                        props.onJoinTourRoom(tour.title, true)
-                        joinTour(authContext.authen.username, tour.title, (success) => {
+                    props.tours.filter(tour=>tour.mode == 'online').map((tour, i) => <LobbyListTr key={i} {...tour} onClick={() => {
+                        if (tour.status == "Pending") {
+                            console.log("JOIN", tour.title)
+                            props.onJoinTourRoom(tour.title, true)
+                            joinTour(authContext.authen.username, tour.title, (success) => {
+    
+                            })
+                            return
+                        }
 
-                        })
+                        if (tour.status == "Playing") {
+
+                            return
+                        }
+
+                        if (tour.status == "Ending") {
+
+                            return
+                        }
+                        
                     }} />)
                 }
             </table>
@@ -287,6 +318,8 @@ interface LobbyListProps extends HTMLAttributes<HTMLTableSectionElement> {
     title: string,
     type: string,
     players: string,
+    mode: string,
+    status: string
 }
 
 const LobbyListTr = (props: LobbyListProps) => {
@@ -297,6 +330,7 @@ const LobbyListTr = (props: LobbyListProps) => {
                 <td>{props.title}</td>
                 <td>{props.type}</td>
                 <td>{props.players}</td>
+                <td>{props.status}</td>
                 <td>{props.host}</td>
             </tr>
         </tbody>

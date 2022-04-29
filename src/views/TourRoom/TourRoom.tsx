@@ -3,7 +3,7 @@ import { useAuthen } from "../../Authen"
 import { PrimaryButton, PrimarySqButton, SecondaryButton } from "../../components/Button/Button"
 import { NormalText, TitleText } from "../../components/Text/Text"
 import TextFieldNoWarning from "../../components/TextField/TextFieldNoWarning"
-import {  socket, useLobby, useRoom } from "../../Service/SocketService"
+import {  PlayingTable, socket, useLobby, useRoom } from "../../Service/SocketService"
 import CSS from 'csstype';
 import { useNavigator } from "../../components/Router/Router"
 import styled, { css, StyleSheetManager } from "styled-components"
@@ -41,7 +41,7 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
     const [start, setStart] = React.useState(false)
     const popup = usePopup()
     const [creator, setCreator] = React.useState('')
-    const [matchup, setMatchup] = React.useState({})
+    const [matchup, setMatchup] = React.useState<PlayingTable[]>([])
     // const [tourName, setTourname]= React.useState<string>('')
     const tourNameRef = React.useRef('')
     const newWindowRef = React.useRef<HTMLDivElement>(null)
@@ -55,8 +55,23 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
     const playState = usePlayState()
     const playStateRef = React.useRef(playState)
 
+    const [isLocal, setLocal] = React.useState(false)
+
     const game = useGame()
     
+    React.useEffect(()=> {
+        if (window.location.search.includes('?')) {
+            setLocal(true)
+        }
+    }, [])
+
+    React.useEffect(()=> {
+        socket.on('please-leave-tour', ()=> {
+            leaveTourRoom(authenContext.authen.username)
+            // window.history.back()
+            props.onLeave?.()
+        })
+    }, [socket])
     
 
     React.useEffect(() => {
@@ -75,8 +90,16 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
 
     React.useEffect(()=> {
         waitForStart((rounds)=> {
+            if (isLocal) {
+                // const table = rounds[playStateRef.current.playState.currentRound].tables.find( table => table.versus.includes(playStateRef.current.playState.pairId.toString()))
+                console.log("ROUND",rounds[playStateRef.current.playState.currentRound])
+                setMatchup(rounds[playStateRef.current.playState.currentRound].tables)
+                setStart(true)
+                return
+            }
             console.log("TABLE", playStateRef.current.playState)
             const table = rounds[playStateRef.current.playState.currentRound].tables.find( table => table.versus.includes(playStateRef.current.playState.pairId.toString()))
+            setMatchup(rounds[playStateRef.current.playState.currentRound].tables)
             console.log(rounds)
             console.log(tourNameRef.current)
             
@@ -120,7 +143,7 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
             //     pairId: 0
             // })
         })
-    }, [socket])
+    }, [socket, isLocal])
 
     return (
             <TourRoomContainer
@@ -156,7 +179,7 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                         </div>
                     </div>
                     {
-                        start ? <MatchUpView matchup={matchup}/> : 
+                        start ? <MatchUpView tables={matchup}/> : 
                         <PlayerList 
                             tourName={props.tourName} 
                             update={props.display ?? false} 
@@ -185,7 +208,7 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                                 
                             }}>COPY</SecondaryButton>
                             {
-                                (profile.profile.access == "td" && authenContext.authen.username == creator) ? 
+                                // (profile.profile.access == "td" && authenContext.authen.username == creator) ? 
                                 <>
                                 <SecondaryButton twstyle="h-8" 
                                     onClick={() => {
@@ -199,10 +222,11 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                                     onClick={()=> {
                                     deleteThisTour(authenContext.authen.username, ()=>{})
                                     leaveTourRoom(authenContext.authen.username)
+                                    props.onLeave?.()
                                 }}>Delete Tour</PrimaryButton>
                                 </>
-                                : 
-                                <></>
+                                // : 
+                                // <></>
                             }
                             
                         </div>

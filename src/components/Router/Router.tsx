@@ -82,6 +82,7 @@ export const navigate =(context: {navigationStack: JSX.Element[], updateStack: (
         state: state
     }
     window.history.pushState(newState,"",newPath)
+    console.log("NEW STATE", newState)
     const element = RouterConfig[path]()
     const newStack = [...context.navigationStack, element]
     context.updateStack(newStack)

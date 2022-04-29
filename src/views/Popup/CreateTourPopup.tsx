@@ -8,10 +8,11 @@ import DateSelector from '../../components/Selector/DateSelector';
 import Selector from '../../components/Selector/Selector';
 import { TitleText } from '../../components/Text/Text';
 import TextField from '../../components/TextField/TextField';
-import { useLobby } from '../../Service/SocketService';
+import { socket, useLobby } from '../../Service/SocketService';
 import { validator } from '../Login/components/Validate';
 import useEditTour from './useEditTour';
 import { v4 as uuidv4 } from 'uuid'
+import { TourData } from './TourRequest';
 
 interface DialogProps  {
     isVisible: boolean
@@ -20,6 +21,7 @@ interface DialogProps  {
     initial?: {}
     animate?: {}
     exit?: {}
+    mode: string
 }
 
 const CreateTourPopup =(props: DialogProps)=> {
@@ -63,22 +65,22 @@ const CreateTourPopup =(props: DialogProps)=> {
             validator(text)
                 .isEmpty()
         },
-        boardToPlay: (text: string, fieldName: string)=> {
+        board_to_play: (text: string, fieldName: string)=> {
             validator(text)
                 .isEmpty()
         },
-        minuteBoard: (text: string, fieldName: string)=> {
+        minute_board: (text: string, fieldName: string)=> {
             validator(text)
                 .isEmpty()
         },
-        boardRound: (text: string, fieldName: string)=> {
+        board_per_round: (text: string, fieldName: string)=> {
             validator(text)
                 .isEmpty()
         },
     }
     const tourForm = useForm(form);
     const {viewModel, tourData, updateTourWith
-        } = useEditTour(props.tourName ?? "", (success, reason)=> {
+        } = useEditTour(props.tourName ?? "", props.isVisible, (success, reason)=> {
             if (success) {
                 props.onDismiss()
             }
@@ -109,17 +111,17 @@ const CreateTourPopup =(props: DialogProps)=> {
     React.useEffect(()=> {
         if (!props.isVisible) {
             (document.querySelector(`input[name='title']`) as HTMLInputElement).value = '';
-            (document.querySelector(`input[name='description']`) as HTMLInputElement).value = '';
+            // (document.querySelector(`input[name='description']`) as HTMLInputElement).value = '';
             // (document.querySelector(`select[name='date]`) as HTMLInputElement).value = '';
             // (document.querySelector(`select[name='time']`) as HTMLInputElement).value = '';
-            (document.querySelector(`input[name='boardToPlay']`) as HTMLInputElement).value = '';
-            (document.querySelector(`input[name='minuteBoard']`) as HTMLInputElement).value = '';
-            (document.querySelector(`input[name='boardRound']`) as HTMLInputElement).value = '';
+            (document.querySelector(`input[name='board_to_play']`) as HTMLInputElement).value = '';
+            (document.querySelector(`input[name='minute_board']`) as HTMLInputElement).value = '';
+            (document.querySelector(`input[name='board_per_round']`) as HTMLInputElement).value = '';
         }
     },[props.isVisible])
 
     React.useEffect(()=> {
-
+        console.log("VIEWMODEL", viewModel)
     }, [viewModel])
 
     return (
@@ -138,6 +140,7 @@ const CreateTourPopup =(props: DialogProps)=> {
                 }
             }}>
             <Container
+                key={viewModel && props.isVisible}
                 initial="hidden"
                 animate={props.isVisible ? "visible" : "hidden"}
                 variants={containerVariants}>
@@ -156,7 +159,7 @@ const CreateTourPopup =(props: DialogProps)=> {
                             isValid={tourForm.isValid['title'].isValid && responseValid}
                             warningVisible={props.isVisible}
                             />
-                        <TextField 
+                        {/* <TextField 
                             data-testid="popup-description"
                             disabled
                             // defaultValue={tourData?.tour_name ?? ''}
@@ -166,7 +169,7 @@ const CreateTourPopup =(props: DialogProps)=> {
                             // warningMessage={tourForm.isValid['description'].message} 
                             isValid={true}
                             warningVisible={props.isVisible}
-                            />
+                            /> */}
                     </Section>
                     <Section title="Directors" >
                         <h1>{authen.authen.username}</h1>
@@ -193,11 +196,11 @@ const CreateTourPopup =(props: DialogProps)=> {
                         </div>
                     </div>
                     <div style={{display: "felx", minHeight: "100px"}}>
-                        <Section title="Spectator">
+                        {/* <Section title="Spectator">
                             <Selector disabled>
                                 
                             </Selector>
-                        </Section>
+                        </Section> */}
                         {/* <Section title="Chat">
                             <Selector >
                                 
@@ -213,10 +216,10 @@ const CreateTourPopup =(props: DialogProps)=> {
                             min="1"
                             key='board_to_play'
                             defaultValue={viewModel?.board_to_play ?? ''}
-                            name="boardToPlay" 
+                            name="board_to_play" 
                             placeholder="Board To Play"
-                            warningMessage={tourForm.isValid['boardToPlay'].message} 
-                            isValid={tourForm.isValid['boardToPlay'].isValid}
+                            warningMessage={tourForm.isValid['board_to_play'].message} 
+                            isValid={tourForm.isValid['board_to_play'].isValid}
                             warningVisible={props.isVisible}
                             />
                         <TextField 
@@ -225,36 +228,37 @@ const CreateTourPopup =(props: DialogProps)=> {
                             min="6"
                             key='minute_board'
                             defaultValue={viewModel?.minute_board ?? ''}
-                            name="minuteBoard" 
+                            name="minute_board" 
                             placeholder="Minute Per Board"
-                            warningMessage={tourForm.isValid['minuteBoard'].message} 
-                            isValid={tourForm.isValid['minuteBoard'].isValid}
+                            warningMessage={tourForm.isValid['minute_board'].message} 
+                            isValid={tourForm.isValid['minute_board'].isValid}
                             warningVisible={props.isVisible}
                             />
                         <TextField 
                             data-testid="popup-board_round"
                             type="number"
                             min="1"
-                            key='board_round' 
-                            defaultValue={viewModel?.board_round ?? ''}
-                            name="boardRound" 
+                            key='board_per_round' 
+                            defaultValue={viewModel?.board_per_round ?? ''}
+                            name="board_per_round" 
                             placeholder="Board Per Round"
-                            warningMessage={tourForm.isValid['boardRound'].message} 
-                            isValid={tourForm.isValid['boardRound'].isValid}
+                            warningMessage={tourForm.isValid['board_per_round'].message} 
+                            isValid={tourForm.isValid['board_per_round'].isValid}
                             warningVisible={props.isVisible}
                             />
                     </Section>
-                    <AltSection title="Deals">
-                        <Selector disabled>
+                    <AltSection title="">
+                        {/* <Selector disabled>
                                 
-                        </Selector>
+                        </Selector> */}
                         <BottomDiv>
                             {
                                 (props.tourName == "" || props.tourName == undefined) ? 
                                     <PrimaryButton onClick={()=> {
                                         tourForm.handleSubmit((isValid, value)=> {
+                                            console.log("VALUE ", value)
                                             if (isValid) {
-                                                createTour(authen.authen.username, value, (success, reason) => {
+                                                createTour(authen.authen.username, value, props.mode, (success, reason) => {
                                                     // console.log(success, reason)
                                                     if (success) {
                                                         // console.log(success, reason)
@@ -268,14 +272,62 @@ const CreateTourPopup =(props: DialogProps)=> {
                                     tourForm.handleSubmit((isValid, value)=> {
                                         // console.log((document.querySelector(`input[name='title']`) as HTMLInputElement).value)
                                         if (isValid) {
-                                            updateTourWith(value)
-                                                .then( response => {
-                                                    // console.log(response)
+                                            let data = value as any
+                                            const formatDate =
+                                            data.date.split("-")[1] +
+                                            "/" +
+                                            data.date.split("-")[2] +
+                                            "/" +
+                                            data.date.split("-")[0];
+                                            const dayNight = Number(data.time.split(":")[0]) > 12 ? "PM" : "AM";
+                                            const updateValue =
+                                            Number(data.time.split(":")[0]) > 12
+                                                ? String(Number(data.time.split(":")[0]) - 12)
+                                                : data.time.split(":")[0];
+
+                                            const formatTime =
+                                            " " +
+                                            updateValue +
+                                            ":" +
+                                            data.time.split(":")[1] +
+                                            ":" +
+                                            (data.time.split(":")[2] == undefined ? "00" : data.time.split(":")[2]) +
+                                            " " +
+                                            dayNight;
+                                            // console.log("date time", formatDate + ',' + formatTime)
+                                            const formatDateTime = formatDate + "," + formatTime;
+                                            
+                                            const tourdata: TourData = {
+                                                tour_name: data.title,
+                                                max_player: 20,
+                                                type: data.movement,
+                                                password: "",
+                                                players: [],
+                                                time_start: formatDateTime,
+                                                status: "Pending",
+                                                board_to_play: Number(data.board_to_play),
+                                                minute_board: Number(data.minute_board),
+                                                board_per_round: Number(data.board_per_round),
+                                                movement: data.movement,
+                                                scoring: data.scoring,
+                                                barometer: true,
+                                                createBy: authen.authen.username,
+                                                mode: props.mode
+                                              };
+                                            socket.emit("update-tour-data", tourdata, (isFinish: boolean) => {
+                                                
+                                                if (isFinish) {
                                                     props.onDismiss()
-                                                })
-                                                .catch( error =>{
-                                                    // console.log(error)
-                                                })
+                                                }
+                                            })
+                                            // updateTourWith(value)
+                                            //     .then( response => {
+                                            //         // console.log(response)
+                                            //         props.onDismiss()
+                                            //     })
+                                            //     .catch( error =>{
+                                            //         // console.log(error)
+                                            //     })
                                         }
                                     })
                                 }}>Update Tour</PrimaryButton>

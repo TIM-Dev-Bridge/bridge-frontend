@@ -1,9 +1,10 @@
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import { TitleText } from '../../components/Text/Text'
+import { PlayingTable } from '../../Service/SocketService'
 
 interface MatchUpProps {
-    matchup: {[key: string]:string}
+    tables: PlayingTable[]
 }
 
 const MatchUpView =(props: MatchUpProps)=> {
@@ -18,11 +19,14 @@ const MatchUpView =(props: MatchUpProps)=> {
         <Container id="Match-up-view">
             <TitleText big>Round 1</TitleText>
             {
-                Object.keys(props.matchup).map((key)=> {
-                    const table = props.matchup[key]
-                    return (
-                        <MatchUpTwoTeam table={table}/>
-                    )
+                // Object.keys(props.matchup).map((key)=> {
+                //     const table = props.matchup[key]
+                //     return (
+                //         <MatchUpTwoTeam table={table}/>
+                //     )
+                // })
+                props.tables.map ( (table) => {
+                    return <MatchUpTwoTeam table={table}/>
                 })
             }
         </Container>
@@ -37,16 +41,16 @@ const Container = styled.div`
     overflow: scroll;
 `
 
-const MatchUpTwoTeam: FunctionComponent<{table: string}> =({table})=> {
-    const teamA = table.split(',')[0]
-    const teamB = table.split(',')[1]
+const MatchUpTwoTeam: FunctionComponent<{table: PlayingTable}> =({table})=> {
+    // const teamA = table.split(',')[0]
+    // const teamB = table.split(',')[1]
     return (
         <MatchUPContainer>
-            <TeamNS team_a={teamA} />
+            <TeamNS direction={table.directions} />
             <CircleContainer>
                 VS
             </CircleContainer>
-            <TeamEW team_b={teamB} />
+            <TeamEW direction={table.directions} />
         </MatchUPContainer>
     )
 }
@@ -61,15 +65,19 @@ const MatchUPContainer = styled.div`
     margin-left: 5px;
 `
 
-const TeamNS: FunctionComponent<{team_a:string}> =({team_a})=> {
+interface TeamNSProps {
+    direction: {id: string, direction: number}[]
+}
+
+const TeamNS =(props: TeamNSProps)=> {
     return (
         <TeamNSContainer>
             <div>
-                <TitleText>{team_a}</TitleText>
+                <TitleText>{props.direction.find( item => item.direction == 0)?.id ?? "" }</TitleText>
             </div>
-            {/* <div>
-                <TitleText>{team_b}</TitleText>
-            </div> */}
+            <div>
+                <TitleText>{props.direction.find( item => item.direction == 2)?.id ?? ""}</TitleText>
+            </div>
         </TeamNSContainer>
     )
 }
@@ -85,15 +93,19 @@ const TeamNSContainer = styled.div`
     background-color: #0AC3EE;
 `
 
-const TeamEW :FunctionComponent<{team_b:string}> =({team_b})=> {
+interface TeamEWProps {
+    direction: {id: string, direction: number}[]
+}
+
+const TeamEW =(props: TeamEWProps)=> {
     return (
         <TeamEWContainer>
             <div>
-                <TitleText>{team_b}</TitleText>
+                <TitleText>{props.direction.find( item => item.direction == 1)?.id ?? ""}</TitleText>
             </div>
-            {/* <div>
-                <TitleText>{user_b}</TitleText>
-            </div> */}
+            <div>
+                <TitleText>{props.direction.find( item => item.direction == 3)?.id ?? ""}</TitleText>
+            </div>
         </TeamEWContainer>
     )
 }

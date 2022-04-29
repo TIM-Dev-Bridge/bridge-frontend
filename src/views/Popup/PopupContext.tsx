@@ -9,14 +9,16 @@ const PopupContext = React.createContext({
     setPopup: (children: JSX.Element)=>{},
     setDisplay: (display: boolean) => {},
     setTourName: (tourName: string) => {},
+    setMode: (mode: string)=> {}
 })
 
 export const PopupProvider =(props: HTMLAttributes<HTMLElement>)=> {
     const [popup, setPopup] = React.useState(<></>)
     const [display, setDisplay] = React.useState(false)
     const [tourName, setTourName] = React.useState('')
+    const [mode, setMode] = React.useState('online')
     return (
-        <PopupContext.Provider value={{popup, setPopup,display, setDisplay, tourName, setTourName}}>
+        <PopupContext.Provider value={{popup, setPopup,display, setDisplay, tourName, setTourName, setMode}}>
             {/* {display && ( */}
                 {/* <AnimatePresence> */}
                     <CreateTourPopup 
@@ -26,6 +28,7 @@ export const PopupProvider =(props: HTMLAttributes<HTMLElement>)=> {
                         data-testid="create-tour-popup"
                         isVisible={display} 
                         tourName={tourName}
+                        mode={mode}
                         onDismiss={
                         ()=> {
                             setDisplay(false)

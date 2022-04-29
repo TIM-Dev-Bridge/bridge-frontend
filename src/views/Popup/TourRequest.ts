@@ -13,6 +13,7 @@ export interface TourData {
     scoring: string,
     barometer: boolean,
     createBy: string,
+    mode: string // online, local
 }
 
 export interface TourViewModel {

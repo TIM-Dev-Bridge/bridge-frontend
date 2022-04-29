@@ -3,6 +3,7 @@ import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import PlaceholderImg from '../../../../assets/images/placeholder.png'
 import { NavigationLink } from '../../../../components/Router/NavigationLink'
+import { navigate, useNavigator } from '../../../../components/Router/Router'
 import TextField from '../../../../components/TextField/TextField'
 import TextFieldNoWarning from '../../../../components/TextField/TextFieldNoWarning'
 
@@ -50,6 +51,14 @@ export const ModePreviewContainer =(props: ModePreviewContainerProps)=> {
 }
 
 export const LocalModePreviewContainer: React.FC<ModePreviewContainerProps> =(props: ModePreviewContainerProps)=> {
+    const navigateContext = useNavigator()
+    const [tourName, setTourName] = React.useState('')
+
+    const handleTyping =(event: React.ChangeEvent<HTMLInputElement>)=> {
+        setTourName(event.target.value)
+        console.log(event.target.value)
+    }
+
     return (
         <Container layoutId={props.layoutId} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
             {/* <div className="overflow-hidden h-full">
@@ -61,10 +70,12 @@ export const LocalModePreviewContainer: React.FC<ModePreviewContainerProps> =(pr
                     <p className="font-light text-sm">Join an offline tournament to prove your skills. play face to face on real location for real experience </p>
                 </div>
                 <BottomContainer>
-                    <TextFieldNoWarning placeholder="Room ID"/>
+                    <TextFieldNoWarning onChange={handleTyping} placeholder="Room ID"/>
                     <div className="w-4"></div>
                     <SecondaryButton
-                        onClick={props.onClick}
+                        onClick={()=>{
+                            navigate(navigateContext, '/lobby', {}, tourName)
+                        }}
                     >
                     {props.buttonTitle == undefined ? "Play" : props.buttonTitle}
                     </SecondaryButton>
