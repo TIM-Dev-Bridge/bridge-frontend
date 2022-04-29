@@ -139,7 +139,7 @@ const Card =(props: CardProps)=> {
     }
 
     const onAnimationComplete =(definition: AnimationDefinition)=> {
-        console.log("DEF",definition.valueOf().hasOwnProperty('width'), definition, definition.valueOf())
+        // console.log("DEF",definition.valueOf().hasOwnProperty('width'), definition, definition.valueOf())
         if (movingState == State.MOVE_TO_POSITION) {
             // setMovingState(State.DROPPING)
             setMovingState(State.DROPPED)

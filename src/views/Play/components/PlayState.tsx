@@ -67,22 +67,22 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [rightPlaceCardAnimate, setRightPlaceCardAnimate] = React.useState(false)
     const [topPlaceCardAnimate, setTopPlaceCardAnimate] = React.useState(false)
 
-    const [playDirection, setPlayDirection] = React.useState(-1)
-    const [turn, setTurn] = React.useState(-1)
-    const turnRef = React.useRef(turn)
-    const [declarer, setDeclarer] = React.useState(0)
+    // const [playDirection, setPlayDirection] = React.useState(-1)
+    // const [turn, setTurn] = React.useState(-1)
+    // const turnRef = React.useRef(turn)
+    // const [declarer, setDeclarer] = React.useState(0)
 
     const [dropCardBottom, setDropCardBottom] = React.useState(0)
     const [dropCardLeft, setDropCardLeft] = React.useState(0)
     const [dropCardRight, setDropCardRight] = React.useState(0)
     const [dropCardTop, setDropCardTop] = React.useState(0)
     
-    const [playingDirection, setPlayingDirection] = React.useState<PlayingDirection>()
-    const playingDirectionRef = React.useRef(playingDirection)
+    // const [playingDirection, setPlayingDirection] = React.useState<PlayingDirection>()
+    // const playingDirectionRef = React.useRef(playingDirection)
     const [shouldWaiting, setShouldWaiting] = React.useState(false)
     const [shouldFinished, setShouldFinished] = React.useState(false)
 
-    const [currentSuite, setCurrentSuite] = React.useState<number|null>(null)
+    // const [currentSuite, setCurrentSuite] = React.useState<number|null>(null)
 
     const [shouldAnimateCollapse, setShouldAnimateCollapse] = React.useState(false)
 
@@ -91,7 +91,7 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [isRightTurn, setRightTurn] = React.useState(false)
     const [isBotTurn, setBotTurn] = React.useState(false)
     const [isFourthPlay, setIsFourthPlay] = React.useState(false)
-    const [trump, setTrump] = React.useState<number | null>(null)
+    // const [trump, setTrump] = React.useState<number | null>(null)
 
     const [topName, setTopName] = React.useState("")
     const [leftName, setLeftName] = React.useState("")
@@ -99,8 +99,8 @@ const PlayingPage = (props: PlayingPageProps) => {
     const [bottomName, setBottomName] = React.useState("")
 
     const [summaryRank, setSummaryRank] = React.useState<SummaryRank[]>([])
-    const [finishScore, setFinishScore] = React.useState<number[]>([])
-    const [finishTricks, setFinishTricks] = React.useState<number[]>([])
+    // const [finishScore, setFinishScore] = React.useState<number[]>([])
+    // const [finishTricks, setFinishTricks] = React.useState<number[]>([])
 
 
     const [selectedPopup, setSelectedPopup] = React.useState<string | null>(null);
@@ -110,23 +110,23 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     const [willWait, setWillWait] = React.useState(false)
     const [willFinished, setWillFinished] = React.useState(false)
-    const [tempCard, setTempCard] = React.useState<number[]>([])
-    const cardsRef = React.useRef(cards)
+    // const [tempCard, setTempCard] = React.useState<number[]>([])
+    // const cardsRef = React.useRef(cards)
 
-    const [sideTabInfo, setSideTabInfo] = React.useState<IPlaySideTabProps>({
-      round: 1,
-      permission: "player",
-      boardsPerRound: 1,
-      boardsPlayed: 1,
-      totalRounds: 1,
-      boardType: undefined,
-      auction: undefined,
-      tricks: {
-        nsTricks: 0,
-        ewTricks: 0,
-      },
-      setSelectedPopup: switchSelectedPopup,
-    }); 
+    // const [sideTabInfo, setSideTabInfo] = React.useState<IPlaySideTabProps>({
+    //   round: 1,
+    //   permission: "player",
+    //   boardsPerRound: 1,
+    //   boardsPlayed: 1,
+    //   totalRounds: 1,
+    //   boardType: undefined,
+    //   auction: undefined,
+    //   tricks: {
+    //     nsTricks: 0,
+    //     ewTricks: 0,
+    //   },
+    //   setSelectedPopup: switchSelectedPopup,
+    // }); 
 
     const directions: Record<number, "North" | "East" | "South" | "West"> = {
       0: "North",
@@ -156,6 +156,305 @@ const PlayingPage = (props: PlayingPageProps) => {
     //         connect(props.tableDetail.table_id, props.tableDetail)
     //     }
     // }, [props.tableDetail])
+
+    // interface CardsStates {
+    //   cards: number[],
+    //   leftCards: number[],
+    //   rightCards: number[],
+    //   topCardz: number[],
+    // }
+
+    // const initialCardsStates = {
+    //   cards: [],
+    //   leftCards: [],
+    //   rightCards: [],
+    //   topCardz: [],
+    // }
+
+    // enum CardsActionType {
+    //   UPDATE_CARDS = 'updateCards',
+    // }
+
+    // type CardsAction = |
+    //   {
+    //     type: CardsActionType.UPDATE_CARDS,
+    //     payload: {cards: number[]}
+    //   }
+
+    // function cardsReducer(state: CardsStates, action: CardsAction): CardsStates {
+    //   switch (action.type) {
+    //     case CardsActionType.UPDATE_CARDS: {
+    //       return {...state, cards: action.payload.cards}
+    //     }
+    //     default: {
+    //       throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
+    //     }
+    //   }
+    // }
+
+    // const [cardsStates, cardsDispatch] = React.useReducer(cardsReducer, initialCardsStates) 
+  
+
+    interface PlayingStates {
+      playDirection: number,
+      currentSuite: number | null,
+      trump: number | null,
+      playingDirection: PlayingDirection,
+      finishScores: number[],
+      finishTricks: number[],
+      declarer: number,
+      turn: number,
+      // shouldAnimateCollapse: boolean,
+      // isFourthPlay: boolean,
+      // shouldPlay: boolean
+    }
+  
+  const initialPlayingStates = {
+      playDirection: -1,
+      currentSuite: null,
+      trump: null,
+      playingDirection: {},
+      finishScores: [],
+      finishTricks: [],
+      declarer: 0,
+      turn: -1,
+      // shouldAnimateCollapse: false,
+      // isFourthPlay: false,
+      // shouldPlay: false,
+  }
+
+  enum PlayingActionType {
+    INIT_PLAYINGDIRECTION = 'initPlayingDirection',
+    DETERMINE_DECLARER = 'determineDeclarer',
+    INITIAL_TURN = 'initialTurn',
+    DEFAULT_TURN = 'defaultTurn',
+    INITIAL_PLAYING = 'initialPlaying',
+    FINISH_TABLE = 'finishTable',
+    WAITING_FOR_BID = 'waitingForBid',
+    RESET_ISTURN = 'resetIsTurn',
+  }
+
+  type PlayingAction = |
+      {
+        type: PlayingActionType.INIT_PLAYINGDIRECTION,
+        payload: {
+          playingDirection: PlayingDirection,
+        }
+      } |
+      {
+        type: PlayingActionType.DETERMINE_DECLARER,
+        payload: {
+          declarer: number,
+          newCards: number[],
+        }
+      } |
+      {
+        type: PlayingActionType.INITIAL_TURN,
+        payload: {
+          playDirection: number,
+          turn: number,
+          currentSuite: number | null,
+        }
+      } |
+      {
+        type: PlayingActionType.DEFAULT_TURN,
+        payload: {
+          currentSuite: number | null,
+          isFourthPlay: boolean,
+          card: number,
+          nextDirection: number,
+          prevDirection: number,
+        }
+      } |
+      {
+        type: PlayingActionType.INITIAL_PLAYING,
+        payload: {
+          playDirection: number,
+          turn: number,
+          trump: number,
+        }
+      } |
+      {
+        type: PlayingActionType.FINISH_TABLE,
+        payload: {
+          finishTricks: number[],
+          finishScores: number[],
+        }
+      } |
+      {
+        type : PlayingActionType.WAITING_FOR_BID,
+        payload: { playDirection: number }
+      } |
+      {
+        type : PlayingActionType.RESET_ISTURN,
+      }
+
+  function playingReducer(state: PlayingStates, action: PlayingAction): PlayingStates {
+    switch (action.type) {
+      case PlayingActionType.INIT_PLAYINGDIRECTION: {
+        return {...state, playingDirection: action.payload.playingDirection}
+      }
+      case PlayingActionType.DETERMINE_DECLARER: {
+        let cardEmpty = [-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13]
+        state.playingDirection[action.payload.declarer].updateCard(action.payload.newCards)
+        state.playingDirection[(action.payload.declarer + 1) % 4].updateCard(cardEmpty)
+        state.playingDirection[(action.payload.declarer + 2) % 4].updateCard(cardEmpty)
+        state.playingDirection[(action.payload.declarer + 3) % 4].updateCard(cardEmpty)
+        return {...state, declarer: action.payload.declarer}
+      }
+      case PlayingActionType.INITIAL_TURN: {
+        // state.playingDirection[action.payload.playDirection].isTurn(false)
+        state.playingDirection[action.payload.playDirection].isTurn(true)
+        state.playingDirection[(action.payload.playDirection + 1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection + 2) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection + 3) % 4].isTurn(false)
+        return {...state, playDirection: action.payload.playDirection, turn: action.payload.turn, currentSuite: action.payload.currentSuite}
+      }
+      case PlayingActionType.DEFAULT_TURN: {
+        state.playingDirection[action.payload.nextDirection].isTurn(true)
+        if (action.payload.prevDirection != playContext.playState.direction) {
+          state.playingDirection[action.payload.prevDirection].dropCard(action.payload.card)
+          state.playingDirection[action.payload.prevDirection].animate(true)
+          state.playingDirection[action.payload.prevDirection].isTurn(false)
+          state.currentSuite = action.payload.currentSuite
+        }
+        // if (action.payload.isFourthPlay) state.isFourthPlay = true
+        return {...state, playDirection: action.payload.nextDirection}
+      }
+      case PlayingActionType.INITIAL_PLAYING: {
+        state.playingDirection[action.payload.playDirection].isTurn(true)
+        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        return {...state,
+          playDirection: action.payload.playDirection,
+          turn: action.payload.turn,
+          trump: action.payload.trump,
+          // shouldPlay: true,
+        }
+      }
+      case PlayingActionType.FINISH_TABLE: {
+        return {...state, finishTricks: action.payload.finishTricks, finishScores: action.payload.finishScores}
+      }
+      case PlayingActionType.WAITING_FOR_BID: {
+        state.playingDirection[action.payload.playDirection].isTurn(true)
+        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        return {...state}
+      }
+      case PlayingActionType.RESET_ISTURN:{
+        state.playingDirection[0].isTurn(false)
+        state.playingDirection[1].isTurn(false)
+        state.playingDirection[2].isTurn(false)
+        state.playingDirection[3].isTurn(false)
+        return {...state}
+      }
+      default: {
+        throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
+      }
+    }
+  }
+
+  const [playingStates, playingDispatch] = React.useReducer(playingReducer, initialPlayingStates) 
+
+  const InitialSideTabStates :IPlaySideTabProps = {
+    round: 1,
+    permission: "player",
+    boardsPerRound: 1,
+    boardsPlayed: 1,
+    totalRounds: 1,
+    boardType: undefined,
+    auction: undefined,
+    tricks: {
+      nsTricks: 0,
+      ewTricks: 0,
+    },
+    setSelectedPopup: switchSelectedPopup,
+  }; 
+
+  enum SideTabActionType {
+    INITIAL_BIDDING = 'initialBidding',
+    INITIAL_PLAYING = 'initialPlaying',
+    UPDATE_TRICKS = 'updateTricks',
+  }
+
+  type SideTabAction = |
+      {
+        type: SideTabActionType.INITIAL_BIDDING,
+        payload: {
+          boardType: {
+            boardNo: number,
+            dealer: "N"| "E"| "S"| "W",
+            vulnerable: "None"| "N-S"| "E-W"| "All",
+          },
+          boardsPerRound: number,
+          cur_board: number,
+          round: number,
+          totalRounds: number,
+        }
+      } |
+      {
+        type: SideTabActionType.INITIAL_PLAYING,
+        payload: {
+          auction: {
+            declarer: "North" | "South" | "East" | "West";
+            contract: string;
+          },
+        }
+      } |
+      {
+        type: SideTabActionType.UPDATE_TRICKS,
+        payload: {
+          tricks: {
+            ewTricks: number,
+            nsTricks: number,
+          },
+        }
+      }
+
+  function sideTabReducer(state: IPlaySideTabProps, action: SideTabAction): IPlaySideTabProps {
+    switch (action.type) {
+      case SideTabActionType.INITIAL_BIDDING: {
+        return {...state,
+          boardType: {
+            boardNo: action.payload.boardType.boardNo,
+            dealer: action.payload.boardType.dealer,
+            vulnerable: action.payload.boardType.vulnerable,
+          },
+          auction: undefined,
+          tricks: {
+            ewTricks: 0,
+            nsTricks: 0,
+          },
+          boardsPerRound: action.payload.boardsPerRound,
+          boardsPlayed: action.payload.cur_board - (Math.floor((action.payload.cur_board-1)/action.payload.boardsPerRound)),
+          round: action.payload.round,
+          totalRounds: action.payload.totalRounds,
+        }
+      }
+      case SideTabActionType.INITIAL_PLAYING:{
+        return {...state, 
+          auction: {
+            declarer: action.payload.auction.declarer,
+            contract: action.payload.auction.contract,
+          }}
+      }
+      case SideTabActionType.UPDATE_TRICKS:{
+        return {...state,
+          tricks: {
+            ewTricks: action.payload.tricks.ewTricks,
+            nsTricks: action.payload.tricks.nsTricks,
+          },}
+      }
+      default: {
+        throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);
+      }
+    
+    }
+  }
+
+  const [sideTabStates, sideTabDispatch] = React.useReducer(sideTabReducer, InitialSideTabStates) 
     
 
     React.useEffect(() => {
@@ -203,8 +502,14 @@ const PlayingPage = (props: PlayingPageProps) => {
                     title: setTopName
                 }
             }
-            setPlayingDirection(newState)
-            console.log("CURRENT ROUNT",playContext.playState.data, playContext.playState.currentRound)
+            // setPlayingDirection(newState)
+            playingDispatch({
+              type: PlayingActionType.INIT_PLAYINGDIRECTION,
+              payload: {
+                playingDirection: newState
+              }
+            })
+            console.log("CURRENT ROUND",playContext.playState.data, playContext.playState.currentRound)
             let currentdata = playContext.playState.data[playContext.playState.currentRound - 1]
             let currentTable = currentdata.tables.find(table => table.table_id == playContext.playState.table)
 
@@ -217,32 +522,6 @@ const PlayingPage = (props: PlayingPageProps) => {
             newState[left].title(currentTable?.directions.find(dir => dir.direction == left)?.id + " ( " + directionFromnum(left) + " ) " )
             newState[top].title(currentTable?.directions.find(dir => dir.direction == top)?.id + " ( " + directionFromnum(top) + " ) " )
             newState[right].title(currentTable?.directions.find(dir => dir.direction == right)?.id + " ( " + directionFromnum(right) + " ) " )
-
-            // score.getCurrentMatchInfo(
-            //   playContext.playState.currentRound,
-            //   playContext.playState.table,
-            //   (currentMatchInfo) => {
-            //     score.getBoardType(currentMatchInfo.board_num, (boardType) => {
-            //       setSideTabInfo({
-            //         ...sideTabInfo,
-            //         boardType: {
-            //           boardNo: boardType.board_number,
-            //           dealer: boardType.dealer,
-            //           vulnerable: boardType.vulnerable,
-            //         },
-            //         auction: undefined,
-            //         tricks: {
-            //           ewTricks: 0,
-            //           nsTricks: 0,
-            //         },
-            //         boardsPerRound: currentMatchInfo.boardSequence,
-            //         boardsPlayed: currentMatchInfo.board_num - (Math.floor((currentMatchInfo.board_num-1)/currentMatchInfo.boardSequence)),
-            //         round: playContext.playState.currentRound,
-            //         totalRounds: currentMatchInfo.total_round,
-            //       });
-            //     });
-            //   }
-            // );
             
             connect(playContext.playState.table, detail)
             
@@ -268,194 +547,10 @@ const PlayingPage = (props: PlayingPageProps) => {
         updateCard((cards) => {
             let cardString = cards.map(num => num.toString())
             console.log("cards update", cards, cardString)
+            // cardsDispatch({type: CardsActionType.UPDATE_CARDS, payload:{cards: cards}})
             setCards(cards)
-            cardsRef.current = cards
+            // cardsRef.current = cards
         })
-    }, [socket])
-
-    React.useEffect(()=> {
-      setCards(cardsRef.current)
-    }, [cardsRef.current])
-
-    React.useEffect(() => {
-        updateCardOpposite((newcards, direction) => {
-            let cardString = cards.map(num => num.toString())
-            console.log("cards update", cards, cardString)
-{/*             directionsRef.current[direction](newcards) */}
-            playingDirectionRef.current?.[direction].updateCard(newcards)
-            let cardEmpty = [-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13]
-            playingDirectionRef.current?.[(direction + 1) % 4].updateCard(cardEmpty)
-            playingDirectionRef.current?.[(direction + 2) % 4].updateCard(cardEmpty)
-            playingDirectionRef.current?.[(direction + 3) % 4].updateCard(cardEmpty)
-            playingDirectionRef.current?.[playContext.playState.direction].updateCard(cardsRef.current)
-            setDeclarer(direction)
-            playContext.updatePlayState({
-                tourName: playContext.playState.tourName,
-                room: playContext.playState.room,
-                round: playContext.playState.round,
-                table: playContext.playState.table,
-                direction: playContext.playState.direction,
-                status: 'initial_playing',
-                pairId: playContext.playState.pairId,
-                currentRound: playContext.playState.currentRound,
-                tableCount: playContext.playState.tableCount,
-                data: playContext.playState.data
-            })
-        })
-    }, [socket, declarer, cards])
-
-    React.useEffect(()=> {
-        onInitialTurn( data => {
-            console.log("DATA : ", data)
-            let direction = data.payload.leader
-            setPlayDirection(direction)
-            setTurn(data.payload.turn)
-            setCurrentSuite(null)
-            playingDirection?.[direction].isTurn(true)
-            playingDirection?.[(direction + 1) % 4].isTurn(false)
-            playingDirection?.[(direction + 2) % 4].isTurn(false)
-            playingDirection?.[(direction + 3) % 4].isTurn(false)
-            // animateDirectionRef.current[direction](true)
-            // animateDirection[direction](true)
-
-            // setSideTabInfo({
-            //   ...sideTabInfo,
-            //   tricks: {
-            //     ewTricks: data.payload.tricks[1],
-            //     nsTricks: data.payload.tricks[0],
-            //   },
-            // });
-
-        })
-    }, [socket, playDirection, currentSuite])
-
-    React.useEffect(()=> {
-      console.log('===================================== SOCKET CALL AGAIN =====================================')
-        onInitialBidding( data => {
-          console.log('onInitialBidding')
-          setSideTabInfo({
-            ...sideTabInfo,
-            boardType: {
-              boardNo: data.payload.board_type.board_number,
-              dealer: data.payload.board_type.dealer,
-              vulnerable: data.payload.board_type.vulnerable,
-            },
-            auction: undefined,
-            tricks: {
-              ewTricks: 0,
-              nsTricks: 0,
-            },
-            boardsPerRound: data.payload.board_per_round,
-            boardsPlayed: data.payload.cur_board - (Math.floor((data.payload.cur_board-1)/data.payload.board_per_round)),
-            round: data.payload.cur_round,
-            totalRounds: data.payload.total_round,
-          });
-        })
-
-        onInitialPlaying( data => {
-          console.log('onInitialPlaying')
-          setSideTabInfo({
-              ...sideTabInfo,
-              auction: {
-                declarer: directions[(data.payload.leader+3)%4],
-                contract:
-                  Math.ceil(data.payload.maxContract / 5).toString() +
-                  "_" +
-                  suit[data.payload.maxContract % 5].toString(),
-              },
-            });
-        })
-
-        onInitialTurn( data => {
-          console.log('onInitialTurn')
-          setSideTabInfo({
-            ...sideTabInfo,
-            tricks: {
-              ewTricks: data.payload.tricks[1],
-              nsTricks: data.payload.tricks[0],
-            },
-          });
-        })
-
-        onEnding( data => {
-          console.log('onEnding')
-          data &&
-          setSideTabInfo({
-            ...sideTabInfo,
-            tricks: {
-              ewTricks: data.payload.tricks[1],
-              nsTricks: data.payload.tricks[0],
-            },
-          });
-        })
-
-    },[socket,sideTabInfo])
-
-    React.useEffect(()=> {
-        onDefaultTurn( data => {
-            console.log("DATA : ", data)
-            let direction = data.payload.nextDirection
-            let prev = data.payload.prevDirection
-            setPlayDirection(direction)
-            playingDirection?.[direction].isTurn(true)
-            // setTurn(turn => turn += 1)
-            if (prev != playContext.playState.direction) {
-                playingDirection?.[prev].dropCard(data.payload.card)
-                playingDirection?.[prev].animate(true)
-                playingDirection?.[prev].isTurn(false)
-                setCurrentSuite(data.payload['initSuite'])
-                // if (trump != data.payload.bidSuite) {
-                //     setTrump(data.payload.bidSuite)
-                // }
-                // if (declarer == data.payload.nextDirection) {
-
-                // }
-            }
-
-            if (data.payload.isFourthPlay) {
-                console.log("ANIMATE COLLAPSE PLEASE")
-                setIsFourthPlay(true)
-                // setShouldAnimateCollapse(true)
-            }
-        })
-    }, [socket, playDirection, currentSuite, shouldAnimateCollapse, trump])
-
-    React.useEffect(()=> {
-        onInitialPlaying( data => {
-            console.log("DATA : ", data)
-            let direction = data.payload.leader
-            setPlayDirection(direction)
-            setTurn(data.payload.turn)
-            setTrump(data.payload.bidSuite)
-            playingDirection?.[direction].isTurn(true)
-            playingDirection?.[(direction + 1) % 4].isTurn(false)
-            playingDirection?.[(direction + 2) % 4].isTurn(false)
-            playingDirection?.[(direction + 3) % 4].isTurn(false)
-
-            setShouldPlay(true)
-            // setSideTabInfo({
-            //   ...sideTabInfo,
-            //   auction: {
-            //     declarer: directions[data.payload.leader],
-            //     contract:
-            //       Math.ceil(data.payload.maxContract / 5).toString() +
-            //       "_" +
-            //       suit[data.payload.maxContract % 5].toString(),
-            //   },
-            // });
-        })
-    }, [socket, playDirection, playingDirection])
-
-    React.useEffect(()=>{
-      onFinishTable((finishTable) =>{
-        console.log('FINISH TABLE',finishTable)
-        setFinishTricks(finishTable.tricks)
-        setFinishScore(finishTable.scores)
-      })
-    },[socket, finishScore, finishTricks])
-
-
-    React.useEffect(()=> {
         onFinishRound( data => {
             if (data.length == playContext.playState.tableCount) {
                 console.log("FINISH", data)
@@ -483,7 +578,6 @@ const PlayingPage = (props: PlayingPageProps) => {
                     table_id: table?.table_id ?? ""
                 }
                 leave(playContext.playState.table)
-
                 playContext.updatePlayState({
                     ...playContext.playState,
                     room: tableId ?? "",
@@ -493,59 +587,416 @@ const PlayingPage = (props: PlayingPageProps) => {
                     status: "",
                     currentRound: newRound
                 })
-
-                
                 connect(tableId ?? "", detail)
                 game.reset()
                 setShouldWaiting(false)
-                
             }
         })
+
+      onEnding( ()=> {
+        console.log("WAITING PLEASE")
+        setWillWait(true)
+      })
+
+      onSummaryRank( rank => {
+        console.log("RANK ::", rank)
+        setSummaryRank(rank)
+      })
+
     }, [socket])
 
-    React.useEffect(()=> {
-        onEnding( ()=> {
-            console.log("WAITING PLEASE")
-            setWillWait(true)
+
+
+    React.useEffect(() => {
+        updateCardOpposite((newcards, direction) => {
+            let cardString = cards.map(num => num.toString())
+            console.log("cards update", cards, cardString)
+            playingDispatch({
+              type: PlayingActionType.DETERMINE_DECLARER,
+               payload: {
+                 declarer: direction,
+                 newCards: newcards
+                }
+              })
+            playContext.updatePlayState({
+                tourName: playContext.playState.tourName,
+                room: playContext.playState.room,
+                round: playContext.playState.round,
+                table: playContext.playState.table,
+                direction: playContext.playState.direction,
+                status: 'initial_playing',
+                pairId: playContext.playState.pairId,
+                currentRound: playContext.playState.currentRound,
+                tableCount: playContext.playState.tableCount,
+                data: playContext.playState.data
+            })
         })
-    }, [socket])
 
-
-    React.useEffect(()=> {
-        turnRef.current = turn
-    }, [turn])
-    
-    React.useEffect(()=> {
-        playingDirectionRef.current = playingDirection
-    }, [playingDirection])
-
-    React.useEffect(()=> {
-        onSummaryRank( rank => {
-            console.log("RANK ::", rank)
-            setSummaryRank(rank)
+        onInitialTurn( data => {
+          console.log("OnInitialTurn DATA : ", data)
+          playingDispatch({
+            type: PlayingActionType.INITIAL_TURN,
+            payload: {
+              playDirection: data.payload.leader,
+              turn: data.payload.turn,
+              currentSuite: null,
+            }
+          })
         })
-    }, [socket, summaryRank])
 
-    React.useEffect(()=> {
+        onDefaultTurn( data => {
+          console.log("DATA : ", data)
+          playingDispatch({type: PlayingActionType.DEFAULT_TURN, 
+            payload:{
+              card: data.payload.card,
+              currentSuite: data.payload['initSuite'],
+              isFourthPlay: data.payload.isFourthPlay,
+              nextDirection: data.payload.nextDirection,
+              prevDirection: data.payload.prevDirection,
+            }
+          })
+
+          if (data.payload.isFourthPlay) {
+            console.log("ANIMATE COLLAPSE PLEASE")
+            setIsFourthPlay(true)
+            setShouldAnimateCollapse(true)
+            playingDispatch({type: PlayingActionType.RESET_ISTURN})
+          }
+        
+        })
+
+        onInitialPlaying( data => {
+            console.log("DATA : ", data)
+            playingDispatch({type: PlayingActionType.INITIAL_PLAYING, payload:{
+              playDirection: data.payload.leader,
+              turn: data.payload.turn,
+              trump: data.payload.bidSuite
+            }} )
+
+            setShouldPlay(true)
+        })
+
+        onFinishTable((finishTable) =>{
+          console.log('FINISH TABLE',finishTable)
+          playingDispatch({type: PlayingActionType.FINISH_TABLE, payload:{
+            finishTricks: finishTable.tricks,
+            finishScores: finishTable.scores,
+          }})
+        })
+
         subscribePlayingStatus(status => {
-            if (status['status'] == 'waiting_for_bid') {
-    
-                if (status['payload'].hasOwnProperty('nextDirection')) {
-                    console.log("BIDDING STATUS", status['payload']['nextDirection'])
-                    let direction = status['payload']['nextDirection']
-                    playingDirection?.[direction].isTurn(true)
-                    playingDirection?.[(direction + 1) % 4].isTurn(false)
-                    playingDirection?.[(direction + 2) % 4].isTurn(false)
-                    playingDirection?.[(direction + 3) % 4].isTurn(false)
+          if (status['status'] == 'waiting_for_bid') {
+              if (status['payload'].hasOwnProperty('nextDirection')) {
+                  console.log("BIDDING STATUS", status['payload']['nextDirection'])
+                  playingDispatch({type: PlayingActionType.WAITING_FOR_BID, payload: {playDirection: status['payload']['nextDirection']}})
+                  console.log("UPDATE", playingStates.playingDirection)
+              }
+          }
+      })
 
-                    console.log("UPDATE", playingDirection)
-                }
-                else {
-                    // setLvlToBid(lvlToBid())
-                }
-            }
+    }, [socket, playingDispatch])
+
+        React.useEffect(()=> {
+        onInitialBidding( data => {
+          console.log('onInitialBidding')
+          sideTabDispatch({type:SideTabActionType.INITIAL_BIDDING, payload:{
+            boardType:{
+              boardNo: data.payload.board_type.board_number,
+              dealer: data.payload.board_type.dealer,
+              vulnerable: data.payload.board_type.vulnerable,
+            },
+            boardsPerRound: data.payload.board_per_round,
+            cur_board: data.payload.cur_board,
+            round: data.payload.cur_round,
+            totalRounds: data.payload.total_round,
+          }})
         })
-    }, [socket, playingDirection])
+
+        onInitialPlaying( data => {
+          console.log('onInitialPlaying')
+          sideTabDispatch({type:SideTabActionType.INITIAL_PLAYING, payload:{
+            auction: {
+              declarer: directions[(data.payload.leader+3)%4],
+              contract:
+                Math.ceil(data.payload.maxContract / 5).toString() +
+                "_" +
+                suit[data.payload.maxContract % 5].toString(),
+            },
+          }})
+        })
+
+        onInitialTurn( data => {
+          console.log('onInitialTurn')
+          sideTabDispatch({type:SideTabActionType.UPDATE_TRICKS, payload:{
+            tricks: {
+              ewTricks: data.payload.tricks[1],
+              nsTricks: data.payload.tricks[0],
+            },
+          }})
+        })
+
+        onEnding( data => {
+          console.log('onEnding')
+          data &&
+          sideTabDispatch({type:SideTabActionType.UPDATE_TRICKS, payload:{
+            tricks: {
+              ewTricks: data.payload.tricks[1],
+              nsTricks: data.payload.tricks[0],
+            },
+          }})
+        })
+
+    },[socket,sideTabDispatch])
+
+//     React.useEffect(() => {
+//       updateCardOpposite((newcards, direction) => {
+//           let cardString = cards.map(num => num.toString())
+//           console.log("cards update", cards, cardString)
+
+// {/*             directionsRef.current[direction](newcards) */}
+
+//           // playingDirectionRef.current?.[direction].updateCard(newcards)
+//           // let cardEmpty = [-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13]
+//           // playingDirectionRef.current?.[(direction + 1) % 4].updateCard(cardEmpty)
+//           // playingDirectionRef.current?.[(direction + 2) % 4].updateCard(cardEmpty)
+//           // playingDirectionRef.current?.[(direction + 3) % 4].updateCard(cardEmpty)
+//           // playingDirectionRef.current?.[playContext.playState.direction].updateCard(cardsRef.current)
+
+//           playingDispatch({
+//             type: PlayingActionType.DETERMINE_DECLARER,
+//              payload: {
+//                declarer: direction,
+//                newCards: newcards
+//               }
+//             })
+//           // cardsDispatch({type: CardsActionType.UPDATE_OTHER_CARDS,})
+//           // setDeclarer(direction)
+//           playContext.updatePlayState({
+//               tourName: playContext.playState.tourName,
+//               room: playContext.playState.room,
+//               round: playContext.playState.round,
+//               table: playContext.playState.table,
+//               direction: playContext.playState.direction,
+//               status: 'initial_playing',
+//               pairId: playContext.playState.pairId,
+//               currentRound: playContext.playState.currentRound,
+//               tableCount: playContext.playState.tableCount,
+//               data: playContext.playState.data
+//           })
+//       })
+
+//     }, [socket, declarer, cards])
+
+    // React.useEffect(()=> {
+    //     onInitialTurn( data => {
+    //         console.log("DATA : ", data)
+    //         // let direction = data.payload.leader
+
+    //         playingDispatch({
+    //           type: PlayingActionType.INITIAL_TURN,
+    //           payload: {
+    //             playDirection: data.payload.leader,
+    //             turn: data.payload.turn,
+    //             currentSuite: null,
+    //           }
+    //         })
+
+    //         // setPlayDirection(direction)
+    //         // setTurn(data.payload.turn)
+    //         // setCurrentSuite(null)
+    //         // playingDirection?.[direction].isTurn(true)
+    //         // playingDirection?.[(direction + 1) % 4].isTurn(false)
+    //         // playingDirection?.[(direction + 2) % 4].isTurn(false)
+    //         // playingDirection?.[(direction + 3) % 4].isTurn(false)
+    //         // animateDirectionRef.current[direction](true)
+    //         // animateDirection[direction](true)
+    //     })
+    //   // }, [socket, playDirection, currentSuite])
+    // }, [socket, playingDispatch])
+
+    // React.useEffect(()=> {
+    //     onDefaultTurn( data => {
+    //         console.log("DATA : ", data)
+    //         playingDispatch({type: PlayingActionType.DEFAULT_TURN, 
+    //         payload:{
+    //           card: data.payload.card,
+    //           currentSuite: data.payload['initSuite'],
+    //           isFourthPlay: data.payload.isFourthPlay,
+    //           nextDirection: data.payload.nextDirection,
+    //           prevDirection: data.payload.prevDirection,
+    //         }
+    //       })
+
+    //       if (data.payload.isFourthPlay) {
+    //         console.log("ANIMATE COLLAPSE PLEASE")
+    //         setIsFourthPlay(true)
+    //         setShouldAnimateCollapse(true)
+    //         playingDispatch({type: PlayingActionType.RESET_ISTURN})
+    //       }
+    //         // let direction = data.payload.nextDirection
+    //         // let prev = data.payload.prevDirection
+    //         // setPlayDirection(direction)
+    //         // playingDirection?.[direction].isTurn(true)
+    //         // setTurn(turn => turn += 1)
+    //         // if (prev != playContext.playState.direction) {
+    //         //     playingDirection?.[prev].dropCard(data.payload.card)
+    //         //     playingDirection?.[prev].animate(true)
+    //         //     playingDirection?.[prev].isTurn(false)
+    //         //     setCurrentSuite(data.payload['initSuite'])
+    //         //     if (trump != data.payload.bidSuite) {
+    //         //         setTrump(data.payload.bidSuite)
+    //         //     }
+    //         //     if (declarer == data.payload.nextDirection) {
+
+    //         //     }
+    //         // }
+
+            
+    //     })
+    // // }, [socket, playDirection, currentSuite, shouldAnimateCollapse, trump])
+    // }, [socket, playingDispatch])
+
+    // React.useEffect(()=> {
+    //     onInitialPlaying( data => {
+    //         console.log("DATA : ", data)
+    //         playingDispatch({type: PlayingActionType.INITIAL_PLAYING, payload:{
+    //           playDirection: data.payload.leader,
+    //           turn: data.payload.turn,
+    //           trump: data.payload.bidSuite
+    //         }} )
+
+    //         setShouldPlay(true)
+    //         // let direction = data.payload.leader
+    //         // setPlayDirection(direction)
+    //         // setTurn(data.payload.turn)
+    //         // setTrump(data.payload.bidSuite)
+    //         // playingDirection?.[direction].isTurn(true)
+    //         // playingDirection?.[(direction + 1) % 4].isTurn(false)
+    //         // playingDirection?.[(direction + 2) % 4].isTurn(false)
+    //         // playingDirection?.[(direction + 3) % 4].isTurn(false)
+
+    //         // setSideTabInfo({
+    //         //   ...sideTabInfo,
+    //         //   auction: {
+    //         //     declarer: directions[data.payload.leader],
+    //         //     contract:
+    //         //       Math.ceil(data.payload.maxContract / 5).toString() +
+    //         //       "_" +
+    //         //       suit[data.payload.maxContract % 5].toString(),
+    //         //   },
+    //         // });
+    //     })
+    //   // }, [socket, playDirection, playingDirection])
+    // }, [socket, playingDispatch])
+
+  //   React.useEffect(()=>{
+  //     onFinishTable((finishTable) =>{
+  //       console.log('FINISH TABLE',finishTable)
+  //       playingDispatch({type: PlayingActionType.FINISH_TABLE, payload:{
+  //         finishTricks: finishTable.tricks,
+  //         finishScores: finishTable.scores,
+  //       }})
+  //       // setFinishTricks(finishTable.tricks)
+  //       // setFinishScore(finishTable.scores)
+  //     })
+  //   // },[socket, finishScore, finishTricks])
+  // },[socket, playingDispatch])
+
+
+    // React.useEffect(()=> {
+    //     onFinishRound( data => {
+    //         if (data.length == playContext.playState.tableCount) {
+    //             console.log("FINISH", data)
+    //             const newRound = playContext.playState.currentRound + 1
+    //             if (playContext.playState.data[newRound - 1] == undefined) {
+    //                 setWillFinished(true)
+    //                 // setShouldFinished(true)
+    //                 return 
+    //             }
+    //             const tableOfNewRound = playContext.playState.data[newRound - 1].tables
+    //             if (tableOfNewRound == null) {
+    //                 setWillFinished(true)
+    //                 // setShouldFinished(true)
+    //                 return 
+    //             }
+    //             const table = tableOfNewRound.find( table => table.versus.includes(playContext.playState.pairId.toString()))
+    //             const tableId = table?.table_id
+    //             const detail: ConnectTable = {
+    //                 player_id: authen.authen.username,
+    //                 player_name: authen.authen.username,
+    //                 tour_name: playContext.playState.tourName,
+    //                 direction: table?.directions.find(player => player.id == authen.authen.username)?.direction,
+    //                 room: table?.table_id ?? "",
+    //                 round_num: newRound.toString(),
+    //                 table_id: table?.table_id ?? ""
+    //             }
+    //             leave(playContext.playState.table)
+
+    //             playContext.updatePlayState({
+    //                 ...playContext.playState,
+    //                 room: tableId ?? "",
+    //                 round: newRound.toString(),
+    //                 table: tableId ?? "",
+    //                 direction: table?.directions.find(player => player.id == authen.authen.username)?.direction,
+    //                 status: "",
+    //                 currentRound: newRound
+    //             })
+
+                
+    //             connect(tableId ?? "", detail)
+    //             game.reset()
+    //             setShouldWaiting(false)
+                
+    //         }
+    //     })
+    // }, [socket])
+
+    // React.useEffect(()=> {
+    //     onEnding( ()=> {
+    //         console.log("WAITING PLEASE")
+    //         setWillWait(true)
+    //     })
+    // }, [socket])
+
+
+    // React.useEffect(()=> {
+    //     turnRef.current = turn
+    // }, [turn])
+    
+    // React.useEffect(()=> {
+    //     playingDirectionRef.current = playingDirection
+    // }, [playingDirection])
+
+    // React.useEffect(()=> {
+    //     onSummaryRank( rank => {
+    //         console.log("RANK ::", rank)
+    //         setSummaryRank(rank)
+    //     })
+    // }, [socket, summaryRank])
+
+    // React.useEffect(()=> {
+    //     subscribePlayingStatus(status => {
+    //         if (status['status'] == 'waiting_for_bid') {
+    
+    //             if (status['payload'].hasOwnProperty('nextDirection')) {
+    //                 console.log("BIDDING STATUS", status['payload']['nextDirection'])
+    //                 playingDispatch({type: PlayingActionType.WAITING_FOR_BID, payload: {playDirection: status['payload']['nextDirection']}})
+    //                 // let direction = status['payload']['nextDirection']
+    //                 // playingDirection?.[direction].isTurn(true)
+    //                 // playingDirection?.[(direction + 1) % 4].isTurn(false)
+    //                 // playingDirection?.[(direction + 2) % 4].isTurn(false)
+    //                 // playingDirection?.[(direction + 3) % 4].isTurn(false)
+
+    //                 // console.log("UPDATE", playingDirection)
+    //                 console.log("UPDATE", playingStates.playingDirection)
+    //             }
+    //             else {
+    //                 // setLvlToBid(lvlToBid())
+    //             }
+    //         }
+    //     })
+    //   // }, [socket, playingDirection])
+    // }, [socket, playingDispatch])
 
     const makePlayCardRequest =(card: number, turn: number)=> {
         let request : PlayCardRequest = {
@@ -560,25 +1011,6 @@ const PlayingPage = (props: PlayingPageProps) => {
         }
         playCard(request)
     }
-
-  React.useEffect(() => {
-    onInitialTurn((data) => {
-      console.log("DATA : ", data);
-      let direction = data.payload.leader;
-      setPlayDirection(direction);
-      setTurn(data.payload.turn);
-      setCurrentSuite(null);
-      // setSideTabInfo({
-      //   ...sideTabInfo,
-      //   tricks: {
-      //     ewTricks: data.payload.tricks[1],
-      //     nsTricks: data.payload.tricks[0],
-      //   },
-      // });
-      // animateDirectionRef.current[direction](true)
-      // animateDirection[direction](true)
-    });
-  }, [socket, playDirection, currentSuite]);
 
   const dropCard = (
     animateAnimation: React.Dispatch<React.SetStateAction<boolean>>,
@@ -607,7 +1039,7 @@ const PlayingPage = (props: PlayingPageProps) => {
 
     return (
       <Container>
-        <PlaySideTab {...sideTabInfo} />
+        <PlaySideTab {...sideTabStates} />
       {/* <div style={{ width: "85%", height: "100%" }}> */}
       <TablePopupContainer>
         <TablePopup
@@ -617,11 +1049,13 @@ const PlayingPage = (props: PlayingPageProps) => {
       </TablePopupContainer>
       
         <PlayingPageContainer>
-            <InnerContainer isYourTurn={playDirection == playContext.playState.direction}>
+            {/* <InnerContainer isYourTurn={playDirection == playContext.playState.direction}> */}
+            <InnerContainer isYourTurn={playingStates.playDirection == playContext.playState.direction}>
                 
                 <Center
                     variants={variants}
                     initial="normal"
+                    // animate={shouldAnimateCollapse ? "collapse" : "normal"}
                     animate={shouldAnimateCollapse ? "collapse" : "normal"}
                     onAnimationComplete={()=> {
                         setTopDroppedCard(<></>)
@@ -662,7 +1096,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                     placeCard={topPlaceCardAnimate}
                     cardToFind={dropCardTop}
                     isTurn={isTopTurn}
-                    trump={trump}
+                    // trump={trump}
+                    trump={playingStates.trump}
                     playerName={topName}
                     onDrop={() => {
                         dropCard(setTopPlaceCardAnimate, setTopDroppedCard)(<DroppedCard text={dropCardTop} />)
@@ -671,7 +1106,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
                         }
-                        if (playDirection == playContext.playState.direction) {
+                        // if (playDirection == playContext.playState.direction) {
+                        if (playingStates.playDirection == playContext.playState.direction) {
                           setShouldPlay(true)
                         }
 
@@ -683,23 +1119,28 @@ const PlayingPage = (props: PlayingPageProps) => {
                         }
                     }}/>
                 <Hand
-                    enabled={playDirection == playContext.playState.direction && shouldPlay}
+                    // enabled={playDirection == playContext.playState.direction && shouldPlay}
+                    enabled={playingStates.playDirection == playContext.playState.direction && shouldPlay}
                     position={HandPosition.DOWN}
                     initialCard={cards}
                     dropRef={southPlayedCardRef}
                     cardToFind={dropCardBottom}
-                    currentSuite={currentSuite}
+                    // currentSuite={currentSuite}
+                    currentSuite={playingStates.currentSuite}
                     isTurn={isBotTurn}
-                    trump={trump}
+                    // trump={trump}
+                    trump={playingStates.trump}
                     playerName={bottomName}
                     onDrop={(item)=> {
                         setDroppedCard(<DroppedCard text={item} />)
-                        makePlayCardRequest(item, turnRef.current)}} 
+                        // makePlayCardRequest(item, turnRef.current)}} 
+                        makePlayCardRequest(item, playingStates.turn)}} 
                     onAnimatinoComplete={()=> {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
                         }
-                        if (playDirection == playContext.playState.direction) {
+                        // if (playDirection == playContext.playState.direction) {
+                        if (playingStates.playDirection == playContext.playState.direction) {
                           setShouldPlay(true)
                         }
                         if (willWait) {
@@ -716,7 +1157,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                     dropRef={leftPlayedCardRef}
                     cardToFind={dropCardLeft}
                     isTurn={isLeftTurn}
-                    trump={trump}
+                    // trump={trump}
+                    trump={playingStates.trump}
                     playerName={leftName}
                     onDrop={() => {
                         dropCard(setLeftPlaceCardAnimate, setLefttDroppedCard)(<DroppedCard text={dropCardLeft} />)
@@ -726,7 +1168,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
                         }
-                        if (playDirection == playContext.playState.direction) {
+                        // if (playDirection == playContext.playState.direction) {
+                        if (playingStates.playDirection == playContext.playState.direction) {
                           setShouldPlay(true)
                         }
                         if (willWait) {
@@ -744,7 +1187,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                     placeCard={rightPlaceCardAnimate}
                     cardToFind={dropCardRight}
                     isTurn={isRightTurn}
-                    trump={trump}
+                    // trump={trump}
+                    trump={playingStates.trump}
                     playerName={rightName}
                     onDrop={() => {
                         dropCard(setRightPlaceCardAnimate, setRightDroppedCard)(<DroppedCard text={dropCardRight} />)
@@ -753,7 +1197,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                         if (isFourthPlay) {
                             setShouldAnimateCollapse(true)
                         }
-                        if (playDirection == playContext.playState.direction) {
+                        // if (playDirection == playContext.playState.direction) {
+                        if (playingStates.playDirection == playContext.playState.direction) {
                           setShouldPlay(true)
                         }
                         if (willWait) {
@@ -772,14 +1217,17 @@ const PlayingPage = (props: PlayingPageProps) => {
                 {/* <>Wait for other table to complete</> */}
                 <TitleText> 
                   {
-                  ((game.connectDetail?.direction as number + 2) % 4 == declarer || (game.connectDetail?.direction as number) == declarer)
-                    ? (declarer % 2 == 0
-                      ? (sideTabInfo.tricks?.nsTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Contract Successful" : "Contract Failed")
-                      : (sideTabInfo.tricks?.ewTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Contract Successful" : "Contract Failed")
+                  // ((game.connectDetail?.direction as number + 2) % 4 == declarer || (game.connectDetail?.direction as number) == declarer)
+                  ((game.connectDetail?.direction as number + 2) % 4 == playingStates.declarer || (game.connectDetail?.direction as number) == playingStates.declarer)
+                  // ? (declarer % 2 == 0
+                    ? (playingStates.declarer % 2 == 0
+                      ? (sideTabStates.tricks?.nsTricks as number >= parseInt(sideTabStates.auction?.contract.split("_")[0] as string) + 6 ? "Contract Successful" : "Contract Failed")
+                      : (sideTabStates.tricks?.ewTricks as number >= parseInt(sideTabStates.auction?.contract.split("_")[0] as string) + 6 ? "Contract Successful" : "Contract Failed")
                       )
-                    : (declarer % 2 == 0
-                      ? (sideTabInfo.tricks?.nsTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Defend Failed" : "Defend Successful")
-                      : (sideTabInfo.tricks?.ewTricks as number >= parseInt(sideTabInfo.auction?.contract.split("_")[0] as string) + 6 ? "Defend Failed" : "Defend Successful")
+                      // : (declarer % 2 == 0
+                    : (playingStates.declarer % 2 == 0
+                      ? (sideTabStates.tricks?.nsTricks as number >= parseInt(sideTabStates.auction?.contract.split("_")[0] as string) + 6 ? "Defend Failed" : "Defend Successful")
+                      : (sideTabStates.tricks?.ewTricks as number >= parseInt(sideTabStates.auction?.contract.split("_")[0] as string) + 6 ? "Defend Failed" : "Defend Successful")
                       )
                   }
                 </TitleText>
@@ -791,16 +1239,16 @@ const PlayingPage = (props: PlayingPageProps) => {
                 </PanelTop>
                   <tbody>
                     <CenteredText style={{ position: "relative", fontSize: "5vmin" }}>
-                    <b>{sideTabInfo.auction ? sideTabInfo.auction.contract.split("_")[0] : "N/A"}</b>
-                    {sideTabInfo.auction ? (
-                      sideTabInfo.auction.contract.split("_")[1] == "NT" ? (
+                    <b>{sideTabStates.auction ? sideTabStates.auction.contract.split("_")[0] : "N/A"}</b>
+                    {sideTabStates.auction ? (
+                      sideTabStates.auction.contract.split("_")[1] == "NT" ? (
                         "NT"
                       ) : (
                         <img
                           src={
                             require(`./../../../assets/images/CardSuite/${
                               CardSuite[
-                                sideTabInfo.auction.contract.split(
+                                sideTabStates.auction.contract.split(
                                   "_"
                                 )[1] as keyof typeof CardSuite
                               ]
@@ -827,7 +1275,7 @@ const PlayingPage = (props: PlayingPageProps) => {
                     </PanelTop>
                     <tbody>
                       <CenteredText style={{ position: "relative", fontSize: "5vmin" }}>
-                        <b>{(game.connectDetail?.direction as number) % 2 == 0 ? sideTabInfo.tricks?.nsTricks : sideTabInfo.tricks?.ewTricks}</b>
+                        <b>{(game.connectDetail?.direction as number) % 2 == 0 ? sideTabStates.tricks?.nsTricks : sideTabStates.tricks?.ewTricks}</b>
                       </CenteredText>
                     </tbody>
                   </Panel>
@@ -839,7 +1287,8 @@ const PlayingPage = (props: PlayingPageProps) => {
                     </PanelTop>
                     <tbody>
                     <CenteredText style={{ position: "relative", fontSize: "5vmin" }}>
-                        <b>{(game.connectDetail?.direction as number) % 2 == 0 ? finishScore[0] : finishScore[1]}</b>
+                        {/* <b>{(game.connectDetail?.direction as number) % 2 == 0 ? finishScore[0] : finishScore[1]}</b> */}
+                        <b>{(game.connectDetail?.direction as number) % 2 == 0 ? playingStates.finishScores[0] : playingStates.finishScores[1]}</b>
                       </CenteredText>
                     </tbody>
                     </Panel>
