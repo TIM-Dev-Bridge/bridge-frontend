@@ -96,23 +96,6 @@ const LandingPage: React.FC =()=> {
                 </MenuList>
             )
         }
-        else if (profile.profile.access.toLowerCase() == 'td') {
-            return (
-                <MenuList>
-                    <ModePreviewContainer title="Online Plays" to="/lobby" state={{}} key="online-plays"/>
-                    <LocalModePreviewContainer 
-                        to="/lobby" 
-                        state={{}} 
-                        // onClick={()=> {
-                        // popup.setTourName('tour-f1')
-                        // popup.setDisplay(true)}} 
-                        title="Local Plays"
-                        key="local-plays"
-                        />
-                    <ModePreviewContainer title="Board" to="/board" state={{}} key="board" buttonTitle="Let's see" description="Let's see what's new today!"/>
-                </MenuList>
-            )
-        }
 
         else if (profile.profile.access.toLowerCase() == 'admin') {
             return (
@@ -120,7 +103,7 @@ const LandingPage: React.FC =()=> {
                     <ModePreviewContainer 
                         title="Announcement" 
                         description="Announce things, deliver important infomation to every user" 
-                        to="/board" 
+                        to="/admin-board" 
                         state={{}} 
                         key="board"
                         buttonTitle="Create"
@@ -133,14 +116,13 @@ const LandingPage: React.FC =()=> {
                         key="user"
                         buttonTitle="Manage"
                         />
-                    <ModePreviewContainer 
-                        title="Tournaments Management" 
-                        description="Manage tournament for both ongoing tournaments and Finished tournaments." 
-                        to="/tour-manage" 
+                    {/* <ModePreviewContainer 
+                        title="Back-Up Data" 
+                        description="Back-Up Data in current Database in Various from of Storages." 
                         state={{}} 
-                        key="tour"
-                        buttonTitle="Manage"
-                        />
+                        key="backup"
+                        buttonTitle="BackUp"
+                        /> */}
                 </MenuList>
             )
         }
