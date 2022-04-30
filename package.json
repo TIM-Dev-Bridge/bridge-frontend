@@ -1,5 +1,17 @@
 {
   "name": "cep-bridge",
+  "jest": {
+    "coveragePathIgnorePatterns": [
+        "/src/views/Play",
+        "/src/Service",
+        "src/components/Switch",
+        "src/views/Admin/components",
+        "src/views/Bidding/BiddingPage.tsx",
+        "src/views/Popup/useEditTour.ts",
+        "src/views/Lobby/Lobby.tsx",
+        "src/views/Bidding/UsePlaying.ts"
+    ]
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -31,6 +43,7 @@
     "antd": "^4.18.2",
     "axios": "^0.24.0",
     "framer-motion": "^4.1.17",
+    "jest-canvas-mock": "^2.4.0",
     "lodash": "^4.17.21",
     "lottie-react": "^2.2.1",
     "mock-socket": "^9.0.8",
@@ -43,15 +56,15 @@
     "socket.io": "^4.4.0",
     "socket.io-mock": "^1.3.2",
     "styled-components": "^5.3.3",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.14",
     "typescript": "^4.1.2",
     "uuid": "^8.3.2",
-    "web-vitals": "^1.0.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.14"
+    "web-vitals": "^1.0.1"
   },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test --coverage",
+    "test": "craco test --coverage --setupFiles=\"jest-canvas-mock\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

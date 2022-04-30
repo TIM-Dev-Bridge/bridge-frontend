@@ -56,20 +56,20 @@ describe('Lobby Chat Test', ()=> {
         expect(container).toHaveTextContent("Lobby Chat")
     })
 
-    test(`Sender and Receiver is same person don't show sender name`, async ()=> {
-        await act(async ()=> {
-            screen.debug()
-            window.localStorage.setItem('bridge-authen', JSON.stringify({token:'test-token', username: ''}))
+    // test(`Sender and Receiver is same person don't show sender name`, async ()=> {
+    //     await act(async ()=> {
+    //         screen.debug()
+    //         window.localStorage.setItem('bridge-authen', JSON.stringify({token:'test-token', username: ''}))
             
-            render(<Chat display={true} />)
-            socket.emit('send-lobby-chat','dummy-sender', 'hello2')
-            expect(await screen.findByText('hello2', {}, {timeout: 3000})).toBeInTheDocument()
-            socket.emit('send-lobby-chat','dummy-sender', 'hello3')
-            setTimeout(()=> {}, 500)
+    //         render(<Chat display={true} />)
+    //         socket.emit('send-lobby-chat','dummy-sender', 'hello2')
+    //         expect(await screen.findByText('hello2', {}, {timeout: 3000})).toBeInTheDocument()
+    //         socket.emit('send-lobby-chat','dummy-sender', 'hello3')
+    //         setTimeout(()=> {}, 500)
             
-        })
-        expect(await screen.findByText('hello3', {}, {timeout: 3000})).toBeInTheDocument()
-    })
+    //     })
+    //     expect(await screen.findByText('hello3', {}, {timeout: 3000})).toBeInTheDocument()
+    // })
 
     test(`Sender and Receiver is not same person`, async ()=> {
         await act(async ()=> {

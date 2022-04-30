@@ -21,7 +21,7 @@ describe('Tour Chat Test', ()=> {
     Element.prototype.scrollIntoView = jest.fn();
     beforeAll(() => { // Jest will wait until `done` is called
         httpServer.listen('4000', () => {
-            console.log('listening on 4000');
+            //console.log('listening on 4000');
             io.on('connection', (socket) => {
                 var tours = {
                     'mocked-tourname': {
@@ -57,7 +57,7 @@ describe('Tour Chat Test', ()=> {
                 socket.emit('message', 'sampleMessage');
                 
                 socket.on('send-tour-chat', (sender, tour_name, message)=> {
-                    // console.log("HE")
+                    // //console.log("HE")
                     const newMessage = {
                       sender: sender,
                       message: message
@@ -94,12 +94,12 @@ describe('Tour Chat Test', ()=> {
     
                 socket.on("join-tour", async (player_name, tour_name, callback) => {
                     //Response that player joined room
-                    // console.log(`username ${player_name} is join the ${tour_name} tour`);
+                    // //console.log(`username ${player_name} is join the ${tour_name} tour`);
                     //Add user to tour
                     try {
                       socket.join('mocked-tourname');
                 
-                    //   console.log(player_name, tours)
+                    //   //console.log(player_name, tours)
                 
                     //   if (tours[tour_name].player_name.length < tours[tour_name].max_player && users[player_name].tour == undefined) {
                     //     tours[tour_name].player_name.push({
@@ -116,15 +116,15 @@ describe('Tour Chat Test', ()=> {
                     //   }
                     } catch (error) {
                       callback(false)
-                    //   console.log("error");
-                    //   console.log(error);
+                    //   //console.log("error");
+                    //   //console.log(error);
                     }
                     //Send response to client
                     socket.emit("join-tour", `${player_name} connected Server`);
                   });
     
                   socket.on("create-tour", async (tour_data, callback) => {
-                    //   console.log("CALLBACK", )
+                    //   //console.log("CALLBACK", )
                       callback(true, "Room created");
                   });
             });

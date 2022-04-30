@@ -72,4 +72,32 @@ describe("Landing Page Test", ()=> {
         userEvent.click(screen.getByText('Create Post'))
         expect(window.location.pathname = "/admin-board")
     })
+
+    test("Correctly Link to Board when click Create Post", ()=> {
+        const defaultProfile = {
+            access: 'td',
+            birth_date: '',
+            display_name: '',
+            email: '',
+            first_name: '',
+            last_name: '',
+            password: '',
+        }
+
+        const MockedProfileProvider =(props)=> {
+            const [profile, updateProfile] = React.useState(defaultProfile)
+            React.useEffect(()=> {
+            }, [])
+            return (
+                <ProfileContext.Provider value={{profile, updateProfile}}>{props.children}</ProfileContext.Provider>
+            )
+        }
+        const { container } = render(
+            <MockedProfileProvider>
+                <LandingPage />
+            </MockedProfileProvider>
+        )
+        userEvent.click(screen.getByText('Create Post'))
+        expect(window.location.pathname = "/admin-board")
+    })
 })
