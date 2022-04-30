@@ -3,6 +3,7 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import LoginBG from './../../assets/images/login-bg.svg';
 import RegisterBG from './../../assets/images/register-bg.svg';
+import styled from 'styled-components';
 
 // window.HTMLElement.prototype.scrollIntoView = function() {};
 
@@ -26,26 +27,47 @@ const LoginPage: React.FC = ()=> {
     }
 
     const Container: React.FC<Props> =(props: Props)=> {
+        const Body = styled.div<{display: boolean, bg: string}>`
+            width: 100%;
+            height: 100%;
+            min-height: 720px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-image: ${props=>props.display ? "" : `url(${props.bg})`}
+        `
         return (
-            <div id={props.id} className="lg:w-1/2 h-full flex justify-center items-center" style={{backgroundImage: props.display ? "" : `url(${props.bg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center"}}>
+            <Body id={props.id} display={props.display} bg={props.bg}>
                 {props.children}
-            </div>
+            </Body>
+            /* <div id={props.id} className="lg:w-1/2 h-full flex justify-center items-center" style={{backgroundImage: props.display ? "" : `url(${props.bg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center" }}>
+                {props.children}
+            </div> */
         )
     }
+    
 
     React.useEffect(()=> {
         if (displayComponent == DisplayComponent.Login) {
-            var element = document.querySelector("#login-screen");
-            element?.scrollIntoView({ behavior: 'smooth', block: 'end'});
+            setTimeout(()=> {
+                var element = document.querySelector("#login-screen");
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start'});
+            }, 500)
         } 
         else {
-            var element = document.querySelector("#register-screen");
-            element?.scrollIntoView({ behavior: 'smooth', block: 'end'});
+            setTimeout(()=> {
+                var element = document.querySelector("#register-screen");
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start'});
+            }, 500)
+            
         }
     }, [displayComponent])
     
     return (
-        <div className="lg:flex flex-row w-screen h-screen overflow-hidden">
+        <div className="lg:flex flex-row w-screen h-full overflow-auto">
             <Container id="register-screen" display={displayComponent === DisplayComponent.Register}
                 bg={LoginBG}
                 >

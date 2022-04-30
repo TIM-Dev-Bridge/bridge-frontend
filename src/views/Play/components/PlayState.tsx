@@ -311,21 +311,22 @@ const PlayingPage = (props: PlayingPageProps) => {
         return {...state, playDirection: action.payload.playDirection, turn: action.payload.turn, currentSuite: action.payload.currentSuite}
       }
       case PlayingActionType.DEFAULT_TURN: {
-        state.playingDirection[action.payload.nextDirection].isTurn(true)
+        
         if (action.payload.prevDirection != playContext.playState.direction) {
           state.playingDirection[action.payload.prevDirection].dropCard(action.payload.card)
           state.playingDirection[action.payload.prevDirection].animate(true)
-          state.playingDirection[action.payload.prevDirection].isTurn(false)
           state.currentSuite = action.payload.currentSuite
         }
+        state.playingDirection[action.payload.prevDirection].isTurn(false)
+        state.playingDirection[action.payload.nextDirection].isTurn(true)
         // if (action.payload.isFourthPlay) state.isFourthPlay = true
         return {...state, playDirection: action.payload.nextDirection}
       }
       case PlayingActionType.INITIAL_PLAYING: {
         state.playingDirection[action.payload.playDirection].isTurn(true)
         state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
-        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
-        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +2) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +3) % 4].isTurn(false)
         return {...state,
           playDirection: action.payload.playDirection,
           turn: action.payload.turn,
@@ -339,8 +340,8 @@ const PlayingPage = (props: PlayingPageProps) => {
       case PlayingActionType.WAITING_FOR_BID: {
         state.playingDirection[action.payload.playDirection].isTurn(true)
         state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
-        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
-        state.playingDirection[(action.payload.playDirection +1) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +2) % 4].isTurn(false)
+        state.playingDirection[(action.payload.playDirection +3) % 4].isTurn(false)
         return {...state}
       }
       case PlayingActionType.RESET_ISTURN:{
@@ -659,7 +660,7 @@ const PlayingPage = (props: PlayingPageProps) => {
           if (data.payload.isFourthPlay) {
             console.log("ANIMATE COLLAPSE PLEASE")
             setIsFourthPlay(true)
-            setShouldAnimateCollapse(true)
+            // setShouldAnimateCollapse(true)
             playingDispatch({type: PlayingActionType.RESET_ISTURN})
           }
         

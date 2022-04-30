@@ -150,8 +150,10 @@ const Container = styled.div`
     -webkit-backdrop-filter: blur(24px);
     backdrop-filter: blur(24px);
     overflow: hidden;
-    min-width: 800px;
-    min-height: 400px;
+    width: 60vw;
+    height: 50vh;
+    /* min-width: 3em; */
+    /* min-height: 2em; */
 `
 
 const HeaderItem = styled.div`
@@ -172,7 +174,10 @@ const BidItem = styled.div`
     margin-right: 20px;
     box-shadow: var(--app-shadow);
     margin-bottom: 10px;
-    height: 50px;
+    margin: 0 auto;
+    /* height: 50px; */
+    width: 8vw;
+    height: 8vh;
 `
 
 export default BiddingPage;

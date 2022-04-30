@@ -508,8 +508,13 @@ const TrumpContainer = styled.div`
 `
 
 const Item = styled.div<{enabled: boolean}>`
-    width: 50px;
-    height: 40px;
+    width: 3vw;
+    min-height: 4vh;
+    /* max-width: 50px; */
+    max-height: 40px;
+    min-width: 30px;
+    /* min-height: 20px; */
+    /* aspect-ratio: 4 / 5; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -524,6 +529,7 @@ const NoTrump = styled(Item)`
     grid-column: 5 / span 3;
     width: 100%;
     height: 100%;
+    font-size: 0.3em;
 `
 
 const Pass = styled(Item)`
