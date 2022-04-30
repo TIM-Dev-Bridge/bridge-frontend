@@ -7,7 +7,9 @@ import TextField from '../../components/TextField/TextField'
 import { api } from '../../Service/ApiService';
 import { useProfile } from '../UserProfile/ProfileContext';
 import { EDITOR_JS_TOOLS } from "./Constant";
+import BackButton from "../../components/Button/BackButton";
 const editorJS = require('react-editor-js')
+
 
 const PostPage = () => {
     const profile = useProfile()
@@ -121,7 +123,12 @@ const PostPage = () => {
     }
 
     return (
-        <EditorContainer>
+        <>
+            <div style={{ position: "absolute", top: "61px", left: "5px" }}>
+                <BackButton display={false} />
+            </div>
+            <EditorContainer>
+            
             {
                 creator == authen.authen.username ? 
                 <p
@@ -151,6 +158,8 @@ const PostPage = () => {
             <div style={{ display: "flex", justifyContent: "end" }}>
             </div>
         </EditorContainer>
+        </>
+        
     )
 }
 

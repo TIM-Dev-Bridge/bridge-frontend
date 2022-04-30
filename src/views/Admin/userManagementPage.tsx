@@ -257,6 +257,7 @@ const UserManagement: React.FC = () => {
             pagination={{
               hideOnSinglePage: true,
               pageSize: 10,
+              showSizeChanger: false,
             }}
             // scroll={{ y: "70vh", scrollToFirstRowOnChange: true }}
             // scroll = {{x:"1200px"}}
