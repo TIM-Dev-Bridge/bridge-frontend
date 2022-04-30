@@ -26,11 +26,11 @@ const NavigationBar: React.FC = () => {
           </LogoContaniner>
           <MenuLinkItem>
             <NavigationLink path={""} state={{}}>
-              Rules
+              <a href="https://en.wikipedia.org/wiki/Contract_bridge" target="_blank">Rules</a>
             </NavigationLink>
           </MenuLinkItem>
           <MenuLinkItem>
-            <NavigationLink path={""} state={{}}>
+            <NavigationLink path={"/match-history"} state={{}}>
               Match History
             </NavigationLink>
           </MenuLinkItem>

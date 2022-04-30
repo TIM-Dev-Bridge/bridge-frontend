@@ -56,27 +56,28 @@ const LandingPage: React.FC =()=> {
         else if (profile.profile.access.toLowerCase() == 'td') {
             return (
                 <MenuList>
-                    <ModePreviewContainer 
+                    {/* <ModePreviewContainer 
                         title="Announcement" 
                         description="Announce things, deliver important infomation to every user" 
                         to="/board" 
                         state={{}} 
                         key="online-plays"
                         buttonTitle="Create"
-                        />
+                        /> */}
 
                     <ModePreviewContainer 
                         layoutId='create-tour-popup'
                         title="Tournament" 
-                        description="Manage tournament for  both ongoing tournaments and Finished tournaments." 
+                        description="Manage tournament for both ongoing tournaments and Finished tournaments." 
                         // to="/lobby" 
                         state={{}} 
                         key="tour"
-                        buttonTitle="Create"
+                        buttonTitle="Browse"
                         onClick={()=> {
-                            popup.setTourName('')
-                            popup.setMode("online")
-                            popup.setDisplay(true)
+                            // popup.setTourName('')
+                            // popup.setMode("online")
+                            // popup.setDisplay(true)
+                            navigate(navigateContent, '/lobby', {})
                         }} 
                         />
                     <ModePreviewContainer 

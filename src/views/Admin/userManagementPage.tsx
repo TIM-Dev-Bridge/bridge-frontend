@@ -204,7 +204,7 @@ const UserManagement: React.FC = () => {
       <GridContainer>
         <InnerContainer id="user-window">
           <div style={{ display: "flex", paddingTop: "20px" }}>
-            <div className="self-start pt-4 pb-4 pl-8">
+            <div className="self-start pt-4 pb-2 pl-8">
               <TitleText medium>User Management</TitleText>
             </div>
           </div>
@@ -268,7 +268,7 @@ const UserManagement: React.FC = () => {
         </InnerContainer>
         <RightSideBox>
           {/* <OnlineFriends display={false} tourName={''} /> */}
-          <Chat display={false} />
+          {/* <Chat display={false} /> */}
         </RightSideBox>
       </GridContainer>
     </CenterContainer>
@@ -307,9 +307,10 @@ const SearchBarContainer = styled.div`
   box-sizing: border-box;
   padding-right: 10px;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   justify-content: center;
   align-content: center;
+  max-width: 750px;
 `;
 
 const CenterContainer = styled.div`
@@ -328,7 +329,7 @@ const GridContainer = styled.div`
   /* position: absolute; */
   /* top: 5px; */
   gap: 10px;
-  grid-template-columns: 3fr 1fr;
+  /* grid-template-columns: 3fr 1fr; */
   height: 840px;
   width: 95%;
   min-height: 80vh;
@@ -349,8 +350,8 @@ const InnerContainer = styled(motion.div)`
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-right: 0.5px solid #e6e6e6;
-  padding-right: 1vw;
+  /* border-right: 0.5px solid #e6e6e6; */
+  /* padding-right: 1vw; */
   /* height: 720px; */
 `;
 const LobbyContainer = styled.div<{ hide: boolean }>`

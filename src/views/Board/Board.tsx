@@ -48,7 +48,7 @@ const BoardPage: FunctionComponent<{max?: number}> =({max = 8})=> {
 
     return (
         <Container>
-            { 
+            {/* { 
                 profile.profile.access.toLowerCase() == "td" ? 
                 <BoardToolBar>
                     <PrimarySqButton onClick={()=>{
@@ -58,7 +58,7 @@ const BoardPage: FunctionComponent<{max?: number}> =({max = 8})=> {
                     </PrimarySqButton>
                 </BoardToolBar> 
                 : <></>
-            }
+            } */}
             
                 
             <InnerContainer>

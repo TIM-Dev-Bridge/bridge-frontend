@@ -115,7 +115,7 @@ const Chat =(props: ChatProps)=> {
                 </ChatListOutContainer>
             </TitleAndChatContainer>
             <SendTextContainer onClick={()=>setSize(false)}> 
-                <TextFieldNoWarning autoComplete="off" onChange={handleOnChange} name="chat-input" onKeyUp={handleKeyDown}/>
+                <TextFieldNoWarning placeholder='your message' autoComplete="off" onChange={handleOnChange} name="chat-input" onKeyUp={handleKeyDown}/>
                 
                     <SendButton 
                         sendable={sendable}
@@ -207,7 +207,8 @@ const TitleContainer = styled.div`
 `
 
 const ChatListOutContainer = styled(motion.div)<{hide: boolean}>`
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
 `
 
 //

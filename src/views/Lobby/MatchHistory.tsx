@@ -16,8 +16,8 @@ import { useProfile } from '../UserProfile/ProfileContext'
 import { usePopup } from '../Popup/PopupContext'
 import { ChatChanelType, ChatUseCase } from '../../Chat/ChatUseCases'
 
-export const LobbyPage: React.FunctionComponent = () => {
-    const { socket, tourList, createTour, joinTour, getTourList, connect, updateChat, sendMessageToLobbyChat, getUpdatedTourList } = useLobby()
+export const MatchHistoryPage: React.FunctionComponent = () => {
+    const { socket, tourList, joinTour, getTourList, connect, updateChat, sendMessageToLobbyChat, getUpdatedTourList } = useLobby()
     const authenContext = useAuthen()
     const [windowSize, setWindowSize] = React.useState(500)
     const [displayTourRoom, setDisplayTourRoom] = React.useState(false)
@@ -82,15 +82,15 @@ export const LobbyPage: React.FunctionComponent = () => {
 
     return (
         <CenterContainer>
-            <BackButton display={displayTourRoom} />
-            <GridContainer>
+            <div style={{ position: "absolute", top: "61px", left: "5px" }}>
+                <BackButton display={false} />
+            </div>
+            <MainContainer>
                 <InnerContainer id="lobby-window">
                     <Stack>
-                        <LobbyContainer
-                            hide={!displayTourRoom}
-                        >
+                        <LobbyContainer hide={!displayTourRoom}>
                             <div className="flex">
-                                <div className="self-start pt-4 pb-4 pl-8"><TitleText medium>Available Match</TitleText></div>
+                                <div className="self-start pt-4 pb-4 pl-8"><TitleText medium>Finished Tournament</TitleText></div>
                             </div>
                             <Lobby tours={tourList} onJoinTourRoom={(tourName, success) => {
                                 if (success) {
@@ -100,13 +100,12 @@ export const LobbyPage: React.FunctionComponent = () => {
                                 }
                             }} />
                         </LobbyContainer>
-                        <TourRoomPage tourName={tourName} width={windowSize} display={displayTourRoom} onLeave={() => setDisplayTourRoom(false)} />
                     </Stack>
                     <JoinRoomContainer
                         display={displayTourRoom}
                     >
-                        <div className="h-8 flex" style={{width:"100%", paddingRight:"50%"}}>
-                            <TextFieldNoWarning placeholder='Tournament-ID'/>
+                        <TextFieldNoWarning />
+                        <div className="h-8 flex">
                             <SecondaryButton twstyle="h-8" onClick={() => {
                                 // createTour("testtest", (success, reason) => {
                                 //     console.log(success, reason)
@@ -115,11 +114,9 @@ export const LobbyPage: React.FunctionComponent = () => {
                                 //     }
                                 // })
                             }}>Join</SecondaryButton>
-                        </div>
-                        <div className="h-8 flex">
 
                             {
-                                profile.profile.access == "td" ?
+                                profile.profile.access == "user" ?
                                     <>
                                         <SecondaryButton twstyle="h-8"
                                             onClick={() => {
@@ -135,7 +132,7 @@ export const LobbyPage: React.FunctionComponent = () => {
                         </div>
                     </JoinRoomContainer>
                 </InnerContainer>
-                <RightSideBox>
+                {/* <RightSideBox>
                     <OnlineFriends display={displayTourRoom} tourName={tourName} />
                     <Chat display={displayTourRoom} />
                     <TourChat 
@@ -143,8 +140,8 @@ export const LobbyPage: React.FunctionComponent = () => {
                         tourName={tourName} 
                         sendMessageUseCase={new ChatUseCase(ChatChanelType.lobby).getSendMessageToLobbyUseCase(authenContext.authen.username)}
                         updateChatUseCase={new ChatUseCase(ChatChanelType.lobby).getUpdateMessageUseCase()}/>
-                </RightSideBox>
-            </GridContainer>
+                </RightSideBox> */}
+            </MainContainer>
         </CenterContainer>
     )
 }
@@ -162,117 +159,6 @@ const Lobby: React.FunctionComponent<LobbyProps> = (props: LobbyProps) => {
     React.useEffect(()=> {
         console.log("FIRST ", props.tours[0])
     }, [])
-
-    // const mockTours: LobbyListProps[] = [
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     },
-    //     {
-    //         host: "string",
-    //         title: "string",
-    //         type: "string",
-    //         players: "string",
-    //     }
-    // ]
 
     return (
         <LobbyList>
@@ -332,6 +218,7 @@ const LobbyListTr = (props: LobbyListProps) => {
                 <td>{props.type}</td>
                 <td>{props.players}</td>
                 <td>{props.status}</td>
+                <td>{props.host}</td>
             </tr>
         </tbody>
     )
@@ -350,12 +237,11 @@ const CenterContainer = styled.div`
 `
 
 
-const GridContainer = styled.div`
+const MainContainer = styled.div`
     display:grid;
-    position: absolute;
+    position: relative;
     top: 5px;
     gap: 10px;
-    grid-template-columns: 2fr 1fr;
     height: 95%;
     width: 95%;
     min-height: 720px;
