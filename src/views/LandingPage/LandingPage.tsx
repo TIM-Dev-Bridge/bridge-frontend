@@ -148,7 +148,7 @@ const LandingPage: React.FC =()=> {
 
 const Container = styled.div`
     min-height: calc(100vh - 56px);
-    overflow: scroll;
+    /* overflow: scroll; */
 `
 
 const MenuContainer = styled.div`

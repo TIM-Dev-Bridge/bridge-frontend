@@ -119,7 +119,7 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
             animate={props.animate}
             variants={props.variants}
             transition={{ duration: 0.05, type: "spring", stiffness: 100 }}>
-            <div className="flex flex-col mr-10 ml-10 -3xl overflow-scroll">
+            <div className="flex flex-col mr-10 ml-10 -3xl">
                 <div className="m-5 text-center">
                     <TitleText big>Register</TitleText>
                 </div>
@@ -201,7 +201,7 @@ const Container = styled(motion.div)<{visible: boolean}>`
     width: 75%;
     max-width: 512px;
     /* height: 80vh; */
-    overflow: scroll;
+    /* overflow: scroll; */
     position: relative;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
     border-radius: 15px;
