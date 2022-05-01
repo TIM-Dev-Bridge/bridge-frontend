@@ -130,10 +130,10 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
                 </div>
                 <TextField id="login-email" warningVisible={true} name={`${props.isDisplay ? "email" : "" }`} placeholder="Email" isValid={isValid["email"].isValid && errorResponse['email'].isValid} warningMessage={isValid["email"].message + errorResponse['email'].message} data-testid="login-email"/>
                 <TextField id="login-password" warningVisible={true} type="password" name={`${props.isDisplay ? "password" : "" }`} placeholder="Password" isValid={isValid["password"].isValid && errorResponse['password'].isValid} warningMessage={isValid["password"].message  + errorResponse['password'].message} data-testid="login-password"/>
-                <div className="flex flex-row justify-end items-center">
+                {/* <div className="flex flex-row justify-end items-center">
                     <input type="checkbox" className="mr-2"/>
                     <NormalText small>Remember me</NormalText>
-                </div>
+                </div> */}
                 <PrimaryButton onClick={()=> {
                     // console.log("VALUE :=> ",(document.getElementById('login-email') as HTMLInputElement).value)
                     handleSubmit((isValid,value)=> {
@@ -152,7 +152,7 @@ const LoginForm: React.FC<LoginFormProps> =(props: LoginFormProps)=> {
                     </PrimaryButton>
                 <div className="flex flex-row items-center justify-between">
                     <LinkText small onClick={props.onRegisterClick}>Don't have and accout?</LinkText>
-                    <LinkText small>Forgot password</LinkText>
+                    {/* <LinkText small>Forgot password</LinkText> */}
                 </div>
             </div>
         </Container>

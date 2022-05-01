@@ -166,7 +166,6 @@ import ViewPastMatch from "./ViewPastMatch";
         return (
             <Space size="middle">
                 <a onClick={()=>{handleView(record.title)}}>View Score</a>
-                {profile.profile.access == 'td' && authen.authen.username == record.host ? <a>Edit Score</a> : <></>}
             </Space>
         //   <Space size="middle">
         //     {record.access.toLowerCase() === "user" && (
