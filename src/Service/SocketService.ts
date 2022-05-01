@@ -2,8 +2,8 @@ import React from "react";
 import { io } from "socket.io-client";
 import { TourData } from "../views/Popup/TourRequest";
 // import { endpoint } from './ServiceConfig';
-const endpoint = "http://localhost:4000";
-// const endpoint = "http://124.121.99.244:4000";
+// const endpoint = "http://localhost:4000";
+const endpoint = "http://124.121.99.187:4000";
 
 // const endpoint = "wss://bridge-api-tim.herokuapp.com/"
 export var socket = io(endpoint, { transports: ["websocket"] });
@@ -175,6 +175,7 @@ export const useLobby = () => {
 
   const getUpdatedTourList = () => {
     socket.on("update-tour-list", (roomList) => {
+      console.log('roomList', roomList);
       updateTourList(roomList);
     });
   };
@@ -480,6 +481,7 @@ export const useScore = (userId: string, tourId: string) => {
     round_num: string;
     tables: RoundScore[];
   }
+
   // const [allScore, updateAllScore] = React.useState<RecapScore[]>([])
 
   const getCurrentMatchInfo = (
@@ -506,12 +508,38 @@ export const useScore = (userId: string, tourId: string) => {
   };
 
   const getAllScore = (callback: (recapScore: RecapScoreOBJ[]) => void) => {
-    socket.emit("get-all-score", tourId);
-    socket.on("score", (recapScore) => {
+    socket.emit("getAllScore", tourId);
+    socket.on("getAllScore", (recapScore) => {
+      console.log('recapScore', recapScore)
       // updateAllScore(recapScore)
       callback(recapScore);
     });
   };
+
+  interface newScore {
+    pair_id: number;
+    name1: string;
+    name2: string;
+    direction: number;
+    score: number;
+  }
+
+  interface FinishedScoreOBJ {
+    board_num: number;
+    newScore: newScore[];
+  }
+
+  const getScoreFinishedTour = (callback: (finishedScore: FinishedScoreOBJ[]) => void) => {
+    socket.emit("getPastScore", tourId);
+    socket.on("getPastScore", (finishedScore) => {
+      // console.log('finishedScore', finishedScore)
+      callback(finishedScore)
+    })
+  }
+
+  const updateFinishedScore = (tourId: string, board_num: number, pair_id:number, typeScore:'boardScores', key:'score', value:number) =>{
+    socket.emit("TdEditScore", tourId, board_num,pair_id,typeScore,key,value)
+  }
   // const updateTourChat =(callback: (message: ChatObj)=>void)=> {
   //     socket.on('update-tour-chat', (message: ChatObj)=> {
   //         //console.log("Get message from ", message)
@@ -580,6 +608,8 @@ export const useScore = (userId: string, tourId: string) => {
     getCurrentMatchInfo,
     getBoardType,
     getLeaderboard,
+    getScoreFinishedTour,
+    updateFinishedScore,
   };
 };
 

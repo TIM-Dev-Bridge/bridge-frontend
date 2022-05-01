@@ -9,6 +9,7 @@ import { useAuthen } from "../../Authen";
 import { useHistory, useManage } from "../../Service/SocketService";
 import { PrimaryButton } from "../../components/Button/Button";
 import { useProfile } from "../UserProfile/ProfileContext";
+import ViewPastMatch from "./ViewPastMatch";
 // import "./adminTable.css";
 // import 'antd/dist/antd.css';
 
@@ -30,6 +31,7 @@ import { useProfile } from "../UserProfile/ProfileContext";
   const [filteredData, setFilteredData] = React.useState<Tour[]>(data);
   const [searchMode, setSearchMode] = React.useState<string>("Host");
   const [nameSearch, setNameSearch] = React.useState<string>("");
+  const [viewingTour, setViewingTour] = React.useState("");
 
   React.useEffect(() => {
     getFinishedTourList((tourList) => {
@@ -65,6 +67,10 @@ import { useProfile } from "../UserProfile/ProfileContext";
     setFilteredData(data)
     isCheck? setSearchMode("Tourname") : setSearchMode("Host")
   };
+
+  const handleView = (tourId: string) => {
+    setViewingTour(tourId)
+  }
 
 //   const updateRole = (username:string, role:string) => {
 //     const index = data.findIndex((e) => e.username === username)
@@ -159,7 +165,7 @@ import { useProfile } from "../UserProfile/ProfileContext";
       render: (_: any, record: Tour) => {
         return (
             <Space size="middle">
-                <a>View Score</a>
+                <a onClick={()=>{handleView(record.title)}}>View Score</a>
                 {profile.profile.access == 'td' && authen.authen.username == record.host ? <a>Edit Score</a> : <></>}
             </Space>
         //   <Space size="middle">
@@ -208,6 +214,10 @@ import { useProfile } from "../UserProfile/ProfileContext";
   ];
 
   return (
+    <>
+    <PopupContainer>
+        <ViewPastMatch tourId={viewingTour} setViewingTour={setViewingTour}/>
+    </PopupContainer>
     <CenterContainer className="admintable" id="admintable">
       <div style={{ position: "absolute", top: "61px", left: "5px" }}>
         <BackButton display={false} />
@@ -272,7 +282,7 @@ import { useProfile } from "../UserProfile/ProfileContext";
             className="userManage"
             pagination={{
               hideOnSinglePage: true,
-              pageSize: 10,
+              pageSize: 8,
               showSizeChanger: false,
             }}
             // scroll={{ y: "70vh", scrollToFirstRowOnChange: true }}
@@ -282,12 +292,13 @@ import { useProfile } from "../UserProfile/ProfileContext";
           />
           {/* <Stack></Stack> */}
         </InnerContainer>
-        <RightSideBox>
+        {/* <RightSideBox> */}
           {/* <OnlineFriends display={false} tourName={''} /> */}
           {/* <Chat display={false} /> */}
-        </RightSideBox>
+        {/* </RightSideBox> */}
       </GridContainer>
     </CenterContainer>
+    </>
   );
 };
 
@@ -348,7 +359,7 @@ const CenterContainer = styled.div`
   align-items: center;
   align-content: center;
   display: flex;
-  min-height: calc(100% - 56px);
+  min-height: calc(100 - 56px);
   overflow: scroll;
 `;
 
@@ -382,81 +393,81 @@ const InnerContainer = styled(motion.div)`
   /* padding-right: 1vw; */
   /* height: 720px; */
 `;
-const LobbyContainer = styled.div<{ hide: boolean }>`
-  height: 100%;
-  width: 100%;
-  ${(props) =>
-    props.hide &&
-    css`
-      transform: translateX(0px);
-      --webkit-transform: translateX(0px);
-      opacity: 1;
-      transition: transform 0.3s, opacity 0.1s;
-      --webkit-transition: transform 0.3s, opacity 0.1s;
-    `}
-  ${(props) =>
-    !props.hide &&
-    css`
-      transform: translateX(-50px);
-      --webkit-transform: translateX(-50px);
-      opacity: 0;
-      transition: transform 0.3s, opacity 0.1s;
-      --webkit-transition: transform 0.3s, opacity 0.1s;
-    `}
-`;
+// const LobbyContainer = styled.div<{ hide: boolean }>`
+//   height: 100%;
+//   width: 100%;
+//   ${(props) =>
+//     props.hide &&
+//     css`
+//       transform: translateX(0px);
+//       --webkit-transform: translateX(0px);
+//       opacity: 1;
+//       transition: transform 0.3s, opacity 0.1s;
+//       --webkit-transition: transform 0.3s, opacity 0.1s;
+//     `}
+//   ${(props) =>
+//     !props.hide &&
+//     css`
+//       transform: translateX(-50px);
+//       --webkit-transform: translateX(-50px);
+//       opacity: 0;
+//       transition: transform 0.3s, opacity 0.1s;
+//       --webkit-transition: transform 0.3s, opacity 0.1s;
+//     `}
+// `;
 
-const LobbyList = styled.div`
-  /* grid-column: 1; */
-  height: 100%;
-  width: 100%;
-`;
+// const LobbyList = styled.div`
+//   /* grid-column: 1; */
+//   height: 100%;
+//   width: 100%;
+// `;
 
-const JoinRoomContainer = styled(motion.div)<{ display: boolean }>`
-  position: absolute;
-  bottom: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-  gap: 15px;
-  width: 100%;
-  padding-right: 15px;
-  height: 48px;
-  background-color: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(24px);
-  --webkit-backdrop-filter: blur(24px);
-  transform: translateY(${(props) => (props.display ? "50px" : "0px")});
-  --webkit-transform: translateY(
-    ${(props) => (props.display ? "50px" : "0px")}
-  );
-  transition: transform 0.2s;
-  --webkit-transition: transform 0.2s;
-`;
+// const JoinRoomContainer = styled(motion.div)<{ display: boolean }>`
+//   position: absolute;
+//   bottom: 0;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: center;
+//   align-content: center;
+//   align-items: center;
+//   gap: 15px;
+//   width: 100%;
+//   padding-right: 15px;
+//   height: 48px;
+//   background-color: rgba(255, 255, 255, 0.6);
+//   backdrop-filter: blur(24px);
+//   --webkit-backdrop-filter: blur(24px);
+//   transform: translateY(${(props) => (props.display ? "50px" : "0px")});
+//   --webkit-transform: translateY(
+//     ${(props) => (props.display ? "50px" : "0px")}
+//   );
+//   transition: transform 0.2s;
+//   --webkit-transition: transform 0.2s;
+// `;
 
-const JoinRoomContainerVariants = {
-  show: { y: 0 },
-  hide: { y: 48 },
-};
+// const JoinRoomContainerVariants = {
+//   show: { y: 0 },
+//   hide: { y: 48 },
+// };
 
-const RightSideBox = styled.div`
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-`;
+// const RightSideBox = styled.div`
+//   position: relative;
+//   height: 100%;
+//   overflow: hidden;
+// `;
 
-const Stack = styled.div`
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  display: flex;
-`;
+// const Stack = styled.div`
+//   position: relative;
+//   overflow: hidden;
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+// `;
 
-const LobbyVariants = {
-  hide: { x: -50, opacity: 0 },
-  show: { x: 0, opacity: 1 },
-};
+// const LobbyVariants = {
+//   hide: { x: -50, opacity: 0 },
+//   show: { x: 0, opacity: 1 },
+// };
 
 const Input = styled.input`
   border-width: 2px;
@@ -471,5 +482,17 @@ const Input = styled.input`
   /* margin-top: 4px; */
   /* margin-bottom: 12px; */
 `;
+
+const PopupContainer = styled.div`
+  width: 100vw;
+  height: calc(100%-56px);
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 100;
+`;
+
 
 export default MatchHistoryPage;

@@ -40,7 +40,7 @@ export const LobbyPage: React.FunctionComponent = () => {
         getTourList()
         // let tourName = window.history.state.
         console.log("QUERY", window.location.search)
-
+        connect(authenContext.authen.token, authenContext.authen.username)
         if (window.location.search.includes('?')) {
             let tourName = window.location.search.replace("?","")
             console.log("TOURNAME", tourName)
