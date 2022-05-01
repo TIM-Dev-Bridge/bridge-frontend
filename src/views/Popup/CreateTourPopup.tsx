@@ -37,6 +37,7 @@ const CreateTourPopup =(props: DialogProps)=> {
     const [key, setKey] = React.useState(uuidv4())
     const [displayFailed, setDisplayFailed] = React.useState(false)
     const [displaySuccess, setDisplaySuccess] = React.useState(false)
+    const [successKeyword, setSuccessKeyword] = React.useState<"Update Successfully!" | "Tour Created!">("Update Successfully!")
 
     React.useEffect(()=> {
         if (props.isVisible) {
@@ -288,7 +289,8 @@ const CreateTourPopup =(props: DialogProps)=> {
                                                     // console.log(success, reason)
                                                     if (success) {
                                                         // console.log(success, reason)
-                                                        props.onDismiss()
+                                                        setDisplaySuccess(true)
+                                                        setSuccessKeyword("Tour Created!")
                                                     }
                                                 })
                                             }
@@ -344,6 +346,7 @@ const CreateTourPopup =(props: DialogProps)=> {
                                                 
                                                 if (isFinish) {
                                                     setDisplaySuccess(true)
+                                                    setSuccessKeyword("Update Successfully!")
                                                     // props.onDismiss()
                                                 }
                                                 else {
@@ -375,7 +378,7 @@ const CreateTourPopup =(props: DialogProps)=> {
                 <Popup display={displaySuccess}>
                     <PopupContent>
                         <Lottie animationData={successAnimation} style={{width: "100px", height: "100px", alignSelf: "center"}} loop />
-                        <TitleText>Update successfully!</TitleText>
+                        <TitleText>{successKeyword}</TitleText>
                     </PopupContent>
                 </Popup>
             </Container>
