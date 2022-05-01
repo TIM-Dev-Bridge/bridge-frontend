@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Table, Input, Form } from "antd";
+import { Table, Form, InputRef, Input } from "antd";
 import { FormInstance } from "antd/lib/form";
 import { useAuthen } from "../../Authen";
 import { useScore } from "../../Service/SocketService";
@@ -87,7 +87,7 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
     ...restProps
   }) => {
     const [editing, setEditing] = React.useState(false);
-    const inputRef = React.useRef<Input>(null);
+    const inputRef = React.useRef<InputRef>(null);
     const form = React.useContext(EditableContext)!;
 
     React.useEffect(() => {
