@@ -136,7 +136,7 @@ const UserManagement: React.FC = () => {
       title: "Status",
       dataIndex: "access",
       key: "access",
-      width: "20",
+      width: "20%",
       render: (access: string) => {
         return (
           <Tag color={tagColor[access.toLowerCase()]} key={access}>

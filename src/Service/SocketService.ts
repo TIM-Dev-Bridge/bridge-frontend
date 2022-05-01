@@ -626,3 +626,34 @@ export const useManage = (admin: string) => {
 
   return { getUserList, promoteToTD, demoteFromTD, banUser, enableUser };
 };
+
+export const useHistory = () => {
+  interface FinishedTour {
+    host: string,
+    title: string,
+    type: string,
+    players: string,
+    mode: string,
+    status: string
+  }
+
+  const getFinishedTourList = (callback: (tourList: FinishedTour[]) => void) => {
+    socket.emit("getAllFinishedTour");
+    socket.on("getAllFinishedTour", (tourList) => {
+      const tours = tourList.map((tour: any) => {
+        return {
+          host: tour.host,
+          title: tour.title,
+          type: tour.type,
+          players: tour.players,
+          mode: tour.mode,
+          status: tour.status,
+        };
+      });
+      callback(tours);
+    });
+  };
+
+  return { getFinishedTourList };
+
+}

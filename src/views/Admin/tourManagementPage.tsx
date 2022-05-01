@@ -163,7 +163,7 @@ const SearchBar = () => {
         Search
       </div>
       <TextField />
-      <Switch onCheck={(isCheck) => console.log(isCheck)} />
+      {/* <Switch onCheck={(isCheck) => console.log(isCheck)} /> */}
     </SearchBarContainer>
   );
 };

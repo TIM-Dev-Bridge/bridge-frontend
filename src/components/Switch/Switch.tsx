@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import {ForwardRefComponent, HTMLMotionProps, motion, MotionProps, PanInfo} from 'framer-motion'
 
 interface SwitchProps {
+    primary?: string,
+    secondary?: string,
     onCheck: (isCheck: boolean)=>void
 }
 
@@ -44,10 +46,10 @@ const Switch =(props: SwitchProps)=> {
 
     return (
         <SwitchContainer onClick={()=> setIsOn(!isOn)} ref={constraintRef}>
-            <Item>Active</Item>
-            <Item>Ban</Item>
+            <Item>{props.primary? props.primary : 'Active'}</Item>
+            <Item>{props.secondary? props.secondary : 'Ban'}</Item>
             <SliderSwitch
-                text={isOn ? 'Ban' : 'Active'}
+                text={isOn ? props.secondary? props.secondary : 'Ban' : props.primary? props.primary : 'Active'}
                 variants={variants} 
                 initial={isOn ? "on" : "off"} 
                 animate={isOn ? "on" : "off"} 
