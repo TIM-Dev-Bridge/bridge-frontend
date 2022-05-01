@@ -17,6 +17,7 @@ import Lottie from 'lottie-react';
 import loadingAnimation from '../../assets/Animate/loading.json'
 import failedAnimation from '../../assets/Animate/fail.json'
 import successAnimation from '../../assets/Animate/success.json'
+import { navigate, useNavigator } from '../../components/Router/Router';
 
 
 interface DialogProps  {
@@ -30,6 +31,7 @@ interface DialogProps  {
 }
 
 const CreateTourPopup =(props: DialogProps)=> {
+    const navigateContent = useNavigator()
     const [responseValid, updateResponseValid] = React.useState(true)
     const [responseMessage, updateResponseMessage] = React.useState('')
     const { createTour } = useLobby()
@@ -38,6 +40,7 @@ const CreateTourPopup =(props: DialogProps)=> {
     const [displayFailed, setDisplayFailed] = React.useState(false)
     const [displaySuccess, setDisplaySuccess] = React.useState(false)
     const [successKeyword, setSuccessKeyword] = React.useState<"Update Successfully!" | "Tour Created!">("Update Successfully!")
+    const [offlineTname, setOfflineTname] = React.useState("")
 
     React.useEffect(()=> {
         if (props.isVisible) {
@@ -61,6 +64,7 @@ const CreateTourPopup =(props: DialogProps)=> {
             setTimeout(()=> {
                 setDisplaySuccess(false)
                 props.onDismiss()
+                if (props.mode == 'local')  navigate(navigateContent, '/lobby', {}, offlineTname)
             }, 1500)
         }
     }, [displaySuccess])
@@ -289,8 +293,10 @@ const CreateTourPopup =(props: DialogProps)=> {
                                                     // console.log(success, reason)
                                                     if (success) {
                                                         // console.log(success, reason)
+                                                        let data = value as any
                                                         setDisplaySuccess(true)
                                                         setSuccessKeyword("Tour Created!")
+                                                        setOfflineTname(data.title)
                                                     }
                                                 })
                                             }

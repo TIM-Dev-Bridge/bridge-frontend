@@ -168,13 +168,13 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                             }}>Start</PrimarySqButton>
                         </ButtonContainer> */}
                         {
-                            // (profile.profile.access == "td" ) ? 
+                            (profile.profile.access == "td" ) ? 
                             <ButtonContainer>
                                 <PrimarySqButton onClick={() => {
                                     startTour()
                                 }}>Start</PrimarySqButton>
                             </ButtonContainer> 
-                            // <></>
+                            : <></>
                         }
                         </div>
                     </div>
@@ -202,13 +202,14 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                             }/>
                     }
                     <JoinRoomContainer>
-                        <TextFieldNoWarning />
-                        <div className="h-8 flex">
+                        <div className="h-8 flex" style={{width:"100%", paddingRight:"50%"}}>
+                            <TextFieldNoWarning />
                             <SecondaryButton twstyle="h-8" onClick={() => {
-                                
                             }}>COPY</SecondaryButton>
+                        </div>
+                        <div className="h-8 flex">
                             {
-                                // (profile.profile.access == "td" && authenContext.authen.username == creator) ? 
+                                (profile.profile.access == "td") ? 
                                 <>
                                 <SecondaryButton twstyle="h-8" 
                                     onClick={() => {
@@ -225,8 +226,8 @@ export const TourRoomPage: React.FunctionComponent<TourRoomProps> = (props: Tour
                                     props.onLeave?.()
                                 }}>Delete Tour</PrimaryButton>
                                 </>
-                                // : 
-                                // <></>
+                                : 
+                                <></>
                             }
                             
                         </div>
