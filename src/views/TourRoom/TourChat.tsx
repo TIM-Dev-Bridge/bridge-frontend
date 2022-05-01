@@ -21,7 +21,7 @@ interface ChatProps {
 const TourChat =(props: ChatProps)=> {
     const [messages, updatemessage] = React.useState<{sender: string, message: string}[]>([])
     const {socket } = useLobby()
-    // const { updateTourChat, sendMessageToTourChat } = useRoom(props.tourName)
+    const { updateTourChat, sendMessageToTourChat } = useRoom(props.tourName ?? "")
     const authContext = useAuthen()
     const sendMessageUseCase = props.sendMessageUseCase
     const updateMessageUseCase = props.updateChatUseCase
@@ -47,15 +47,16 @@ const TourChat =(props: ChatProps)=> {
     }
 
     const updateSessionChat = React.useCallback(()=> {
-        updateMessageUseCase.execute((message)=> {
+        console.log("UPDATE TOUR CHAT")
+        props.updateChatUseCase.execute((message)=> {
             if (!mountedRef.current) return null    
-            //console.log("udpate callback", message)
-            const newMessage = [...messageRef.current, message]
-            updatemessage(newMessage)
+            console.log("udpate callback", message)
+            // const newMessage = [, message]
+            updatemessage(prev => [...prev, message])
             var objDiv = document.getElementById(`tour-chat-bottom`)!;
             objDiv.scrollIntoView({ behavior: 'smooth', block: 'end'})
         })
-    },[messages])
+    },[])
 
     React.useEffect(()=> {
         messageRef.current = messages
@@ -82,12 +83,12 @@ const TourChat =(props: ChatProps)=> {
             sender: authContext.authen.username,
             message: message
         }
-        //console.log("SEND MESSAGE TO : ", messageToSend)
+        // console.log("SEND MESSAGE TO : ", messageToSend)
         if (message.length > 0) {
             (document.querySelector(`input[name='tour-chat-input'`)as HTMLInputElement).value = ""
-            //console.log(":=> send message to lobby >>>", message)
-            sendMessageUseCase.execute(messageToSend.message)
-            // sendMessageToTourChat(messageToSend.sender, props.tourName, messageToSend.message)
+            console.log(":=> send message to lobby >>>", messageToSend.message, props.sendMessageUseCase)
+            props.sendMessageUseCase.execute(messageToSend.message)
+            // sendMessageToTourChat(messageToSend.sender, props.tourName ?? "", messageToSend.message)
         }
     }
 

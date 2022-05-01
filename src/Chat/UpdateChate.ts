@@ -13,6 +13,7 @@ class UpdateChatUseCase implements UpdateChatProtocol {
     command: string
     execute(callback: (message: ChatObj) => void): void {
         socket.on(this.command, (message: ChatObj)=> {
+            console.log("CHAT USE CASE", this.command)
             callback(message)
         })
     }

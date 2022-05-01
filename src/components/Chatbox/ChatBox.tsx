@@ -6,9 +6,13 @@ import { useAuthen } from '../../Authen'
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 import {IoMdSend} from 'react-icons/io'
+import { SendChatUseCaseProtocol } from '../../Chat/SendChat'
+import UpdateChatUseCase from '../../Chat/UpdateChate'
 
 interface ChatProps {
     display: boolean   
+    sendMessageUseCase: SendChatUseCaseProtocol
+    updateChatUseCase: UpdateChatUseCase
 }
 
 const Chat =(props: ChatProps)=> {
@@ -36,20 +40,25 @@ const Chat =(props: ChatProps)=> {
     }
 
     const updateSessionChat = React.useCallback(()=> {
-        //console.log("udpate callback")
-        
-        updateChat((message)=> {
-            if (!mountedRef.current) return null 
-            const newMessage = [...messageRef.current, message]
-            updatemessage(newMessage)
-            var objDiv = document.getElementById(`chat-bottom`)!;
+        props.updateChatUseCase.execute((message)=> {
+            // if (!mountedRef.current) return null    
+            console.log("udpate callback", message)
+            // const newMessage = [...messageRef.current, message]
+            updatemessage(prev => [...prev, message])
+            var objDiv = document.getElementById(`tour-chat-bottom`)!;
             objDiv.scrollIntoView({ behavior: 'smooth', block: 'end'})
         })
-    },[messages])
+    },[])
+
+    // React.useEffect(()=> {
+    //     messageRef.current = messages
+    // },[messages])
 
     React.useEffect(()=> {
-        messageRef.current = messages
-    },[messages])
+        if (!props.display) {
+            updatemessage([])
+        }
+    }, [props.display])
 
     React.useEffect(() => {
         return () => { 
@@ -75,7 +84,7 @@ const Chat =(props: ChatProps)=> {
 
     React.useEffect(()=> {
         updateSessionChat()
-    }, [socket])
+    }, [])
 
     return (
         <ChatContainer hide={props.display}>

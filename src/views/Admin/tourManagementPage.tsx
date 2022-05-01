@@ -10,6 +10,7 @@ import Chat from "../../components/Chatbox/ChatBox";
 import { Table, Tag, Button, Popconfirm, Space } from "antd";
 import { FormInstance } from "antd/lib/form";
 import './adminTable.css';
+import { ChatChanelType, ChatUseCase } from "../../Chat/ChatUseCases";
 // import 'antd/dist/antd.css';
 
 const TourManagement = () => {
@@ -147,7 +148,7 @@ const TourManagement = () => {
         </InnerContainer>
         <RightSideBox>
           {/* <OnlineFriends display={false} tourName={''} /> */}
-          <Chat display={false} />
+          <Chat display={false} sendMessageUseCase={new ChatUseCase(ChatChanelType.lobby).getSendMessageToLobbyUseCase('')} updateChatUseCase={new ChatUseCase(ChatChanelType.lobby).getUpdateMessageUseCase()} />
         </RightSideBox>
       </GridContainer>
     </CenterContainer>

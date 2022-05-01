@@ -25,6 +25,7 @@ export const LobbyPage: React.FunctionComponent = () => {
     const [tourName, setTourName] = React.useState('');
     const profile = useProfile()
     const popup = usePopup()
+    const sendMessageUseCase = new ChatUseCase(ChatChanelType.tour).getSendMessageUseCase(authenContext.authen.username,tourName)
     var resizeTimer: NodeJS.Timeout;
 
     React.useEffect(() => {
@@ -137,12 +138,14 @@ export const LobbyPage: React.FunctionComponent = () => {
                 </InnerContainer>
                 <RightSideBox>
                     <OnlineFriends display={displayTourRoom} tourName={tourName} />
-                    <Chat display={displayTourRoom} />
+                    <Chat display={displayTourRoom} 
+                        sendMessageUseCase={new ChatUseCase(ChatChanelType.lobby).getSendMessageToLobbyUseCase(authenContext.authen.username)}
+                        updateChatUseCase={new ChatUseCase(ChatChanelType.lobby).getUpdateMessageUseCase()}/>
                     <TourChat 
                         display={!displayTourRoom} 
                         tourName={tourName} 
-                        sendMessageUseCase={new ChatUseCase(ChatChanelType.lobby).getSendMessageToLobbyUseCase(authenContext.authen.username)}
-                        updateChatUseCase={new ChatUseCase(ChatChanelType.lobby).getUpdateMessageUseCase()}/>
+                        sendMessageUseCase={sendMessageUseCase}
+                        updateChatUseCase={new ChatUseCase(ChatChanelType.tour).getUpdateMessageUseCase()}/>
                 </RightSideBox>
             </GridContainer>
         </CenterContainer>
