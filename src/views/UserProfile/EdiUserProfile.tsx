@@ -13,21 +13,20 @@ import loadingAnimation  from '../../assets/Animate/loading_blue.json'
 import Lottie from 'lottie-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { LoadingState } from '../Login/components/useLoading'
-
+import successAnimation from '../../assets/Animate/success.json'
+import failedAnimation from '../../assets/Animate/fail.json'
+import { api } from '../../Service/ApiService'
 
 const EditUserProfile =()=> {
     const authen = useAuthen()
     const [defaultData, updateData] = React.useState<any>()
     const profile = useProfile()
     const [loadingState, setLoadingState] = React.useState(LoadingState.LOADING)
-    
+    const [displaySuccess, setDisplaySuccess] = React.useState(false)
+    const [displayFailed, setDisplayFailed] = React.useState(false)
 
     React.useEffect(()=> {
-        axios.get('https://bridge-api-tim.herokuapp.com/getUserData', {
-            params: {
-                username: authen.authen.username
-            }
-        }).then( respone => {
+        api.getUserData(authen.authen.username).then( respone => {
             // console.log(respone)
             const newData = {
                 username: respone.data.username,
@@ -40,6 +39,10 @@ const EditUserProfile =()=> {
             
             updateData(newData)
             setLoadingState(LoadingState.SUCCESS)
+            
+        })
+        .catch( error => {
+            
         })
         // const newData = {
         //     username: profile.profile.display_name,
@@ -63,14 +66,32 @@ const EditUserProfile =()=> {
         }
         updateData(newData)
         // console.log(newData)
-        axios.post('https://bridge-api-tim.herokuapp.com/updateUserData', newData)
+        api.updateUserData(newData)
             .then( response => {
-                // console.log(response)
+                console.log(response)
+                setDisplaySuccess(true)
             })
             .catch((error)=> {
-                // console.log(error)
+                console.log(error)
+                setDisplayFailed(true)
             })
     }
+
+    React.useEffect(()=> {
+        if (displayFailed) {
+            setTimeout(()=> {
+                setDisplayFailed(false)
+            }, 1500)
+        }
+    }, [displayFailed])
+
+    React.useEffect(()=> {
+        if (displaySuccess) {
+            setTimeout(()=> {
+                setDisplaySuccess(false)
+            }, 1500)
+        }
+    }, [displaySuccess])
     
     const postUpdateUser =()=> {
         // console.log(defaultData)
@@ -178,7 +199,7 @@ const EditUserProfile =()=> {
                     </div>
                 </div>
             </InnerContainer>
-            <AnimatePresence>
+            {/* <AnimatePresence>
                 {loadingState == LoadingState.LOADING && (
                     <LoadingSpinner 
                         initial={{opacity: 1}}
@@ -188,11 +209,49 @@ const EditUserProfile =()=> {
                     </LoadingSpinner>)
                 }
             
-            </AnimatePresence>
+            </AnimatePresence> */}
+            <Popup display={loadingState == LoadingState.LOADING}>
+                <PopupContent>
+                    <Lottie animationData={loadingAnimation} style={{width: "300px", height: "300px", alignSelf: "center"}} loop />
+                </PopupContent>
+            </Popup>
+            <Popup display={displayFailed}>
+                <PopupContent>
+                    <Lottie animationData={failedAnimation} style={{width: "300px", height: "300px", alignSelf: "center"}} loop />
+                    <TitleText>Update failed try again later</TitleText>
+                </PopupContent>
+            </Popup>
+            <Popup display={displaySuccess}>
+                <PopupContent>
+                    <Lottie animationData={successAnimation} style={{width: "300px", height: "300px", alignSelf: "center"}} loop />
+                    <TitleText>Update successfully!</TitleText>
+                </PopupContent>
+            </Popup>
             
         </Container>
     )
 }
+
+const Popup = styled.div<{display: boolean}>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(248,248,248, 0.9);
+    opacity: ${props=>props.display ? "1" : "0"};
+    visibility: ${props=>props.display ? "visible" : "hidden"};
+    transition: all 0.2s ease-in-out;
+`
+
+const PopupContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 40%;
+`
 
 const Container = styled.div`
     width: 80%;
@@ -201,6 +260,7 @@ const Container = styled.div`
     max-width: 560px; */
     min-width: 480px;
     display: flex;
+    position: relative;
     flex-direction: column;
     box-shadow: var(--app-shadow);
     min-height: calc(100vh - 56px);

@@ -45,7 +45,7 @@ const Hand =(props: HandProps)=> {
     }, [props.enabled])
 
     const animateCondition =(val: number, index: number)=> {
-        if (val > 0) {
+        if (val >= 0) {
             return props.placeCard && val == props.cardToFind
         }
         return props.placeCard && index == 0

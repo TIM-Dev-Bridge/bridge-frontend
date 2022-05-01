@@ -13,6 +13,11 @@ import { validator } from '../Login/components/Validate';
 import useEditTour from './useEditTour';
 import { v4 as uuidv4 } from 'uuid'
 import { TourData } from './TourRequest';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../assets/Animate/loading.json'
+import failedAnimation from '../../assets/Animate/fail.json'
+import successAnimation from '../../assets/Animate/success.json'
+
 
 interface DialogProps  {
     isVisible: boolean
@@ -30,6 +35,8 @@ const CreateTourPopup =(props: DialogProps)=> {
     const { createTour } = useLobby()
     const authen = useAuthen()
     const [key, setKey] = React.useState(uuidv4())
+    const [displayFailed, setDisplayFailed] = React.useState(false)
+    const [displaySuccess, setDisplaySuccess] = React.useState(false)
 
     React.useEffect(()=> {
         if (props.isVisible) {
@@ -39,6 +46,23 @@ const CreateTourPopup =(props: DialogProps)=> {
             document.body.style.overflow = 'unset';
         }
     }, [props.isVisible])
+
+    React.useEffect(()=> {
+        if (displayFailed) {
+            setTimeout(()=> {
+                setDisplayFailed(false)
+            }, 1500)
+        }
+    }, [displayFailed])
+
+    React.useEffect(()=> {
+        if (displaySuccess) {
+            setTimeout(()=> {
+                setDisplaySuccess(false)
+                props.onDismiss()
+            }, 1500)
+        }
+    }, [displaySuccess])
 
     const form = {
         title: (text: string, fieldName: string)=> {
@@ -82,9 +106,11 @@ const CreateTourPopup =(props: DialogProps)=> {
     const {viewModel, tourData, updateTourWith
         } = useEditTour(props.tourName ?? "", props.isVisible, (success, reason)=> {
             if (success) {
+                
                 props.onDismiss()
             }
             else {
+                // setDisplayFailed(true)
                 updateResponseValid(false)
             }
         })
@@ -317,7 +343,11 @@ const CreateTourPopup =(props: DialogProps)=> {
                                             socket.emit("update-tour-data", tourdata, (isFinish: boolean) => {
                                                 
                                                 if (isFinish) {
-                                                    props.onDismiss()
+                                                    setDisplaySuccess(true)
+                                                    // props.onDismiss()
+                                                }
+                                                else {
+                                                    setDisplayFailed(true)
                                                 }
                                             })
                                             // updateTourWith(value)
@@ -336,10 +366,46 @@ const CreateTourPopup =(props: DialogProps)=> {
                         </BottomDiv>
                     </AltSection>
                 </div>
+                <Popup display={displayFailed}>
+                <PopupContent>
+                    <Lottie animationData={failedAnimation} style={{width: "100px", height: "100px", alignSelf: "center"}} loop />
+                    <TitleText>Update failed try again later</TitleText>
+                </PopupContent>
+                </Popup>
+                <Popup display={displaySuccess}>
+                    <PopupContent>
+                        <Lottie animationData={successAnimation} style={{width: "100px", height: "100px", alignSelf: "center"}} loop />
+                        <TitleText>Update successfully!</TitleText>
+                    </PopupContent>
+                </Popup>
             </Container>
         </PopupContainer>
     )
 }
+
+const Popup = styled.div<{display: boolean}>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    position: absolute;
+    background-color: rgba(248,248,248, 0.9);
+    opacity: ${props=>props.display ? "1" : "0"};
+    visibility: ${props=>props.display ? "visible" : "hidden"};
+    transition: all 0.2s ease-in-out;
+`
+
+const PopupContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 40%;
+`
 
 interface SectionProps extends HTMLAttributes<HTMLElement> {
     title?: string
@@ -403,6 +469,7 @@ const Container = styled(motion.div)`
     /* grid-template: repeat(auto-fit, minmax(200, 1fr)) /  repeat(auto-fit, minmax(200, 1fr)); */
     background-color: white;
     box-sizing: border-box;
+    position: relative;
     padding: 20px;
     border-radius: 16px;
     box-shadow: var(--app-popup-shadow);

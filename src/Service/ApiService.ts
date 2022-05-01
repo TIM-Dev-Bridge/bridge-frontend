@@ -56,6 +56,16 @@ export const api = {
     manageTour: (body: any)=> {
         return axios.get(baseURL + '/manageTour')
     },
+    updateUserData: (body: any)=> {
+        return axios.post(baseURL + '/updateUserData', body)
+    },
+    getUserData: (param: string)=> {
+        return axios.get(baseURL +'/getUserData', {
+            params: {
+                username: param
+            }
+        })
+    }
 }
 
 

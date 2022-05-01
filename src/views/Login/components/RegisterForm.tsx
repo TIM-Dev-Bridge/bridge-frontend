@@ -10,6 +10,10 @@ import DateSelector from '../../../components/Selector/DateSelector';
 import styled from 'styled-components';
 import { navigate, useNavigator } from '../../../components/Router/Router';
 import { api } from '../../../Service/ApiService';
+import Lottie from 'lottie-react';
+import failedAnimation  from '../../../assets/Animate/fail.json'
+import successAnimation from '../../../assets/Animate/success.json'
+import loadingAnimation from '../../../assets/Animate/loading.json'
 
 interface RegsiterFormProps extends MotionProps {
     onLoginClick?: ()=>void
@@ -20,6 +24,8 @@ interface RegsiterFormProps extends MotionProps {
 const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
 
     const navContext = useNavigator()
+    const [displayFailed, setDisplayFailed] = React.useState(false)
+    const [displaySuccess, setDisplaySuccess] = React.useState(false)
     const [errorResponse, setErrorResponse] = React.useState({
         email: {
             isValid: true,
@@ -36,10 +42,11 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
         api.register(value)
             .then( res => {
                 // console.log(res)
-                props.onRegisterComplete?.()
+                setDisplaySuccess(true)
             })
             .catch(err => {
-                // console.log(err)
+                console.log(err)
+                setDisplayFailed(true)
             })
     }
  
@@ -87,6 +94,23 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
         },
     }
 
+    React.useEffect(()=> {
+        if (displayFailed) {
+            setTimeout(()=> {
+                setDisplayFailed(false)
+            }, 1500)
+        }
+    }, [displayFailed])
+
+    React.useEffect(()=> {
+        if (displaySuccess) {
+            setTimeout(()=> {
+                setDisplaySuccess(false)
+                props.onRegisterComplete?.()
+            }, 1500)
+        }
+    }, [displaySuccess])
+
     const { isValid, handleSubmit } = useForm<typeof form>(form)
 
     return (
@@ -123,6 +147,18 @@ const RegisterForm: React.FC<RegsiterFormProps> =(props: RegsiterFormProps)=> {
                     <LinkText small onClick={props.onLoginClick}>Already Have an account</LinkText>
                 </div>
             </div>
+            <FailedPopup display={displayFailed}>
+                <FailedPopupContent>
+                    <Lottie animationData={failedAnimation} style={{width: "300px", height: "300px", alignSelf: "center"}} loop />
+                    <TitleText>Register unsuccessfull. Email or Username is Exist</TitleText>
+                </FailedPopupContent>
+            </FailedPopup>
+            <FailedPopup display={displaySuccess}>
+                <FailedPopupContent>
+                    <Lottie animationData={successAnimation} style={{width: "300px", height: "300px", alignSelf: "center"}} loop />
+                    <TitleText>Register Successfully!</TitleText>
+                </FailedPopupContent>
+            </FailedPopup>
         </Container>
     );
 }
@@ -137,6 +173,27 @@ interface FormAttributes {
 //     </div>)
 // }
 
+const FailedPopup = styled.div<{display: boolean}>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(248,248,248, 0.9);
+    opacity: ${props=>props.display ? "1" : "0"};
+    visibility: ${props=>props.display ? "visible" : "hidden"};
+    transition: all 0.2s ease-in-out;
+`
+
+const FailedPopupContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 40%;
+`
+
 const Container = styled(motion.div)<{visible: boolean}>`
     display: flex;
     flex-direction: column;
@@ -145,6 +202,7 @@ const Container = styled(motion.div)<{visible: boolean}>`
     max-width: 512px;
     /* height: 80vh; */
     overflow: scroll;
+    position: relative;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
     border-radius: 15px;
     visibility: ${props=> props.visible ? "visible" : "hidden"};
