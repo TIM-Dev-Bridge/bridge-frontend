@@ -36,27 +36,27 @@ const buttonDatas = [
       .default,
     name: 'LeaderBoard',
   },
-  {
-    id: 3,
-    src: {
-      player: require("./../../../assets/images/PlaySideTab/TournamentDirector.png")
-        .default,
-      td: require("./../../../assets/images/PlaySideTab/Spectate.png")
-        .default,
-      spectator: require("./../../../assets/images/PlaySideTab/Spectate.png")
-      .default,
-    },
-    name: {
-      player: 'TournamentDirector',
-      td: 'Spectate',
-      spectator: 'Spectate',
-    },
-  },
-  {
-    id: 4,
-    src: require("./../../../assets/images/PlaySideTab/Chat.png").default,
-    name: 'Chat',
-  },
+  // {
+  //   id: 3,
+  //   src: {
+  //     player: require("./../../../assets/images/PlaySideTab/TournamentDirector.png")
+  //       .default,
+  //     td: require("./../../../assets/images/PlaySideTab/Spectate.png")
+  //       .default,
+  //     spectator: require("./../../../assets/images/PlaySideTab/Spectate.png")
+  //     .default,
+  //   },
+  //   name: {
+  //     player: 'TournamentDirector',
+  //     td: 'Spectate',
+  //     spectator: 'Spectate',
+  //   },
+  // },
+  // {
+  //   id: 4,
+  //   src: require("./../../../assets/images/PlaySideTab/Chat.png").default,
+  //   name: 'Chat',
+  // },
 ];
 
 const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
@@ -197,7 +197,7 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
           <td>{props.tricks ? props.tricks.ewTricks : "0"}</td>
         </tbody>
       </Panel>
-      {props.permission == "td" && (
+      {/* {props.permission == "td" && (
         <BigButton onClick={ () => props.setSelectedPopup('RecapSheet')}>
           <IconButton
             src={
@@ -210,9 +210,9 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
         </BigButton>
       )}
       {chunk(buttonDatas, 2).map((chunkedButton) => {
-        return (
+        return ( */}
           <ButtonGroup>
-            {chunkedButton.map((button) => {
+            {buttonDatas.map((button) => {
               return (
                 <FloatingButton onClick={ () =>
                   typeof button.name === "object"
@@ -232,8 +232,8 @@ const PlaySideTab: React.FC<IPlaySideTabProps> = (props: IPlaySideTabProps) => {
               );
             })}
           </ButtonGroup>
-        );
-      })}
+        {/* );
+      })} */}
     </Container>
   );
 };
