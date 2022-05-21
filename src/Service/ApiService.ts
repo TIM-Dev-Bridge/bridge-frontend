@@ -1,8 +1,9 @@
 import axios from "axios"
+// import { endpoint } from './ServiceConfig';
 
-const baseURL = 'https://bridge-api-tim.herokuapp.com'
-// const baseURL = 'http://localhost:4000'
-// const baseURL = 'http://124.121.99.187:4000'
+// const endpoint = 'https://bridge-api-tim.herokuapp.com'
+const endpoint = 'http://localhost:4000'
+// const endpoint = 'http://124.121.99.187:4000'
 
 enum Endpoint {
     login,
@@ -14,26 +15,26 @@ enum Endpoint {
 
 export const api = {
     login: (body: any)=> {
-        return axios.post(baseURL + '/login', body)
+        return axios.post(endpoint + '/login', body)
     },
     register: (body: any)=> {
-        return axios.post(baseURL + '/register', body)
+        return axios.post(endpoint + '/register', body)
     },
     updateTour: (body: any)=> {
-        return axios.post(baseURL + '/updateTourData', body)
+        return axios.post(endpoint + '/updateTourData', body)
     },
     updateUserInfo: (body: any)=> {
-        return axios.post(baseURL + '/updateUserData', body)
+        return axios.post(endpoint + '/updateUserData', body)
     },
     getTourData: (tourName: string)=> {
-        return axios.get(baseURL + '/getTournamentData',{
+        return axios.get(endpoint + '/getTournamentData',{
             params: {
                 tour_name: tourName
             }
         })
     },
     getAnnouncements: (offset: number, limit: number)=> {
-        return axios.get(baseURL + '/getAnnouncements',{
+        return axios.get(endpoint + '/getAnnouncements',{
             params: {
                 offset: offset,
                 limit: limit
@@ -41,26 +42,26 @@ export const api = {
         })
     },
     addAnnouncement: (body: any)=> {
-        return axios.post(baseURL + '/addAnnouncement',body)
+        return axios.post(endpoint + '/addAnnouncement',body)
     },
     getAnnouncement: (id: string)=> {
-        return axios.get(baseURL + '/getAnnouncement',{
+        return axios.get(endpoint + '/getAnnouncement',{
             params: {
                 id: id
             }
         })
     },
     updateAnnouncement: (body: any)=> {
-        return axios.post(baseURL + '/updateAnnouncement',body)
+        return axios.post(endpoint + '/updateAnnouncement',body)
     },
     manageTour: (body: any)=> {
-        return axios.get(baseURL + '/manageTour')
+        return axios.get(endpoint + '/manageTour')
     },
     updateUserData: (body: any)=> {
-        return axios.post(baseURL + '/updateUserData', body)
+        return axios.post(endpoint + '/updateUserData', body)
     },
     getUserData: (param: string)=> {
-        return axios.get(baseURL +'/getUserData', {
+        return axios.get(endpoint +'/getUserData', {
             params: {
                 username: param
             }

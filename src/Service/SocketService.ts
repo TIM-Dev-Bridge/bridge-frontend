@@ -2,10 +2,11 @@ import React from "react";
 import { io } from "socket.io-client";
 import { TourData } from "../views/Popup/TourRequest";
 // import { endpoint } from './ServiceConfig';
-// const endpoint = "http://localhost:4000";
-// const endpoint = "http://124.121.99.187:4000";
 
-const endpoint = "wss://bridge-api-tim.herokuapp.com/"
+const endpoint = "http://localhost:4000";
+// const endpoint = "http://124.121.99.187:4000";
+// const endpoint = "wss://bridge-api-tim.herokuapp.com/"
+
 export var socket = io(endpoint, { transports: ["websocket"] });
 //useLobby
 
@@ -582,9 +583,21 @@ export const useScore = (userId: string, tourId: string) => {
     totalMP: number
   }
 
+  interface EndedRanking {
+    pair_id: number
+    rankPercent: number
+    totalMP: number
+    players: []
+  }
+
   interface LeaderBoardOBJ {
     nsRanking: Ranking[];
     ewRanking: Ranking[];
+  }
+
+  interface EndedLeaderBoardOBJ {
+    nsRanking: EndedRanking[];
+    ewRanking: EndedRanking[];
   }
 
   const getLeaderboard = (callback: (leaderBoard: LeaderBoardOBJ) => void) => {
@@ -592,6 +605,21 @@ export const useScore = (userId: string, tourId: string) => {
     socket.on("getNsRankings", (nsRanking) => {
       socket.emit("getEwRankings", tourId);
       socket.on("getEwRankings", (ewRanking) => {
+        // console.log('nsRanking', nsRanking)
+        // console.log('ewRanking', ewRanking)
+        callback({
+          nsRanking,
+          ewRanking,
+        });
+      });
+    });
+  };
+
+  const getEndedLeaderboard = (callback: (leaderBoard: EndedLeaderBoardOBJ) => void) => {
+    socket.emit("getEndedNsRankings", tourId);
+    socket.on("getEndedNsRankings", (nsRanking) => {
+      socket.emit("getEndedEwRankings", tourId);
+      socket.on("getEndedEwRankings", (ewRanking) => {
         // console.log('nsRanking', nsRanking)
         // console.log('ewRanking', ewRanking)
         callback({
@@ -610,6 +638,7 @@ export const useScore = (userId: string, tourId: string) => {
     getLeaderboard,
     getScoreFinishedTour,
     updateFinishedScore,
+    getEndedLeaderboard,
   };
 };
 

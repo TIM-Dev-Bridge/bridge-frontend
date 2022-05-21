@@ -7,54 +7,85 @@ import { useAuthen } from "../../Authen";
 import { useScore } from "../../Service/SocketService";
 import { useProfile } from "../UserProfile/ProfileContext";
 import printJS from "print-js";
+import _ from "lodash";
 
-interface BoardScore {
+interface LeaderRow {
   key: string;
-  players: string;
-  position: "N/S" | "E/W";
-  score: number;
-  pair_id: number;
+  nsTeam?: string;
+  nsMps?: number;
+  nsPercentage?: number;
+  ewTeam?: string;
+  ewMps?: number;
+  ewPercentage?: number;
 }
 
-export interface IViewPastMatchProps {
+interface NSLeaderBoard {
+  nsTeam: string;
+  nsMps: number;
+  nsPercentage: number;
+}
+
+interface EWLeaderBoard {
+  ewTeam: string;
+  ewMps: number;
+  ewPercentage: number;
+}
+
+export interface ILeaderBoardProps {
+  nsLeader: NSLeaderBoard[];
+  ewLeader: EWLeaderBoard[];
+}
+
+export interface IViewRankingProps {
   tourId: string;
   setViewingTour: Function;
   viewingState: string;
   setViewingState: Function;
 }
 
-const ViewPastMatch: React.FC<IViewPastMatchProps> = (
-  props: IViewPastMatchProps
-) => {
+const ViewRanking: React.FC<IViewRankingProps> = (props: IViewRankingProps) => {
   const authenContext = useAuthen();
   const profile = useProfile();
   const score = useScore(authenContext.authen.username, props.tourId || "");
 
-  const [data, setData] = React.useState<BoardScore[][]>([]);
-  const [currentData, setCurrentData] = React.useState<BoardScore[]>([]);
+  const [currentData, setCurrentData] = React.useState<LeaderRow[]>([]);
   const [form] = Form.useForm();
-  const [displayBoard, setDisplayBoard] = React.useState(1);
+  const [editingKey, setEditingKey] = React.useState("");
 
   React.useEffect(() => {
-    if (props.tourId == "") return
-    console.log("Fetching Finished Tournament Score");
-      score.getScoreFinishedTour((tourScore) => {
-        const fetchedData: BoardScore[][] = tourScore.map((boardScores) => {
-          return boardScores.newScore.map((score) => {
-            return {
-              key:
-                boardScores.board_num.toString().padStart(2, "0") +
-                score.pair_id.toString().padStart(2, "0"),
-              players: score.name1 + ", " + score.name2,
-              position: score.direction % 2 == 0 ? "N/S" : "E/W",
-              score: score.score,
-              pair_id: score.pair_id,
-            };
-          });
-        });
-        setData(fetchedData);
-        setCurrentData(fetchedData[0]);
+    if (props.tourId == "") return;
+    console.log("Fetching Finished Tournament Ranking");
+    score.getEndedLeaderboard((leaderBoard) => {
+      const nsLeader: NSLeaderBoard[] = leaderBoard.nsRanking.map((nsRank) => {
+        return {
+          nsTeam: nsRank.players.toString(),
+          nsMps: nsRank.totalMP,
+          nsPercentage: nsRank.rankPercent,
+        };
       });
+      const ewLeader: EWLeaderBoard[] = leaderBoard.ewRanking.map((ewRank) => {
+        return {
+          ewTeam: ewRank.players.toString(),
+          ewMps: ewRank.totalMP,
+          ewPercentage: ewRank.rankPercent,
+        };
+      });
+      const fetchedData = _.zipWith(
+        nsLeader.sort((a, b) => b.nsPercentage - a.nsPercentage),
+        ewLeader.sort((a, b) => b.ewPercentage - a.ewPercentage),
+        (nsObject, ewObject) => {
+          return { ...nsObject, ...ewObject };
+        }
+      );
+
+      const fetchedDataSource: LeaderRow[] = fetchedData.map(
+        (element, index) => {
+          return { key: index.toString(), ...element };
+        }
+      );
+
+      setCurrentData(fetchedDataSource);
+    });
   }, [props.tourId]);
 
   interface EditableRowProps {
@@ -78,9 +109,9 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
     title: React.ReactNode;
     editable: boolean;
     children: React.ReactNode;
-    dataIndex: keyof BoardScore;
-    record: BoardScore;
-    handleSave: (record: BoardScore) => void;
+    dataIndex: keyof LeaderRow;
+    record: LeaderRow;
+    handleSave: (record: LeaderRow) => void;
   }
 
   const EditableCell: React.FC<EditableCellProps> = ({
@@ -148,19 +179,16 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
     return <td {...restProps}>{childNode}</td>;
   };
 
-  const changeBoard = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setDisplayBoard(parseInt(event.target.value));
-    setCurrentData(data[parseInt(event.target.value) - 1]);
-  };
-
   type EditableTableProps = Parameters<typeof Table>[0];
 
   interface DataType {
     key: string;
-    players: string;
-    position: "N/S" | "E/W";
-    score: number;
-    pair_id: number;
+    nsTeam?: string;
+    nsMps?: number;
+    nsPercentage?: number;
+    ewTeam?: string;
+    ewMps?: number;
+    ewPercentage?: number;
   }
 
   interface EditableTableState {
@@ -172,29 +200,46 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
 
   const refColumn = [
     {
-      title: "Pair",
+      title: "Position",
       dataIndex: "key",
-      width: "15%",
+      width: "10%",
       render: (_: any, __: any, index: number) => <b>{index + 1}</b>,
     },
     {
-      title: "Players",
-      dataIndex: "players",
-      width: "30%",
-      // render: (players:string) => players
-    },
-    {
-      title: "Position",
-      dataIndex: "position",
-      width: "15%",
-      render: (position: number) => <b>{position}</b>,
-    },
-    {
-      title: "Score",
-      dataIndex: "score",
+      title: "N/S Team",
+      dataIndex: "nsTeam",
       width: "20%",
+    },
+    {
+      title: "MPs",
+      dataIndex: "nsMps",
+      width: "10%",
+      //   render: (nsMps: number) => <b>{position}</b>,
+    },
+    {
+      title: "Percentage",
+      dataIndex: "nsPercentage",
+      width: "15%",
       editable: profile.profile.access === "td",
-      // editable: true,
+      render: (percentage: number) => `${percentage}%`,
+    },
+    {
+      title: "E/W Team",
+      dataIndex: "ewTeam",
+      width: "20%",
+    },
+    {
+      title: "MPs",
+      dataIndex: "ewMps",
+      width: "10%",
+      //   render: (nsMps: number) => <b>{position}</b>,
+    },
+    {
+      title: "Percentage",
+      dataIndex: "ewPercentage",
+      width: "15%",
+      editable: profile.profile.access === "td",
+      render: (percentage: number) => `${percentage}%`,
     },
   ];
 
@@ -206,18 +251,9 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
       ...item,
       ...row,
     });
-    const newData = [...data];
-    newData.splice(displayBoard - 1, 1, newCurrentData);
     setCurrentData(newCurrentData);
-    setData(newData);
-    score.updateFinishedScore(
-      props.tourId,
-      displayBoard,
-      row.pair_id,
-      "boardScores",
-      "score",
-      row.score
-    );
+    // WIP
+    // score.updateFinishedScore(props.tourId, displayBoard, row.pair_id, "boardScores", "score", row.score)
   };
 
   const columns = refColumn.map((col) => {
@@ -236,65 +272,84 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
     };
   });
 
-  const printScore = () => {
-    console.log("data :>> ", data);
+  const printRanking = () => {
     let printData: any = [];
-    data.forEach((rd, rIdx) => {
-      rd.forEach((bd) => {
-        printData.push({
-          Round: rIdx,
-          Pair: bd.pair_id,
-          Players: bd.players,
-          Position: bd.position,
-          Score: bd.score,
-        });
+    currentData.forEach((ranking, rIdx) => {
+      printData.push({
+        position: rIdx,
+        "N/S team": ranking.nsTeam,
+        "N/S MPs": ranking.nsMps,
+        "N/S percentage": ranking.nsPercentage,
+        "E/W team": ranking.ewTeam,
+        "E/W MPs": ranking.ewMps,
+        "E/W percentage": ranking.ewPercentage,
       });
     });
 
     printJS({
       printable: printData,
-      documentTitle: `Scoreboard of ${props.tourId}`,
-      properties: ["Round", "Pair", "Players", "Position", "Score"],
+      documentTitle: `Leaderboard of ${props.tourId}`,
+      properties: [
+        "position",
+        "N/S team",
+        "N/S MPs",
+        "N/S percentage",
+        "E/W team",
+        "E/W MPs",
+        "E/W percentage",
+      ],
       type: "json",
     });
   };
 
   const printCSV = () => {
-    let printData: any = []
-    data.forEach((rd, rIdx) => {
-      rd.forEach((bd) => {
-        printData.push({
-          Round: rIdx,
-          Pair: bd.pair_id,
-          Players: bd.players,
-          Position: bd.position,
-          Score: bd.score,
-        });
+    let printData: any = [];
+    currentData.forEach((ranking, rIdx) => {
+      printData.push({
+        position: rIdx,
+        "N/S team": ranking.nsTeam,
+        "N/S MPs": ranking.nsMps,
+        "N/S percentage": ranking.nsPercentage,
+        "E/W team": ranking.ewTeam,
+        "E/W MPs": ranking.ewMps,
+        "E/W percentage": ranking.ewPercentage,
       });
     });
 
     let output = printData.map((obj: any) => {
-        return Object.keys(obj).sort().map(function(key) { 
+      return Object.keys(obj)
+        .sort()
+        .map(function (key) {
           return obj[key];
         });
-      });
-    
+    });
+
     let csvContent = "data:text/csv;charset=utf-8,";
-    output.splice(0, 0, ["Pair", "Player 1", "Player 2", "Position", "Round", "Score"]);
+    output.splice(0, 0, [
+      "ewMPs",
+      "ewPercentage",
+      "ewPlayer 1",
+      "ewPlayer 2",
+      "nsMPs",
+      "nsPercentage",
+      "nsPlayer 1",
+      "nsPlayer 2",
+      "Position",
+    ]);
     output.forEach((outputArray: []) => {
-        let row = outputArray.join(",");
-        csvContent += row + "\r\n";
+      let row = outputArray.join(",");
+      csvContent += row + "\r\n";
     });
 
     let encodedUri = encodeURI(csvContent);
     let link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${props.tourId}_Score.csv`);
+    link.setAttribute("download", `${props.tourId}_Ranking.csv`);
     document.body.appendChild(link);
     link.click();
-  }
+  };
 
-  return props.tourId && props.viewingState === "Score" ? (
+  return props.tourId && props.viewingState === "Ranking" ? (
     <PopupContainer id="admintable">
       <BlackOverlay />
       <FloatingButton
@@ -305,7 +360,11 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
           cursor: "pointer",
           zIndex: 101,
         }}
-        onClick={() => {setData([]); setCurrentData([]); props.setViewingTour(""); props.setViewingState(""); }}
+        onClick={async () => {
+          setCurrentData([]);
+          props.setViewingTour("");
+          props.setViewingState("");
+        }}
       >
         <IconButton
           src={require("./../../assets/images/WhiteCross.svg").default}
@@ -318,7 +377,7 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
         <TitleContainer>
           <Title> {props.tourId} </Title>
           <PrintContainer>
-            <PrimaryButton onClick={printScore}>Print Score</PrimaryButton>
+            <PrimaryButton onClick={printRanking}>Print Ranking</PrimaryButton>
           </PrintContainer>
           <PrintContainer>
             <PrimaryButton onClick={printCSV}>Save as CSV</PrimaryButton>
@@ -345,13 +404,6 @@ const ViewPastMatch: React.FC<IViewPastMatchProps> = (
             bordered
           />
         </Form>
-        <FooterWrapper>
-          <BoardSelector onChange={changeBoard} value={displayBoard}>
-            {[...Array(data.length)].map((boards, index) => (
-              <option value={index + 1}>Round {index + 1}</option>
-            ))}
-          </BoardSelector>
-        </FooterWrapper>
       </TableContainer>
     </PopupContainer>
   ) : (
@@ -372,25 +424,6 @@ const TableContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 10vh 5vw;
-`;
-
-const FooterWrapper = styled.div`
-  height: 5vh;
-  width: 100%;
-  text-align: right;
-  line-height: 5vh;
-`;
-
-const BoardSelector = styled.select`
-  margin: 1vh;
-  width: 7.5vw;
-  height: 3vh;
-  font-size: 1.75vh;
-  font-weight: 500;
-  min-width: 100px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 2.5px;
-  cursor: pointer;
 `;
 
 const BlackOverlay = styled.div`
@@ -442,4 +475,4 @@ const TitleContainer = styled.div`
   align-items: center;
 `;
 
-export default ViewPastMatch;
+export default ViewRanking;

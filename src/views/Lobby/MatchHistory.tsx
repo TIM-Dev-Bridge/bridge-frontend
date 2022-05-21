@@ -10,28 +10,30 @@ import { useHistory, useManage } from "../../Service/SocketService";
 import { PrimaryButton } from "../../components/Button/Button";
 import { useProfile } from "../UserProfile/ProfileContext";
 import ViewPastMatch from "./ViewPastMatch";
+import ViewRanking from "./ViewRanking";
 // import "./adminTable.css";
 // import 'antd/dist/antd.css';
 
- const MatchHistoryPage: React.FC = () => {
+const MatchHistoryPage: React.FC = () => {
   interface Tour {
-    host: string,
-    title: string,
-    type: string,
-    players: string,
-    mode: string,
-    status: string
+    host: string;
+    title: string;
+    type: string;
+    players: string;
+    mode: string;
+    status: string;
   }
 
-  const profile = useProfile()
-  const authen = useAuthen()
-  const { getFinishedTourList } = useHistory()
+  const profile = useProfile();
+  const authen = useAuthen();
+  const { getFinishedTourList } = useHistory();
 
   const [data, setData] = React.useState<Tour[]>([]);
   const [filteredData, setFilteredData] = React.useState<Tour[]>(data);
   const [searchMode, setSearchMode] = React.useState<string>("Host");
   const [nameSearch, setNameSearch] = React.useState<string>("");
   const [viewingTour, setViewingTour] = React.useState("");
+  const [viewingState, setViewingState] = React.useState("");
 
   React.useEffect(() => {
     getFinishedTourList((tourList) => {
@@ -49,7 +51,13 @@ import ViewPastMatch from "./ViewPastMatch";
   };
 
   const handleSearch = (nameSearch: string) => {
-    setFilteredData(data.filter((tour) => searchMode === 'Host' ? tour.host.includes(nameSearch) : tour.title.includes(nameSearch)));
+    setFilteredData(
+      data.filter((tour) =>
+        searchMode === "Host"
+          ? tour.host.includes(nameSearch)
+          : tour.title.includes(nameSearch)
+      )
+    );
   };
 
   const handleKeyPress = (e: any) => {
@@ -62,41 +70,47 @@ import ViewPastMatch from "./ViewPastMatch";
     setNameSearch(e.target.value);
   };
 
-  const handleSwitch = (isCheck: boolean) =>{
-    setNameSearch("")
-    setFilteredData(data)
-    isCheck? setSearchMode("Tourname") : setSearchMode("Host")
+  const handleSwitch = (isCheck: boolean) => {
+    setNameSearch("");
+    setFilteredData(data);
+    isCheck ? setSearchMode("Tourname") : setSearchMode("Host");
   };
 
-  const handleView = (tourId: string) => {
-    setViewingTour(tourId)
-  }
+  const handleViewScore = (tourId: string) => {
+    setViewingTour(tourId);
+    setViewingState("Score");
+  };
 
-//   const updateRole = (username:string, role:string) => {
-//     const index = data.findIndex((e) => e.username === username)
-//     data[index].access = role
-//     setFilteredData([...data].filter((user) => user.username.includes(nameSearch)))
-//   }
+  const handleViewRanking = (tourId: string) => {
+    setViewingTour(tourId);
+    setViewingState("Ranking");
+  };
 
-//   const handlePromote = (username: string) => {
-//     promoteToTD(username);
-//     updateRole(username,'td')
-//   };
+  //   const updateRole = (username:string, role:string) => {
+  //     const index = data.findIndex((e) => e.username === username)
+  //     data[index].access = role
+  //     setFilteredData([...data].filter((user) => user.username.includes(nameSearch)))
+  //   }
 
-//   const handleDemote = (username: string) => {
-//     demoteFromTD(username);
-//     updateRole(username,'user')
-//   };
+  //   const handlePromote = (username: string) => {
+  //     promoteToTD(username);
+  //     updateRole(username,'td')
+  //   };
 
-//   const handleBan = (username: string) => {
-//     banUser(username);
-//     updateRole(username,'ban')
-//   };
+  //   const handleDemote = (username: string) => {
+  //     demoteFromTD(username);
+  //     updateRole(username,'user')
+  //   };
 
-//   const handleEnable = (username: string) => {
-//     enableUser(username);
-//     updateRole(username,'user')
-//   };
+  //   const handleBan = (username: string) => {
+  //     banUser(username);
+  //     updateRole(username,'ban')
+  //   };
+
+  //   const handleEnable = (username: string) => {
+  //     enableUser(username);
+  //     updateRole(username,'user')
+  //   };
 
   // const getColumnSearchProps = (dataIndex: keyof User) =>({
   //   onFilter: (value:string, record:User) =>
@@ -112,7 +126,8 @@ import ViewPastMatch from "./ViewPastMatch";
       dataIndex: "host",
       key: "host",
       width: "10%",
-      render: (host: string) => searchMode === 'Host' ? <b>{host}</b> : <p>{host}</p>,
+      render: (host: string) =>
+        searchMode === "Host" ? <b>{host}</b> : <p>{host}</p>,
       // ...getColumnSearchProps("username"),
       // onFilter: (value: string | number | boolean, record: User) =>
       //   record["username"]
@@ -125,7 +140,8 @@ import ViewPastMatch from "./ViewPastMatch";
       dataIndex: "title",
       key: "title",
       width: "30%",
-      render: (title: string) => searchMode === 'Tourname' ? <b>{title}</b> : <p>{title}</p>,
+      render: (title: string) =>
+        searchMode === "Tourname" ? <b>{title}</b> : <p>{title}</p>,
     },
     // {
     //   title: "Display Name",
@@ -164,49 +180,62 @@ import ViewPastMatch from "./ViewPastMatch";
       width: "30%",
       render: (_: any, record: Tour) => {
         return (
-            <Space size="middle">
-                <a onClick={()=>{handleView(record.title)}}>View Score</a>
-            </Space>
-        //   <Space size="middle">
-        //     {record.access.toLowerCase() === "user" && (
-        //       <Popconfirm
-        //         title={`Promote ${record.username} to TD?`}
-        //         onConfirm={() => handlePromote(record.username)}
-        //       >
-        //         <a>Promote to TD</a>
-        //       </Popconfirm>
-        //     )}
-        //     {record.access.toLowerCase() === "td" && (
-        //       <Popconfirm
-        //         title={`Demote ${record.username} from TD?`}
-        //         onConfirm={() => handleDemote(record.username)}
-        //       >
-        //         <a>Demote from TD</a>
-        //       </Popconfirm>
-        //     )}
-        //     {/* {<a>Suspend</a>} */}
-        //     {(record.access.toLowerCase() === "user" ||
-        //       record.access.toLowerCase() === "td") && (
-        //       <Popconfirm
-        //         title={`Ban ${record.username}?`}
-        //         onConfirm={() => handleBan(record.username)}
-        //       >
-        //         <a>
-        //           <b>Ban</b>
-        //         </a>
-        //       </Popconfirm>
-        //     )}
-        //     {record.access.toLowerCase() === "ban" && (
-        //       <Popconfirm
-        //         title={`Enable ${record.username}?`}
-        //         onConfirm={() => handleEnable(record.username)}
-        //       >
-        //         <a>
-        //           <b>Enable this user</b>
-        //         </a>
-        //       </Popconfirm>
-        //     )}
-        //   </Space>
+          <Space size="middle">
+            <a
+              onClick={() => {
+                handleViewScore(record.title);
+              }}
+            >
+              View Score
+            </a>
+            <a
+              onClick={() => {
+                handleViewRanking(record.title);
+              }}
+            >
+              View Ranking
+            </a>
+          </Space>
+          //   <Space size="middle">
+          //     {record.access.toLowerCase() === "user" && (
+          //       <Popconfirm
+          //         title={`Promote ${record.username} to TD?`}
+          //         onConfirm={() => handlePromote(record.username)}
+          //       >
+          //         <a>Promote to TD</a>
+          //       </Popconfirm>
+          //     )}
+          //     {record.access.toLowerCase() === "td" && (
+          //       <Popconfirm
+          //         title={`Demote ${record.username} from TD?`}
+          //         onConfirm={() => handleDemote(record.username)}
+          //       >
+          //         <a>Demote from TD</a>
+          //       </Popconfirm>
+          //     )}
+          //     {/* {<a>Suspend</a>} */}
+          //     {(record.access.toLowerCase() === "user" ||
+          //       record.access.toLowerCase() === "td") && (
+          //       <Popconfirm
+          //         title={`Ban ${record.username}?`}
+          //         onConfirm={() => handleBan(record.username)}
+          //       >
+          //         <a>
+          //           <b>Ban</b>
+          //         </a>
+          //       </Popconfirm>
+          //     )}
+          //     {record.access.toLowerCase() === "ban" && (
+          //       <Popconfirm
+          //         title={`Enable ${record.username}?`}
+          //         onConfirm={() => handleEnable(record.username)}
+          //       >
+          //         <a>
+          //           <b>Enable this user</b>
+          //         </a>
+          //       </Popconfirm>
+          //     )}
+          //   </Space>
         );
       },
     },
@@ -214,49 +243,74 @@ import ViewPastMatch from "./ViewPastMatch";
 
   return (
     <>
-    <PopupContainer>
-        <ViewPastMatch tourId={viewingTour} setViewingTour={setViewingTour}/>
-    </PopupContainer>
-    <CenterContainer className="admintable" id="admintable">
-      <div style={{ position: "absolute", top: "61px", left: "5px" }}>
-        <BackButton display={false} />
-      </div>
-      <GridContainer>
-        <InnerContainer id="user-window">
-          <div style={{ display: "flex", paddingTop: "20px" }}>
-            <div className="self-start pt-4 pb-2 pl-8">
-              <TitleText medium>Finished Tournaments</TitleText>
+      <PopupContainer>
+        {viewingState == "Score" ? (
+          <ViewPastMatch
+            tourId={viewingTour}
+            setViewingTour={setViewingTour}
+            viewingState={viewingState}
+            setViewingState = {setViewingState}
+          />
+        ) : (
+          <></>
+        )}
+        {viewingState == "Ranking" ? (
+          <ViewRanking
+            tourId={viewingTour}
+            setViewingTour={setViewingTour}
+            viewingState={viewingState}
+            setViewingState = {setViewingState}
+          />
+        ) : (
+          <></>
+        )}
+      </PopupContainer>
+      <CenterContainer className="admintable" id="admintable">
+        <div style={{ position: "absolute", top: "61px", left: "5px" }}>
+          <BackButton display={false} />
+        </div>
+        <GridContainer>
+          <InnerContainer id="user-window">
+            <div style={{ display: "flex", paddingTop: "20px" }}>
+              <div className="self-start pt-4 pb-2 pl-8">
+                <TitleText medium>Finished Tournaments</TitleText>
+              </div>
             </div>
-          </div>
-          <SelectorContainer>
-            <p style={{lineHeight:"32px"}}>Select search mode</p>
-            <Switch primary="Host" secondary="Tourname" onCheck={(isCheck) => {handleSwitch(isCheck)}}/>
-          </SelectorContainer>
-          <SearchBarContainer>
-            <div
-              style={{
-                display: "inlineFlex",
-                height: "32px",
-                verticalAlign: "middle",
-                lineHeight: "32px",
-              }}
-            >
-              Search
-            </div>
-            <Input
-              id="nameSearch"
-              onChange={handleChange}
-              onKeyPress={handleKeyPress}
-              value={nameSearch}
-            //   pattern="[A-Za-z0-9]"
-              placeholder={`Input ${searchMode}`}
-            />
-            <PrimaryButton onClick={() => handleSearch(nameSearch)}>
-              Search
-            </PrimaryButton>
-            {/* <Switch onCheck={(isCheck) => console.log(isCheck)} /> */}
-          </SearchBarContainer>
-          {/* <table style={{ width: "100%" }}>
+            <SelectorContainer>
+              <p style={{ lineHeight: "32px" }}>Select search mode</p>
+              <Switch
+                primary="Host"
+                secondary="Tourname"
+                onCheck={(isCheck) => {
+                  handleSwitch(isCheck);
+                }}
+              />
+            </SelectorContainer>
+            <SearchBarContainer>
+              <div
+                style={{
+                  display: "inlineFlex",
+                  height: "32px",
+                  verticalAlign: "middle",
+                  lineHeight: "32px",
+                }}
+              >
+                Search
+              </div>
+              <Input
+                id="nameSearch"
+                onChange={handleChange}
+                onKeyPress={handleKeyPress}
+                value={nameSearch}
+                //   pattern="[A-Za-z0-9]"
+                placeholder={`Input ${searchMode}`}
+              />
+              <PrimaryButton onClick={() => handleSearch(nameSearch)}>
+                Search
+              </PrimaryButton>
+              {/* <Switch onCheck={(isCheck) => console.log(isCheck)} /> */}
+            </SearchBarContainer>
+            {/* <table style={{ width: "100%" }}>
             <thead>
               <tr>
                 <th></th>
@@ -275,28 +329,28 @@ import ViewPastMatch from "./ViewPastMatch";
               />
             </tbody>
           </table> */}
-          <Table 
-            columns={columns}
-            dataSource={filteredData}
-            className="userManage"
-            pagination={{
-              hideOnSinglePage: true,
-              pageSize: 8,
-              showSizeChanger: false,
-            }}
-            // scroll={{ y: "70vh", scrollToFirstRowOnChange: true }}
-            // scroll = {{x:"1200px"}}
-            locale={{ emptyText: <span> No Data </span> }}
-            // bordered
-          />
-          {/* <Stack></Stack> */}
-        </InnerContainer>
-        {/* <RightSideBox> */}
+            <Table
+              columns={columns}
+              dataSource={filteredData}
+              className="userManage"
+              pagination={{
+                hideOnSinglePage: true,
+                pageSize: 8,
+                showSizeChanger: false,
+              }}
+              // scroll={{ y: "70vh", scrollToFirstRowOnChange: true }}
+              // scroll = {{x:"1200px"}}
+              locale={{ emptyText: <span> No Data </span> }}
+              // bordered
+            />
+            {/* <Stack></Stack> */}
+          </InnerContainer>
+          {/* <RightSideBox> */}
           {/* <OnlineFriends display={false} tourName={''} /> */}
           {/* <Chat display={false} /> */}
-        {/* </RightSideBox> */}
-      </GridContainer>
-    </CenterContainer>
+          {/* </RightSideBox> */}
+        </GridContainer>
+      </CenterContainer>
     </>
   );
 };
@@ -340,15 +394,15 @@ const SearchBarContainer = styled.div`
 `;
 
 const SelectorContainer = styled.div`
-display: flex;
-flex-direction: row;
-gap: 10px;
-box-sizing: border-box;
-margin-top: 10px;
-margin-bottom: 20px;
-justify-content: start;
-align-content: left;
-max-width: 750px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  justify-content: start;
+  align-content: left;
+  max-width: 750px;
 `;
 
 const CenterContainer = styled.div`
@@ -492,6 +546,5 @@ const PopupContainer = styled.div`
   text-align: center;
   z-index: 100;
 `;
-
 
 export default MatchHistoryPage;

@@ -2,14 +2,14 @@
   "name": "cep-bridge",
   "jest": {
     "coveragePathIgnorePatterns": [
-        "/src/views/Play",
-        "/src/Service",
-        "src/components/Switch",
-        "src/views/Admin/components",
-        "src/views/Bidding/BiddingPage.tsx",
-        "src/views/Popup/useEditTour.ts",
-        "src/views/Lobby/Lobby.tsx",
-        "src/views/Bidding/UsePlaying.ts"
+      "/src/views/Play",
+      "/src/Service",
+      "src/components/Switch",
+      "src/views/Admin/components",
+      "src/views/Bidding/BiddingPage.tsx",
+      "src/views/Popup/useEditTour.ts",
+      "src/views/Lobby/Lobby.tsx",
+      "src/views/Bidding/UsePlaying.ts"
     ]
   },
   "version": "0.1.0",
@@ -47,6 +47,7 @@
     "lodash": "^4.17.21",
     "lottie-react": "^2.2.1",
     "mock-socket": "^9.0.8",
+    "print-js": "^1.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-editor-js": "^2.0.3",
